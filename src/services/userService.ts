@@ -1,0 +1,18 @@
+import axios from 'axios';
+import { RegisterDataUser } from '@/types/user';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export const registerUser = async (data: RegisterDataUser) => {
+  const response = await axios.post(`${API_URL}/users`, data);
+  return response.data;
+};
+
+export const getUserById = async (userId: string, token: string) => {
+  const response = await axios.get(`${API_URL}/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
