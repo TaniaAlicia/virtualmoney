@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/images/Logo01Dark.png',
   },
-  manifest: '/favicon/site.webmanifest',
+  //manifest: '/favicon/site.webmanifest',
   openGraph: {
     url: 'https://digitalmoneyhouse.com',
     title: 'Digital Money House',

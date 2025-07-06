@@ -1,24 +1,26 @@
+"use client";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import UserGreeting from "./UserGreeting";
 
 type NavbarProps = {
-  variant?: 'landing' | 'login' | 'register' | 'dashboard';
+  variant?: "landing" | "login" | "register" | "dashboard";
 };
 
-export default function Navbar({ variant = 'landing' }: NavbarProps) {
+export default function Navbar({ variant = "landing" }: NavbarProps) {
   const logoSrc =
-    variant === 'login' || variant === 'register'
-      ? '/images/Logo01Dark.png'
-      : '/images/Logo01.png';
+    variant === "login" || variant === "register"
+      ? "/images/Logo01Dark.png"
+      : "/images/Logo01.png";
 
   return (
     <nav
       className={clsx(
-        'h-14 flex items-center justify-between px-4',
-        variant === 'landing' && 'bg-dark',
-        (variant === 'login' || variant === 'register') && 'bg-green',
-        variant === 'dashboard' && 'bg-dark text-white'
+        "flex h-14 items-center justify-between px-4",
+        variant === "landing" && "bg-dark",
+        (variant === "login" || variant === "register") && "bg-green",
+        variant === "dashboard" && "bg-dark text-white",
       )}
     >
       <div className="flex items-center">
@@ -32,17 +34,17 @@ export default function Navbar({ variant = 'landing' }: NavbarProps) {
       </div>
 
       {/*SECCIÓN PARA LANDING */}
-      {variant === 'landing' && (
+      {variant === "landing" && (
         <div className="flex items-center space-x-2">
           <Link
             href="/login"
-            className="text-sm px-3 py-1 border border-green text-green rounded hover:bg-green hover:text-black transition"
+            className="rounded border border-green px-3 py-1 text-sm text-green transition hover:bg-green hover:text-black"
           >
             Ingresar
           </Link>
           <Link
             href="/register"
-            className="bg-green text-black px-3 py-1 text-sm rounded hover:bg-lime-300 font-bold transition"
+            className="rounded bg-green px-3 py-1 text-sm font-bold text-black transition hover:bg-lime-300"
           >
             Crear cuenta
           </Link>
@@ -50,14 +52,8 @@ export default function Navbar({ variant = 'landing' }: NavbarProps) {
       )}
 
       {/* Dashboard: saludo + avatar */}
-      {variant === 'dashboard' && (
-        <div className="flex items-center space-x-2">
-          <span className="text-sm">Hola, Tania Rodriguez</span>
-          <div className="w-8 h-8 rounded-full bg-green text-black font-bold flex items-center justify-center">
-            TR
-          </div>
-        </div>
-      )}
+      {variant === 'dashboard' && <UserGreeting />}
+
     </nav>
   );
 }

@@ -6,8 +6,8 @@ const config: Config = {
     extend: {
       backgroundImage: {
         "bg-desktop": "url('/images/MaskGroup.png')",
-        "bg-mobile": "url('/images/bg-mobile.png')",
-        "bg-tablet": "url('/images/bg-tablet.png')",
+        "bg-mobile": "url('/images/MaskGroup.png')",
+        "bg-tablet": "url('/images/MaskGroup.png')",
       },
       colors: {
         green: "#C1FD35",   // Verde lima

@@ -7,10 +7,3 @@ export const login = async (email: string, password: string) => {
   return response.data; // { token: "..." }
 };
 
-export const logout = async (token: string) => {
-  return axios.post(`${API_URL}/logout`, null, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
