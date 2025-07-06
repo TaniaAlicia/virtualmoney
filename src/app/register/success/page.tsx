@@ -1,12 +1,12 @@
 'use client';
 
-import PublicLayout from "@/components/PublicLayout";
+import BaseLayout from "@/components/generals/BaseLayout";
 import { CheckCircle } from "lucide-react"; // o tu ícono personalizado
 import Link from "next/link";
 
 export default function RegisterSuccessPage() {
   return (
-    <PublicLayout variant="register">
+    <BaseLayout variant="register">
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
         <h1 className="mb-4 text-3xl font-bold">Registro Exitoso</h1>
 
@@ -24,6 +24,6 @@ export default function RegisterSuccessPage() {
           Continuar
         </Link>
       </main>
-    </PublicLayout>
+    </BaseLayout>
   );
 }

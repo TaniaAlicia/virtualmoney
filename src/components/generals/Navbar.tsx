@@ -1,15 +1,12 @@
-'use client';
-
-import clsx from 'clsx';
-import Image from 'next/image';
-import Link from 'next/link';
+import clsx from "clsx";
+import Image from "next/image";
+import Link from "next/link";
 
 type NavbarProps = {
-  variant?: 'landing' | 'login' | 'register';
+  variant?: 'landing' | 'login' | 'register' | 'dashboard';
 };
 
 export default function Navbar({ variant = 'landing' }: NavbarProps) {
-  // Elegimos logo según la variante
   const logoSrc =
     variant === 'login' || variant === 'register'
       ? '/images/Logo01Dark.png'
@@ -20,7 +17,8 @@ export default function Navbar({ variant = 'landing' }: NavbarProps) {
       className={clsx(
         'h-14 flex items-center justify-between px-4',
         variant === 'landing' && 'bg-dark',
-        (variant === 'login' || variant === 'register') && 'bg-green'
+        (variant === 'login' || variant === 'register') && 'bg-green',
+        variant === 'dashboard' && 'bg-dark text-white'
       )}
     >
       <div className="flex items-center">
@@ -33,6 +31,7 @@ export default function Navbar({ variant = 'landing' }: NavbarProps) {
         />
       </div>
 
+      {/*SECCIÓN PARA LANDING */}
       {variant === 'landing' && (
         <div className="flex items-center space-x-2">
           <Link
@@ -50,13 +49,14 @@ export default function Navbar({ variant = 'landing' }: NavbarProps) {
         </div>
       )}
 
-      {variant === 'register' && (
-        <Link
-          href="/login"
-          className="ml-auto text-sm px-3 py-1 bg-dark text-white rounded hover:bg-black transition"
-        >
-          Iniciar sesión
-        </Link>
+      {/* Dashboard: saludo + avatar */}
+      {variant === 'dashboard' && (
+        <div className="flex items-center space-x-2">
+          <span className="text-sm">Hola, Tania Rodriguez</span>
+          <div className="w-8 h-8 rounded-full bg-green text-black font-bold flex items-center justify-center">
+            TR
+          </div>
+        </div>
       )}
     </nav>
   );

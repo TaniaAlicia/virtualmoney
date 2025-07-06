@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Metadata } from 'next';
 import '@/styles/globals.css';
-import Footer from '@/components/Footer';
+import Footer from '@/components/generals/Footer';
 
 export const metadata: Metadata = {
   title: {
