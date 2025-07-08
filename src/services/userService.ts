@@ -11,7 +11,7 @@ export const registerUser = async (data: RegisterDataUser) => {
 export const getUserById = async (userId: number, token: string) => {
   const response = await axios.get(`${API_URL}/users/${userId}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization:`${token}`,
     },
   });
   return response.data;

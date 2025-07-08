@@ -5,11 +5,17 @@ interface LandingCardProps {
 
 export default function LandingCard({ title, paragraph }: LandingCardProps) {
   return (
-    <div className="inline-flex flex-col justify-start items-start gap-2 p-5 w-full text-black bg-white rounded-[25px] md:p-[30px] md:gap-4 md:rounded-[30px] md:w-[597px] xl:h-[246px] xl:w-[500px]">
-      <h3 className="w-full pb-3 pt-1 font-bold text-2xl border-b-2 border-green md:text-4xl">
+    <div
+      className="flex w-full flex-col items-start justify-start gap-2 rounded-[25px] bg-white p-5 text-black shadow-md 
+      md:max-w-[540px] md:gap-4 md:rounded-[30px] 
+      md:p-6 lg:max-w-[660px] 
+      xl:h-[246px] xl:w-[560px] xl:max-w-none xl:p-7
+    "
+    >
+      <h3 className="w-full border-b-2 border-green pb-3 pt-1 text-2xl font-bold md:text-3xl xl:text-4xl">
         {title}
       </h3>
-      <p className="text-sm font-medium md:text-xl">{paragraph}</p>
+      <p className="text-sm font-medium md:text-base xl:text-lg">{paragraph}</p>
     </div>
   );
 }

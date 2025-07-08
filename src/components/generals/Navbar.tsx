@@ -17,7 +17,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
   return (
     <nav
       className={clsx(
-        "flex h-14 items-center justify-between px-4",
+        "w-full flex h-12 items-center justify-between px-4 ",
         variant === "landing" && "bg-dark",
         (variant === "login" || variant === "register") && "bg-green",
         variant === "dashboard" && "bg-dark text-white",
@@ -27,8 +27,8 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
         <Image
           src={logoSrc}
           alt="Logo Digital Money"
-          width={40}
-          height={40}
+          width={60}
+          height={60}
           priority
         />
       </div>
@@ -38,7 +38,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
         <div className="flex items-center space-x-2">
           <Link
             href="/login"
-            className="rounded border border-green px-3 py-1 text-sm text-green transition hover:bg-green hover:text-black"
+            className="rounded border border-green px-3 py-1 text-sm font-bold text-green transition hover:bg-green hover:text-black"
           >
             Ingresar
           </Link>
@@ -52,8 +52,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
       )}
 
       {/* Dashboard: saludo + avatar */}
-      {variant === 'dashboard' && <UserGreeting />}
-
+      {variant === "dashboard" && <UserGreeting />}
     </nav>
   );
 }

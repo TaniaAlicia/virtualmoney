@@ -5,18 +5,18 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        "bg-desktop": "url('/images/MaskGroup.png')",
-        "bg-mobile": "url('/images/MaskGroup.png')",
-        "bg-tablet": "url('/images/MaskGroup.png')",
+        "bg-desktop": "url('/images/bgDesKtop.png')",
+        "bg-tablet": "url('/images/bgTablet.png')",
+        "bg-mobile": "url('/images/bgMobile.png')",
       },
       colors: {
-        green: "#C1FD35",   // Verde lima
-        dark: "#201F22",    // Fondo o texto oscuro principal
-        dark2: "#3A393E",   // Secundario oscuro
-        light: "#FFFFFF",   // Blanco
+        green: "#C1FD35", // Verde lima
+        dark: "#201F22", // Fondo o texto oscuro principal
+        dark2: "#3A393E", // Secundario oscuro
+        light: "#FFFFFF", // Blanco
         grayish: "#D9D9D9", // Gris claro
-        gray2: '#D9D9D9', // Gris claro 2
-        error: "#EE3838"   // Rojo error
+        gray2: "#D9D9D9", // Gris claro 2
+        error: "#EE3838", // Rojo error
         /*"dark-1": "#201F22",
         "dark-2": '#3A393E',
         "green-1": '#C1FD35',
@@ -37,7 +37,6 @@ const config: Config = {
         xl: "1280px",
         "2xl": "1536px",
       },
-            
     },
   },
   plugins: [require("@tailwindcss/forms")],

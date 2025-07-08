@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/images/Logo01Dark.png',
   },
-  //manifest: '/favicon/site.webmanifest',
+ 
   openGraph: {
     url: 'https://digitalmoneyhouse.com',
     title: 'Digital Money House',
@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="w-full min-h-screen flex flex-col justify-between bg-dark text-white">
+      <body className="w-full min-h-screen flex flex-col justify-between bg-dark text-white overflow-x-hidden">
         {children}
         <Footer />
       </body>
