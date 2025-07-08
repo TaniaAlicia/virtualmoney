@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import BaseLayout from "@/components/generals/BaseLayout";
 import { CheckCircle } from "lucide-react"; // o tu ícono personalizado
@@ -12,14 +12,14 @@ export default function RegisterSuccessPage() {
 
         <CheckCircle className="mb-4 h-16 w-16 text-green" />
 
-        <p className="mb-6 text-sm text-white max-w-md">
-          Hemos enviado un correo de confirmación para validar tu email,
-          por favor revísalo para iniciar sesión.
+        <p className="mb-6 max-w-md text-center text-sm text-white">
+          Hemos enviado un correo de confirmación para validar tu email, por
+          favor revísalo para iniciar sesión.
         </p>
 
         <Link
           href="/login"
-          className="h-[64px] w-[200px] rounded-[10px] bg-green font-bold text-black transition hover:bg-lime-300 flex items-center justify-center"
+          className="w-72 w-full rounded-[10px] bg-green p-3 text-center text-base font-bold text-black focus:outline-2 focus:outline-black md:w-[360px] md:p-5"
         >
           Continuar
         </Link>

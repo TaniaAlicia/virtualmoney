@@ -9,7 +9,7 @@ export default function EmailInput() {
   const error = errors.email?.message as string | undefined;
 
   return (
-    <div className="w-full max-w-[360px]">
+    <div className="w-full flex flex-col">
       <input
         type="email"
         placeholder="Correo electrónico"

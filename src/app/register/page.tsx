@@ -1,48 +1,48 @@
-'use client'
+"use client";
 
-import { useForm, FormProvider } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import BaseLayout from "@/components/generals/BaseLayout"
-import { RegisterFormData } from "@/types/RegisterFormData"
-import { registerUser } from "@/services/userService"
-import { useState } from "react"
-import EmailInput from "@/components/authentication/EmailInput"
-import PasswordInput from "@/components/authentication/PasswordInput"
+import { useForm, FormProvider } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import BaseLayout from "@/components/generals/BaseLayout";
+import { RegisterFormData } from "@/types/RegisterFormData";
+import { registerUser } from "@/services/userService";
+import { useState } from "react";
+import EmailInput from "@/components/authentication/EmailInput";
+import PasswordInput from "@/components/authentication/PasswordInput";
 
 export default function RegisterPage() {
-  const methods = useForm<RegisterFormData>()
+  const methods = useForm<RegisterFormData>();
   const {
     handleSubmit,
     watch,
     formState: { errors },
-  } = methods
+  } = methods;
 
-  const router = useRouter()
-  const [errorMsg, setErrorMsg] = useState("")
+  const router = useRouter();
+  const [errorMsg, setErrorMsg] = useState("");
 
   const onSubmit = async (data: RegisterFormData) => {
     if (data.password !== data.confirmPassword) {
-      setErrorMsg("Las contraseñas no coinciden")
-      return
+      setErrorMsg("Las contraseñas no coinciden");
+      return;
     }
 
     try {
       const payload = {
         ...data,
         dni: Number(data.dni),
-      }
+      };
 
-      await registerUser(payload)
-      setErrorMsg("")
-      router.push("/register/success")
+      await registerUser(payload);
+      setErrorMsg("");
+      router.push("/register/success");
     } catch (error: any) {
       if (error.response?.status === 400) {
-        setErrorMsg("El correo ya está registrado")
+        setErrorMsg("El correo ya está registrado");
       } else {
-        setErrorMsg("Ocurrió un error. Intentalo más tarde.")
+        setErrorMsg("Ocurrió un error. Intentalo más tarde.");
       }
     }
-  }
+  };
 
   return (
     <BaseLayout variant="register">
@@ -52,7 +52,8 @@ export default function RegisterPage() {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="grid w-full max-w-[720px] grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2"
+            /* className="grid w-full max-w-[720px] grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2" */
+            className="grid w-full max-w-[720px] grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2 xl:grid-cols-2"
           >
             {/* Nombre */}
             <div className="flex flex-col">
@@ -69,7 +70,9 @@ export default function RegisterPage() {
                 className={`h-[64px] rounded-[10px] p-4 text-black ${errors.firstName ? "border border-red-500" : ""}`}
               />
               {errors.firstName && (
-                <p className="mt-1 text-sm italic text-error">{errors.firstName.message}</p>
+                <p className="mt-1 text-sm italic text-error">
+                  {errors.firstName.message}
+                </p>
               )}
             </div>
 
@@ -88,7 +91,9 @@ export default function RegisterPage() {
                 className={`h-[64px] rounded-[10px] p-4 text-black ${errors.lastName ? "border border-red-500" : ""}`}
               />
               {errors.lastName && (
-                <p className="mt-1 text-sm italic text-error">{errors.lastName.message}</p>
+                <p className="mt-1 text-sm italic text-error">
+                  {errors.lastName.message}
+                </p>
               )}
             </div>
 
@@ -106,21 +111,27 @@ export default function RegisterPage() {
                 className={`h-[64px] rounded-[10px] p-4 text-black ${errors.dni ? "border border-red-500" : ""}`}
               />
               {errors.dni && (
-                <p className="text-sm italic text-error">{errors.dni.message}</p>
+                <p className="text-sm italic text-error">
+                  {errors.dni.message}
+                </p>
               )}
             </div>
 
             {/* Email */}
-            <EmailInput />
+            <div className="flex flex-col">
+              <EmailInput />
+            </div>
 
             {/* Nota sobre contraseña */}
-            <p className="col-span-2 text-sm text-white">
-              Usa entre 6 y 20 caracteres (debe contener al menos 1 carácter especial, una mayúscula y un número)
+            <p className="sm:col-span-1 md:col-span-2 xl:col-span-2 text-sm text-white">
+              Usa entre 6 y 20 caracteres (debe contener al menos 1 carácter
+              especial, una mayúscula y un número)
             </p>
 
             {/* Contraseña */}
-            <PasswordInput fieldName="password" />
-
+            <div className="flex flex-col">
+              <PasswordInput fieldName="password" />
+            </div>
             {/* Confirmar contraseña */}
             <PasswordInput fieldName="confirmPassword" />
 
@@ -138,14 +149,16 @@ export default function RegisterPage() {
                 className={`h-[64px] rounded-[10px] p-4 text-black ${errors.phone ? "border border-red-500" : ""}`}
               />
               {errors.phone && (
-                <p className="text-sm italic text-error">{errors.phone.message}</p>
+                <p className="text-sm italic text-error">
+                  {errors.phone.message}
+                </p>
               )}
             </div>
 
             {/* Botón */}
             <button
               type="submit"
-              className="h-[64px] w-full rounded-[10px] bg-green font-bold text-black transition hover:bg-lime-300 sm:col-start-2"
+              className="h-[64px] w-full rounded-[10px] bg-green font-bold text-black transition hover:bg-lime-300 md:col-span-2"
             >
               Crear cuenta
             </button>
@@ -163,5 +176,5 @@ export default function RegisterPage() {
         )}
       </main>
     </BaseLayout>
-  )
+  );
 }
