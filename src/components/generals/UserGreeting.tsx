@@ -3,7 +3,7 @@
 import { useUserData } from "@/hooks/useUserData";
 
 export default function UserGreeting() {
-  const { userData, loading, error } = useUserData();
+  const { userData } = useUserData();
 
   const initials = `${userData?.firstName?.[0] || ""}${userData?.lastName?.[0] || ""}`;
 

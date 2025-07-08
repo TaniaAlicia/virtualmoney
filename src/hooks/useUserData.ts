@@ -51,7 +51,7 @@ export const useUserData = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [token]);
   console.log("Token desde localStorage:", token);
   return { userData, loading, error };
 };

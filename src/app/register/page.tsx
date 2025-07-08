@@ -13,7 +13,6 @@ export default function RegisterPage() {
   const methods = useForm<RegisterFormData>();
   const {
     handleSubmit,
-    watch,
     formState: { errors },
   } = methods;
 
@@ -35,8 +34,15 @@ export default function RegisterPage() {
       await registerUser(payload);
       setErrorMsg("");
       router.push("/register/success");
-    } catch (error: any) {
-      if (error.response?.status === 400) {
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as { response?: { status?: number } }).response ===
+          "object" &&
+        (error as { response?: { status?: number } }).response?.status === 400
+      ) {
         setErrorMsg("El correo ya está registrado");
       } else {
         setErrorMsg("Ocurrió un error. Intentalo más tarde.");
@@ -123,7 +129,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Nota sobre contraseña */}
-            <p className="sm:col-span-1 md:col-span-2 xl:col-span-2 text-sm text-white">
+            <p className="text-sm text-white sm:col-span-1 md:col-span-2 xl:col-span-2">
               Usa entre 6 y 20 caracteres (debe contener al menos 1 carácter
               especial, una mayúscula y un número)
             </p>
