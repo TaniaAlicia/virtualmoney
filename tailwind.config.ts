@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        "bg-desktop": "url('/images/bgDesKtop.png')",
+        "bg-desktop": "url('/images/bgDesktop.png')",
         "bg-tablet": "url('/images/bgTablet.png')",
         "bg-mobile": "url('/images/bgMobile.png')",
       },
