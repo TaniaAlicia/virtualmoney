@@ -2,7 +2,7 @@ import LandingCard from "@/components/landing/LandingCard";
 
 import BaseLayout from "@/components/generals/BaseLayout";
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
     <BaseLayout variant="landing">
       <main
@@ -12,7 +12,7 @@ export default function HomePage() {
         md:min-h-[700px] 
         md:bg-bg-tablet md:bg-[center_top_-80px] 
         xl:min-h-[720px] 
-        xl:bg-bg-desktop xl:bg-[center_top_-130px]"
+        xl:bg-bgDesktop xl:bg-[center_top_-130px]"
       >
         {/* Texto principal */}
         <section className="z-20 flex flex-col gap-5 pt-8 w-3/5 py-6 pl-1 pr-8 max-w-[450px] md:w-3/5 md:py-10 md:pr-2 md:pl-3 md:max-w-[1050px] xl:max-w-[550px] xl:pl-14 xl:pt-14 xl:pr-8">
