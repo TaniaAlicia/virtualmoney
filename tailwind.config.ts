@@ -2,6 +2,10 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+   safelist: [
+    'bg-bg-desktop',
+    'xl:bg-bg-desktop',
+  ],
   theme: {
     extend: {
       backgroundImage: {
