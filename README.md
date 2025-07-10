@@ -1,6 +1,6 @@
 # 💰 Digital Money House
 
-![Portada del proyecto](./e3ab1863-072b-42f5-9a48-b7372d722c5f.png)
+![Portada del proyecto](./public/images/portada-dmh.png)
 
 **Nuestra billetera digital**  
 **Proyecto Integrador – Especialidad FrontEnd**  
