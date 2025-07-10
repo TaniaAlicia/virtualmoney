@@ -1,7 +1,7 @@
 "use client";
 
 import BaseLayout from "@/components/generals/BaseLayout";
-import { CheckCircle } from "lucide-react"; // o tu ícono personalizado
+import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function RegisterSuccessPage() {

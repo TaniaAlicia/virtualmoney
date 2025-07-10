@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💰 Digital Money House
 
-## Getting Started
+![Portada del proyecto](./e3ab1863-072b-42f5-9a48-b7372d722c5f.png)
 
-First, run the development server:
+**Nuestra billetera digital**  
+**Proyecto Integrador – Especialidad FrontEnd**  
+**Tania Alicia Rodríguez García**
+
+---
+
+## 📖 Descripción
+
+**Digital Money House** es una billetera virtual que permite a los usuarios realizar operaciones financieras cotidianas como transferencias, pagos y carga de saldo. Fue desarrollada como parte del proyecto final de la carrera **Front-End Developer** de Digital House, con foco en usabilidad, responsive design y buenas prácticas de desarrollo.
+
+---
+
+## 🚀 Tecnologías utilizadas
+
+- **Next.js** – Framework React para desarrollo de aplicaciones modernas.
+- **TypeScript** – Lenguaje con tipado estático para mayor robustez.
+- **Tailwind CSS** – Estilado utility-first, rápido y responsive.
+- **React Hook Form + Yup** – Manejo de formularios con validación declarativa.
+- **Zustand** – Gestión de estado global de forma simple.
+- **React Query** – Fetching, caching y sincronización de datos.
+- **Sonner** – Notificaciones elegantes para una mejor UX.
+
+---
+
+## 🗂️ Estructura del proyecto
+
+```
+digital-money-house/
+├── public/
+│   └── images/               # Recursos estáticos (logos, imágenes)
+├── src/
+│   ├── app/                  # Rutas y páginas (Next.js App Router)
+│   ├── components/           # Componentes reutilizables
+│   ├── context/              # Estados globales con Zustand / Context
+│   ├── data/                 # Datos mockeados, opciones y constantes
+│   ├── hooks/                # Hooks personalizados
+│   ├── schemes/              # Validaciones con Yup
+│   ├── services/             # Conexiones a la API
+│   ├── types/                # Tipos personalizados (TypeScript)
+│   └── utils/                # Funciones utilitarias (formateo, etc.)
+├── .env.local                # Variables de entorno
+├── package.json              # Dependencias y scripts del proyecto
+├── tailwind.config.js        # Configuración de Tailwind
+├── tsconfig.json             # Configuración de TypeScript
+└── README.md                 # Documentación del proyecto
+```
+
+---
+
+## ✅ Funcionalidades principales
+
+- Registro e inicio de sesión con autenticación por token.
+- Gestión de tarjetas y perfil del usuario.
+- Carga de dinero y pagos de servicios.
+- Visualización de la actividad financiera con filtros.
+- Copia rápida de alias y CVU.
+- Diseño responsive, accesible y moderno.
+
+---
+
+## ⚙️ Instalación y ejecución
+
+### 1️⃣ Clona el repositorio
+
+```bash
+git clone https://github.com/TaniaAlicia/virtualmoney
+
+```
+
+### 2️⃣ Instala las dependencias
+
+```bash
+npm install
+```
+
+### 3️⃣ Configura las variables de entorno
+
+Crea un archivo `.env.local` con el siguiente contenido:
+
+```env
+NEXT_PUBLIC_API_URL="https://digitalmoney.digitalhouse.com/api"
+
+```
+
+### 4️⃣ Ejecuta el servidor de desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Luego abre tu navegador en [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧑‍💻 Autora
 
-## Learn More
+Este proyecto fue realizado por **Tania Alicia Rodríguez García**, como parte del desafío integrador de la especialidad **FrontEnd Developer** en Digital House.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

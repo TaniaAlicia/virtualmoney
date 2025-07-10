@@ -3,10 +3,10 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   safelist: [
-  'bg-bg-desktop',
+  'bg-bgDesktop',
   'bg-bg-tablet',
   'bg-bg-mobile',
-  'xl:bg-bg-desktop',
+  'xl:bg-bgDesktop',
   'lg:bg-bg-tablet',
   'md:bg-bg-mobile',
   ],

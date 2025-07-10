@@ -58,7 +58,6 @@ export default function RegisterPage() {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            /* className="grid w-full max-w-[720px] grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2" */
             className="grid w-full max-w-[720px] grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2 xl:grid-cols-2"
           >
             {/* Nombre */}

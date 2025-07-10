@@ -1,8 +1,10 @@
 import LandingCard from "@/components/landing/LandingCard";
-
 import BaseLayout from "@/components/generals/BaseLayout";
+import { landingContent } from "@/data/landing";
 
 export default function LandingPage() {
+  const { hero, cards } = landingContent;
+
   return (
     <BaseLayout variant="landing">
       <main
@@ -17,30 +19,24 @@ export default function LandingPage() {
         {/* Texto principal */}
         <section className="z-20 flex flex-col gap-5 pt-8 w-3/5 py-6 pl-1 pr-8 max-w-[450px] md:w-3/5 md:py-10 md:pr-2 md:pl-3 md:max-w-[1050px] xl:max-w-[550px] xl:pl-14 xl:pt-14 xl:pr-8">
           <h1 className="text-[29px] leading-[30px] text-white md:pr-8 md:text-5xl md:font-normal md:leading-[50px] xl:font-normal">
-            De ahora en adelante, hacés más con tu dinero
+            {hero.title}
           </h1>
           <div className="w-1/6 border-t-4 border-green md:hidden md:w-1/4" />
           <h3 className="block text-xl text-green md:inline md:text-[34px] xl:text-4xl">
-            Tu nueva{" "}
-            <span className="block font-bold md:inline">billetera virtual</span>
+            {hero.subtitle.beforeBold}{" "}
+            <span className="block font-bold md:inline">{hero.subtitle.bold}</span>
           </h3>
         </section>
 
         {/* Sección de tarjetas */}
-
         <section
           className="z-20 mt-[170px] md:mt-[30px] flex flex-col items-center gap-6 md:px-8 
           xl:flex-row xl:items-end xl:justify-center xl:gap-8 xl:px-36
         "
         >
-          <LandingCard
-            title="Transferí dinero"
-            paragraph="Desde Digital Money House vas a poder transferir dinero a otras cuentas, así como también recibir transferencias y nuclear tu capital en nuestra billetera virtual."
-          />
-          <LandingCard
-            title="Pago de servicios"
-            paragraph="Pagá mensualmente los servicios en 3 simples clicks. Fácil, rápido y conveniente. Olvidate de las facturas en papel."
-          />
+          {cards.map((card, index) => (
+            <LandingCard key={index} title={card.title} paragraph={card.paragraph} />
+          ))}
         </section>
 
         {/* Fondo verde decorativo */}
