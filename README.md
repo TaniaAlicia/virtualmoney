@@ -16,13 +16,35 @@
 
 ## 🚀 Tecnologías utilizadas
 
-- **Next.js** – Framework React para desarrollo de aplicaciones modernas.
-- **TypeScript** – Lenguaje con tipado estático para mayor robustez.
-- **Tailwind CSS** – Estilado utility-first, rápido y responsive.
-- **React Hook Form + Yup** – Manejo de formularios con validación declarativa.
-- **Zustand** – Gestión de estado global de forma simple.
-- **React Query** – Fetching, caching y sincronización de datos.
-- **Sonner** – Notificaciones elegantes para una mejor UX.
+### 🧱 Frameworks y Lenguajes
+- **Next.js** – Framework de React para aplicaciones modernas.
+- **React** – Librería base para construir interfaces.
+- **TypeScript** – Tipado estático para robustez y escalabilidad.
+
+### 🎨 UI y Estilos
+- **Tailwind CSS** – Estilos utility-first para desarrollo ágil y responsive.
+- **@tailwindcss/forms** – Plugin para estilos accesibles en formularios.
+- **Lucide React** – Íconos modernos y personalizables.
+
+### 🧾 Manejo de Formularios y Validación
+- **React Hook Form** – Librería para manejar formularios de manera performante.
+- **Yup** – Validaciones declarativas y robustas integradas con RHF.
+
+### 🔗 Fetching y Datos
+- **Axios** – Cliente HTTP para conectarse con APIs REST.
+      - **React Query** – Sincronización, caching y estado de datos remoto.
+
+### 🧠 Estado Global
+     - **Zustand** – Store global liviano y flexible para manejar estados.
+
+### 🔐 Autenticación y Seguridad
+- **js-cookie** – Manejo de tokens de sesión en cookies seguras.
+- **jwt-decode** – Decodificación de tokens JWT en el cliente.
+
+### 🧹 Code Style y Herramientas de Desarrollo
+- **ESLint** – Linter para mantener calidad de código.
+- **Prettier** – Formateador automático para estilos consistentes.
+
 
 ---
 

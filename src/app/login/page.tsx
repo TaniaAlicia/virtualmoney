@@ -2,8 +2,10 @@
 
 import BaseLayout from '@/components/generals/BaseLayout';
 import Link from 'next/link';
-import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useForm, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginEmailSchema } from '@/schemas/loginEmailSchema';
 import EmailInput from '@/components/authentication/EmailInput';
 
 type FormValues = {
@@ -11,7 +13,10 @@ type FormValues = {
 };
 
 export default function LoginPage() {
-  const methods = useForm<FormValues>();
+  const methods = useForm<FormValues>({
+    resolver: yupResolver(loginEmailSchema),
+  });
+
   const router = useRouter();
 
   const onSubmit = (data: FormValues) => {

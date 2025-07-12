@@ -1,6 +1,8 @@
 "use client";
 
 import { useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerSchema } from "@/schemas/registerSchema";
 import { useRouter } from "next/navigation";
 import BaseLayout from "@/components/generals/BaseLayout";
 import { RegisterFormData } from "@/types/RegisterFormData";
@@ -10,21 +12,20 @@ import EmailInput from "@/components/authentication/EmailInput";
 import PasswordInput from "@/components/authentication/PasswordInput";
 
 export default function RegisterPage() {
-  const methods = useForm<RegisterFormData>();
+  const methods = useForm<RegisterFormData>({
+    resolver: yupResolver(registerSchema),
+  });
+
   const {
     handleSubmit,
     formState: { errors },
+    register,
   } = methods;
 
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
 
   const onSubmit = async (data: RegisterFormData) => {
-    if (data.password !== data.confirmPassword) {
-      setErrorMsg("Las contraseñas no coinciden");
-      return;
-    }
-
     try {
       const payload = {
         ...data,
@@ -64,15 +65,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <input
                 placeholder="Nombre*"
-                {...methods.register("firstName", {
-                  required: "El nombre es obligatorio",
-                  minLength: { value: 2, message: "Mínimo 2 caracteres" },
-                  pattern: {
-                    value: /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s'-]+$/,
-                    message: "Solo letras y espacios",
-                  },
-                })}
-                className={`h-[64px] rounded-[10px] p-4 text-black ${errors.firstName ? "border border-red-500" : ""}`}
+                {...register("firstName")}
+                className={`h-[64px] rounded-[10px] p-4 text-black ${
+                  errors.firstName ? "border border-red-500" : ""
+                }`}
               />
               {errors.firstName && (
                 <p className="mt-1 text-sm italic text-error">
@@ -85,15 +81,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <input
                 placeholder="Apellido*"
-                {...methods.register("lastName", {
-                  required: "El apellido es obligatorio",
-                  minLength: { value: 2, message: "Mínimo 2 caracteres" },
-                  pattern: {
-                    value: /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s'-]+$/,
-                    message: "Solo letras y espacios",
-                  },
-                })}
-                className={`h-[64px] rounded-[10px] p-4 text-black ${errors.lastName ? "border border-red-500" : ""}`}
+                {...register("lastName")}
+                className={`h-[64px] rounded-[10px] p-4 text-black ${
+                  errors.lastName ? "border border-red-500" : ""
+                }`}
               />
               {errors.lastName && (
                 <p className="mt-1 text-sm italic text-error">
@@ -106,14 +97,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <input
                 placeholder="DNI*"
-                {...methods.register("dni", {
-                  required: "El DNI es obligatorio",
-                  pattern: {
-                    value: /^\d{6,15}$/,
-                    message: "Debe contener solo números (6-15 dígitos)",
-                  },
-                })}
-                className={`h-[64px] rounded-[10px] p-4 text-black ${errors.dni ? "border border-red-500" : ""}`}
+                {...register("dni")}
+                className={`h-[64px] rounded-[10px] p-4 text-black ${
+                  errors.dni ? "border border-red-500" : ""
+                }`}
               />
               {errors.dni && (
                 <p className="text-sm italic text-error">
@@ -137,6 +124,7 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <PasswordInput fieldName="password" />
             </div>
+
             {/* Confirmar contraseña */}
             <PasswordInput fieldName="confirmPassword" />
 
@@ -144,14 +132,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <input
                 placeholder="Teléfono*"
-                {...methods.register("phone", {
-                  required: "El teléfono es obligatorio",
-                  pattern: {
-                    value: /^\d{6,15}$/,
-                    message: "Debe contener solo números (6-15 dígitos)",
-                  },
-                })}
-                className={`h-[64px] rounded-[10px] p-4 text-black ${errors.phone ? "border border-red-500" : ""}`}
+                {...register("phone")}
+                className={`h-[64px] rounded-[10px] p-4 text-black ${
+                  errors.phone ? "border border-red-500" : ""
+                }`}
               />
               {errors.phone && (
                 <p className="text-sm italic text-error">

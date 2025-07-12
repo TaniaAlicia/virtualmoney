@@ -1,13 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { logout } from '@/services/authService' // ⬅️ Importás desde el servicio
 
 export default function SidebarDashboard() {
   const router = useRouter()
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    router.push('/')
+    logout()              
+    router.push('/')      
   }
 
   const linkClasses = 'block py-2 font-semibold text-sm hover:underline'

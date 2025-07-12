@@ -16,13 +16,7 @@ export default function EmailInput() {
         className={`h-[64px] w-full rounded-[10px] p-4 text-black border ${
           error ? "border-red-500" : "border-transparent"
         }`}
-        {...register("email", {
-          required: "El correo es obligatorio",
-          pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: "Correo inválido",
-          },
-        })}
+        {...register("email")}
       />
       {error && (
         <p className="mt-2 text-sm italic text-error">{error}</p>

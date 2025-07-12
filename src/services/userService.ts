@@ -16,3 +16,13 @@ export const getUserById = async (userId: number, token: string) => {
   });
   return response.data;
 };
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+export const loginUser = async (data: LoginData) => {
+  const response = await axios.post(`${API_URL}/login`, data);
+  return response.data;
+};
