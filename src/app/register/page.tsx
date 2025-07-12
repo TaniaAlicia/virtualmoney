@@ -6,7 +6,7 @@ import { registerSchema } from "@/schemas/registerSchema";
 import { useRouter } from "next/navigation";
 import BaseLayout from "@/components/generals/BaseLayout";
 import { RegisterFormData } from "@/types/RegisterFormData";
-import { registerUser } from "@/services/userService";
+import { registerUser } from "@/services/authService";
 import { useState } from "react";
 import EmailInput from "@/components/authentication/EmailInput";
 import PasswordInput from "@/components/authentication/PasswordInput";
@@ -36,19 +36,30 @@ export default function RegisterPage() {
       setErrorMsg("");
       router.push("/register/success");
     } catch (error: unknown) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof (error as { response?: { status?: number } }).response ===
-          "object" &&
-        (error as { response?: { status?: number } }).response?.status === 400
-      ) {
-        setErrorMsg("El correo ya está registrado");
-      } else {
-        setErrorMsg("Ocurrió un error. Intentalo más tarde.");
-      }
-    }
+  const err = error as {
+    response?: {
+      data?: { error?: string; errors?: Record<string, string> };
+      status?: number;
+    };
+  };
+
+  const status = err.response?.status;
+  const backendError = err.response?.data?.error;
+  const fieldErrors = err.response?.data?.errors;
+
+  if (status === 409 && backendError === "Email already registered") {
+    setErrorMsg("El correo ya está registrado");
+  } else if (status === 401) {
+    setErrorMsg("No autorizado. Verificá tus datos.");
+  } else if (fieldErrors) {
+    const firstFieldError = Object.values(fieldErrors)[0];
+    setErrorMsg(typeof firstFieldError === "string" ? firstFieldError : "Error en los datos.");
+  } else if (backendError) {
+    setErrorMsg(backendError); // muestra cualquier otro mensaje del backend
+  } else {
+    setErrorMsg("Ocurrió un error. Intentalo más tarde.");
+  }
+}
   };
 
   return (

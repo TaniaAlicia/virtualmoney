@@ -1,13 +1,12 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { RegisterDataUser } from '@/types/user';
 
 /**
- * Login con email y contraseña.
+ * Login con email y contraseña (usando endpoint enmascarado).
  */
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/login`, { email, password });
+   const response = await axios.post("/api/login", { email, password });
   return response.data; // { token: "..." }
 };
 
@@ -16,4 +15,10 @@ export const login = async (email: string, password: string) => {
  */
 export const logout = () => {
   Cookies.remove("token", { path: "/" });
+};
+
+
+export const registerUser = async (data: RegisterDataUser) => {
+  const response = await axios.post('/api/register', data); // <--- enmascarado
+  return response.data;
 };
