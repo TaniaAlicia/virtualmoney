@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
     }
  
     return NextResponse.json(data);
-  } catch (err) {
+  } catch (error) {
+    console.error("Error en login:", error);
     return NextResponse.json({ error: "Error en el servidor" }, { status: 500 });
   }
 }

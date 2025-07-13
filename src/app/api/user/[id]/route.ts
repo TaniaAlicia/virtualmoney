@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(req: NextRequest, context: any) {
+  const { id } = context.params;
 
   const res = await fetch(`${API_URL}/users/${id}`, {
     headers: {

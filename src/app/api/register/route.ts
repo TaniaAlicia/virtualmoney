@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
+    console.error("Error en register:", error);
     return NextResponse.json({ error: 'Error del servidor' }, { status: 500 });
   }
 }
