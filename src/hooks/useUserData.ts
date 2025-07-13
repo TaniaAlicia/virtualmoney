@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { RegisterDataUser } from "@/types/user";
 import { getUserById } from "@/services/userService";
 import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 type JwtPayload = {
   username: number; // userId
@@ -13,7 +14,8 @@ export const useUserData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  //const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = Cookies.get("token");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -52,6 +54,6 @@ export const useUserData = () => {
 
     fetchUser();
   }, [token]);
-  console.log("Token desde localStorage:", token);
+  
   return { userData, loading, error };
 };
