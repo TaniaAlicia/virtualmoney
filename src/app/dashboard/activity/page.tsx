@@ -2,40 +2,31 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import Cookies from "js-cookie";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import MobileCrumb from "@/components/generals/MobileCrumb";
 import ActivitySection from "@/components/dashboard/ActivitySection";
-// importa tu fetch real (ej: getAllTransactions(accountId))
-/* import { useTransactions } from "@/hooks/useTransactions"; */
 
-export default function ActivityPage() {
+
+
+export default function Activity() {
+const { loading, transactions } = useDashboardData();
+
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // 1) tomar `q` del querystring y reflejarlo en el input
   const initialQ = searchParams.get("q") ?? "";
   const [search, setSearch] = useState(initialQ);
-
   useEffect(() => setSearch(initialQ), [initialQ]);
 
-  // 2) navegar al presionar Enter
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const q = (e.currentTarget.value || "").trim();
-      router.push(
-        q
-          ? `/dashboard/activity?q=${encodeURIComponent(q)}`
-          : `/dashboard/activity`,
-      );
+      router.push(q ? `/dashboard/activity?q=${encodeURIComponent(q)}` : `/dashboard/activity`);
     }
   };
 
-  // ---------------------------
-  // Reemplazar estas dos líneas por la data real
-  const loading = false;
-  const transactions: any[] = [];
-  // ---------------------------
 
-  // 3) filtrar de forma local para que el listado reaccione al texto
+  // filtrar de forma local para que el listado reaccione al texto
   const filtered = useMemo(() => {
     if (!search.trim()) return transactions;
     const q = search.toLowerCase();
@@ -50,30 +41,10 @@ export default function ActivityPage() {
   }, [transactions, search]);
 
   return (
-    <main className="max-w-8xl mx-auto flex-1 space-y-6 px-6 pb-6 pt-0 text-dark bg-gray1">
+    <main className="max-w-8xl bg-gray1 mx-auto flex-1 space-y-6 px-6 pb-6 pt-0 text-dark">
+       <MobileCrumb/>
 
-      {/* Breadcrumb móvil */}
-      <div className="flex items-center gap-2 md:hidden">
-        {/* Flecha → con línea (NEGRA) */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8 flex-none text-dark"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 12h14m0 0l-4-4m4 4l-4 4"
-          />
-        </svg>
-
-        <p className="text-dark1 text-lg font-medium underline underline-offset-2">
-          Actividad
-        </p>
-      </div>
+        
 
       {/* Buscador + botón Filtrar (el botón va SOLO en esta página) */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px]">
