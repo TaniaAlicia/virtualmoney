@@ -5,6 +5,7 @@ const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
+
 // Interceptor de respuestas
 instance.interceptors.response.use(
   response => response,
@@ -21,3 +22,6 @@ instance.interceptors.response.use(
 );
 
 export default instance;
+
+
+
