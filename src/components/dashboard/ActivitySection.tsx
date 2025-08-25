@@ -12,7 +12,7 @@ type Props = {
   limit?: number;
   /** si es la página completa de actividad, oculta el link “Ver toda tu actividad” */
   showActivityPage?: boolean;
-   hideSearch?: boolean;
+  hideSearch?: boolean;
 };
 
 export default function ActivitySection({
@@ -60,37 +60,37 @@ export default function ActivitySection({
 
   return (
     <>
-    {/* Buscar en tu actividad (se oculta si hideSearch === true) */}
-    {!hideSearch && (
-      <div className="rounded-xl bg-light px-4 py-3 shadow">
-        <div className="flex items-center gap-2">
-          {/* Lupa */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-dark/40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
-            />
-          </svg>
+      {/* Buscar en tu actividad (se oculta si hideSearch === true) */}
+      {!hideSearch && (
+        <div className="rounded-xl bg-light px-4 py-3 shadow">
+          <div className="flex items-center gap-2">
+            {/* Lupa */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-dark/40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
+              />
+            </svg>
 
-          <input
-            type="text"
-            placeholder="Buscar en tu actividad"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={handleSearchKeyDown} 
-            className="w-full border-none bg-transparent text-dark2 placeholder-dark2/70 outline-none"
-          />
+            <input
+              type="text"
+              placeholder="Buscar en tu actividad"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className="w-full border-none bg-transparent text-dark2 placeholder-dark2/70 outline-none"
+            />
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
       {/* Tu actividad */}
       <div className="rounded-xl bg-light p-5 shadow">
@@ -137,9 +137,9 @@ export default function ActivitySection({
           <div className="mt-4 flex items-center justify-between">
             <Link
               href="/dashboard/activity"
-              className="text-sm font-semibold text-green underline decoration-green/60 underline-offset-2 hover:decoration-green"
+              className="text-sm font-semibold text-dark no-underline decoration-green/60 underline-offset-2 hover:decoration-green"
             >
-              Ver toda tu actividad →
+              Ver toda tu actividad
             </Link>
 
             <Link
@@ -148,7 +148,7 @@ export default function ActivitySection({
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 text-dark/60"
+                className="h-8 w-8 flex-none text-dark"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -157,7 +157,7 @@ export default function ActivitySection({
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
+                  d="M4 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
             </Link>

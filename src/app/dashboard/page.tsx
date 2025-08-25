@@ -1,7 +1,6 @@
 "use client";
 
 import useAuthRedirect from "@/hooks/useAuthRedirect";
-import BaseLayout from "@/components/generals/BaseLayout";
 import AccountBalance from "@/components/dashboard/AccountBalance";
 import DashboardActions from "@/components/dashboard/DashboardActions";
 import ActivitySection from "@/components/dashboard/ActivitySection";
@@ -69,7 +68,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <BaseLayout variant="dashboard">
+    
       <main className="max-w-8xl mx-auto flex-1 space-y-6 px-6 pb-6 pt-3 text-dark">
         {/* Breadcrumb móvil */}
         <div className="flex items-center gap-2 md:hidden">
@@ -108,6 +107,6 @@ export default function DashboardPage() {
            showActivityPage={false}  
         />
       </main>
-    </BaseLayout>
+    
   );
 }

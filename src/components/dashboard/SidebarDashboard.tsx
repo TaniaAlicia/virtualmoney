@@ -19,8 +19,12 @@ export default function SidebarDashboard() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+  const isActive = (href: string) => {
+  // Para "Inicio" (ruta base) sólo activo en coincidencia exacta
+  if (href === "/dashboard") return pathname === "/dashboard";
+  // Para el resto, exacto o con subrutas
+  return pathname === href || pathname.startsWith(href + "/");
+};
 
   const handleLogout = () => {
     logout();

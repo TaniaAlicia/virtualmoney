@@ -1,12 +1,13 @@
 "use client";
-
+import React from "react";
 import { useUserData } from "@/hooks/useUserData";
+import Link from "next/link";
 
 type Props = {
   compact?: boolean; // NUEVO
 };
 
-export default function UserGreeting({ compact = false }: Props) {
+function UserGreeting({ compact = false }: Props) {
   const { userData } = useUserData();
 
   const initials = `${userData?.firstName?.[0] || ""}${userData?.lastName?.[0] || ""}`;
@@ -20,10 +21,13 @@ export default function UserGreeting({ compact = false }: Props) {
 
       {/* Texto visible solo si NO es compacto */}
       {!compact && (
-        <span className="text-sm font-semibold">
-          Hola, {userData?.firstName} {userData?.lastName}
-        </span>
+        <Link href="/dashboard" className="no-underline">
+          <span className="text-sm font-semibold">
+            Hola, {userData?.firstName} {userData?.lastName}
+          </span>
+        </Link>
       )}
     </div>
   );
 }
+export default React.memo(UserGreeting);

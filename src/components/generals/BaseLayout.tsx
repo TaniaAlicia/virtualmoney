@@ -11,9 +11,9 @@ export default function BaseLayout({ children, variant }: Props) {
     <>
       <Navbar variant={variant} />
        {variant === "dashboard" ? (
-        <div className="flex">
+        <div className="flex min-h-screen bg-gray1">
           <SidebarDashboard />
-          <main className="flex-1 p-6 bg-gray1">{children}</main>
+          <main className="flex-1 p-6 ">{children}</main>
         </div>
       ) : (
         children
