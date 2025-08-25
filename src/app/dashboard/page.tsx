@@ -105,6 +105,7 @@ export default function DashboardPage() {
           loading={loading}
           transactions={transactions}
           //accountId={accountId ?? 0}
+           showActivityPage={false}  
         />
       </main>
     </BaseLayout>
