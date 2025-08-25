@@ -24,6 +24,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
       )}
     >
       <div className="flex items-center">
+        <Link href="/" aria-label="Ir a inicio">
         <Image
           src={logoSrc}
           alt="Logo Digital Money"
@@ -31,6 +32,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
           height={60}
           priority
         />
+        </Link>
       </div>
 
       {/*SECCIÓN PARA LANDING */}
@@ -52,7 +54,36 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
       )}
 
       {/* Dashboard: saludo + avatar */}
-      {variant === "dashboard" && <UserGreeting />}
+      {variant === "dashboard" && (
+  <>
+    {/* Desktop: saludo completo */}
+    <div className="hidden md:block">
+      <UserGreeting />
+    </div>
+
+    {/* Mobile: solo avatar + hamburguesa */}
+    <div className="md:hidden flex items-center">
+      <UserGreeting compact />
+
+      <button
+        type="button"
+        aria-label="Abrir menú"
+        className="p-2 -mr-1 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="h-8 w-8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </>
+)}
     </nav>
   );
 }

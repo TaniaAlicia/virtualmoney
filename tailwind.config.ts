@@ -22,7 +22,7 @@ const config: Config = {
         dark: "#201F22", // Fondo o texto oscuro principal
         dark2: "#3A393E", // Secundario oscuro
         light: "#FFFFFF", // Blanco
-        grayish: "#D9D9D9", // Gris claro
+        gray1: "#EEEAEA", // Gris claro
         gray2: "#D9D9D9", // Gris claro 2
         error: "#EE3838", // Rojo error
         /*"dark-1": "#201F22",

@@ -13,7 +13,7 @@ export default function BaseLayout({ children, variant }: Props) {
        {variant === "dashboard" ? (
         <div className="flex">
           <SidebarDashboard />
-          <main className="flex-1 p-6 bg-light">{children}</main>
+          <main className="flex-1 p-6 bg-gray1">{children}</main>
         </div>
       ) : (
         children
