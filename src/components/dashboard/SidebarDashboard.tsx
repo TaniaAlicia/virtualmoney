@@ -10,7 +10,7 @@ const items = [
   { href: "/dashboard", label: "Inicio" },
   { href: "/dashboard/activity", label: "Actividad" },
   { href: "/dashboard/profile", label: "Tu perfil" },
-  { href: "/dashboard/deposit", label: "Cargar dinero" },
+  { href: "/dashboard/add-money", label: "Cargar dinero" },
   { href: "/dashboard/payments", label: "Pagar Servicios" },
   { href: "/dashboard/cards", label: "Tarjetas" },
 ];
