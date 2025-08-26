@@ -3,18 +3,23 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import UserGreeting from "./UserGreeting";
+import MobileMenu from "./MobileMenu";
+import { useState } from "react";
 
 type NavbarProps = {
   variant?: "landing" | "login" | "register" | "dashboard";
 };
 
 export default function Navbar({ variant = "landing" }: NavbarProps) {
+ const [menuOpen, setMenuOpen] = useState(false);
+
   const logoSrc =
     variant === "login" || variant === "register"
       ? "/images/Logo01Dark.png"
       : "/images/Logo01.png";
 
   return (
+    <>
     <nav
       className={clsx(
         "w-full flex h-12 items-center justify-between px-4 ",
@@ -58,7 +63,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
   <>
     {/* Desktop: saludo completo */}
     <div className="hidden md:block">
-      <UserGreeting />
+      <UserGreeting compact={false} />
     </div>
 
     {/* Mobile: solo avatar + hamburguesa */}
@@ -68,6 +73,7 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
       <button
         type="button"
         aria-label="Abrir menú"
+        onClick={() => setMenuOpen(true)}  
         className="p-2 -mr-1 focus:outline-none"
       >
         <svg
@@ -85,5 +91,10 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
   </>
 )}
     </nav>
+     {/* Drawer mobile */}
+      {variant === "dashboard" && (
+        <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      )}
+      </>
   );
 }
