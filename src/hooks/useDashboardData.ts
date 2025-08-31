@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +5,20 @@ import Cookies from "js-cookie";
 import { getAccount } from "@/services/accountService";
 import { getAllTransactions } from "@/services/transactionService";
 import type { TransactionType } from "@/types/transaction";
+
+type AccountMin = { id: number; balance?: number | null };
+
+function errorMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (typeof e === "string") return e;
+  try {
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const maybe = e as any;
+    if (maybe?.message && typeof maybe.message === "string") return maybe.message;
+  } catch {}
+  return "Error cargando datos";
+}
 
 export function useDashboardData() {
   const [loading, setLoading] = useState(true);
@@ -26,17 +39,18 @@ export function useDashboardData() {
         const token = Cookies.get("token") ?? "";
         if (!token) throw new Error("No auth token");
 
-        const acc = await getAccount(); // header Authorization: token (SIN "Bearer")
+        // Si getAccount ya está tipado, cambia AccountMin por ese tipo
+        const acc = (await getAccount()) as AccountMin;
         if (!mounted) return;
-        setBalance(acc.balance ?? 0);
+        setBalance(acc?.balance ?? 0);
         setAccountId(acc.id);
 
         const tx = await getAllTransactions(acc.id, token);
         if (!mounted) return;
         setTransactions(tx);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (mounted) {
-          setError(e?.message ?? "Error cargando datos");
+          setError(errorMessage(e));
           setTransactions([]);
         }
       } finally {

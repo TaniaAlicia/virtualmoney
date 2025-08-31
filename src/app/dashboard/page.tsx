@@ -4,7 +4,7 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 import AccountBalance from "@/components/dashboard/AccountBalance";
 import DashboardActions from "@/components/dashboard/DashboardActions";
 import ActivitySection from "@/components/dashboard/ActivitySection";
-import { usePathname } from "next/navigation";
+
 
 import { useDashboardData } from "@/hooks/useDashboardData";
 
