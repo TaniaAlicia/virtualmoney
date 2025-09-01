@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { AccountType } from "@/types/Account";
+import { AccountType } from "@/types/account";
 
 export const getAccount = async (): Promise<AccountType> => {
   const token = Cookies.get("token") ?? ""; // <-- sin "Bearer"

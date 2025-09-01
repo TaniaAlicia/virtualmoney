@@ -39,7 +39,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="w-full min-h-screen flex flex-col justify-between bg-dark text-white overflow-x-hidden">
+      <body suppressHydrationWarning
+      className="w-full min-h-screen flex flex-col justify-between bg-dark text-white overflow-x-hidden">
         {children}
         <Footer />
       </body>

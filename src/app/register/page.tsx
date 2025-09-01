@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "@/schemas/registerSchema";
 import { useRouter } from "next/navigation";
 import BaseLayout from "@/components/generals/BaseLayout";
-import { RegisterFormData } from "@/types/RegisterFormData";
+import { RegisterFormData } from "@/types/registerFormData";
 import { registerUser } from "@/services/authService";
 import { useState } from "react";
 import EmailInput from "@/components/authentication/EmailInput";
