@@ -11,6 +11,7 @@ import { CardScheme } from "@/schemas/card.scheme";
 import { convertDateFormat } from "@/utils/convertDateFormat";
 import { useCards } from "@/hooks/useCards";
 import type { CardBodyType, CardFormData } from "@/types/card";
+import MobileCrumb from "@/components/generals/MobileCrumb";
 
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 const formatCardNumber = (v: string) =>
@@ -116,6 +117,8 @@ export default function AddCardPage() {
 
   return (
     <section className="flex w-full flex-col items-center gap-5 rounded-[10px] bg-white p-6 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] md:p-8 xl:px-28 xl:py-8">
+      <MobileCrumb />
+      
       {/* Tarjetita (react-credit-cards-2) */}
       <ImageCard
         number={cardValues.numberCard || ""}

@@ -3,17 +3,9 @@
 import MobileCrumb from "@/components/generals/MobileCrumb";
 import AddCardBanner from "@/components/cards/AddCardBanner";
 import UserCards from "@/components/cards/UserCards";
-import type { CardType } from "@/types/card";
 import { useCards } from "@/hooks/useCards";
 
-type Props = {
-  cardsList: CardType[];
-  onDelete?: (id: CardType["id"]) => void;
-  deletingId?: CardType["id"] | null;
-};
-
-
-export default function CardsPage({ cardsList, onDelete, deletingId }: Props) {
+export default function CardsPage() {
   const { loading, error, cards, deletingId: deletingCardId, removeCard } = useCards(); // autoLoad = true
 
   return (
@@ -32,7 +24,7 @@ export default function CardsPage({ cardsList, onDelete, deletingId }: Props) {
           <UserCards
             cardsList={cards}
             onDelete={removeCard}
-            deletingId={deletingId}
+            deletingId={deletingCardId}
           />
         )}
       </div>
