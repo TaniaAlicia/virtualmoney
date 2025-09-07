@@ -19,12 +19,14 @@ export default function CvUAliasCard({ cvu, alias }: Props) {
         <div className="w-full flex flex-col items-start">
           <span className="text-green text-xl font-bold leading-normal">CVU</span>
           <span className="text-gray1 text-base leading-[18.83px] break-all">
-            {cvu}
+            {cvu || " " }
           </span>
         </div>
+        {cvu ? (
         <div className="w-8 h-8 flex items-center justify-center">
           <CopyToClipboard text={cvu} />
         </div>
+        ) : null}
       </div>
 
       {/* Alias */}
@@ -32,7 +34,7 @@ export default function CvUAliasCard({ cvu, alias }: Props) {
         <div className="w-full flex flex-col items-start">
           <span className="text-green text-xl font-bold leading-normal">ALIAS</span>
           <span className="text-gray1 text-base leading-[18.83px] break-all">
-            {alias || "—"}
+            {alias || " "}
           </span>
         </div>
         {alias ? (

@@ -27,12 +27,11 @@ type UserData = {
   firstName: string;
   lastName: string;
   email: string;
-  dni: number; // CUIT/DNI mostrado como “CUIT” en la UI
+  dni: number;
   phone: string;
 };
 
 export default function ProfilePage() {
-  const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState<Account | null>(null);
   const [user, setUser] = useState<UserData | null>(null);
 
@@ -41,37 +40,33 @@ export default function ProfilePage() {
 
     (async () => {
       try {
-        // leemos el token para userService (getAccount lo resuelve solo)
         const token = Cookies.get("token") || "";
         if (!token) {
           console.warn("No auth token; redirigí al login si hace falta");
-          if (mounted) setLoading(false);
+
           return;
         }
 
-        // 1) Cuenta (NO pasar token: tu service la arma solo)
         const acc = await getAccount();
         if (!mounted) return;
         setAccount(acc as Account);
 
-        // 2) Obtener userId de la cuenta (user_id o userId)
-        const userId = (acc as any)?.user_id ?? (acc as any)?.userId;
+        const userId = (acc as Account)?.user_id ?? (acc as Account)?.userId;
         if (userId == null) {
           console.error("userId faltante en account:", acc);
-          if (mounted) setLoading(false);
+
           return;
         }
 
-        // 3) Traer usuario con el token
         const u = await getUserById(userId, token);
         if (!mounted) return;
 
         // Normalizo a la forma que espera el ProfileCard
         const normalized: UserData = {
-          firstName: u.firstname ?? u.nombre ?? "", // fallback por si API devuelve "nombre"
-          lastName: u.lastname ?? u.apellido ?? "", // fallback por si API devuelve "apellido"
+          firstName: u.firstname ?? u.nombre ?? "",
+          lastName: u.lastname ?? u.apellido ?? "",
           email: u.email ?? "",
-          dni: u.dni ?? u.cuit ?? "", // por si la API devuelve "cuit"
+          dni: u.dni ?? "",
           phone: u.phone ?? u.telefono ?? "",
         };
 
@@ -79,7 +74,6 @@ export default function ProfilePage() {
       } catch (e) {
         console.error(e);
       } finally {
-        if (mounted) setLoading(false);
       }
     })();
 
@@ -103,7 +97,7 @@ export default function ProfilePage() {
           },
           {
             label: "Nombre y Apellido",
-            value: `${user?.firstName} ${user?.lastName}`,
+            value: [user?.firstName, user?.lastName].filter(Boolean).join(" "),
             editHref: "/dashboard/profile/edit/name",
           },
           { label: "CUIT", value: String(user?.dni ?? ""), locked: true },
@@ -114,7 +108,7 @@ export default function ProfilePage() {
           },
           {
             label: "Contraseña",
-            value: "******",
+            value: user ? "******" : "",
             editHref: "/dashboard/profile/edit/password",
           },
         ]}
