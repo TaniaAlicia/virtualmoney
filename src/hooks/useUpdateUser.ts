@@ -16,10 +16,12 @@ export const useUpdateUser = (userId: number) => {
       const token = Cookies.get("token") ?? "";
       const updated = await updateUser(userId, data, token);
       return updated; // usuario actualizado
-    } catch (err: any) {
-      console.error("Error al actualizar usuario:", err);
-      setError(err.message ?? "Error al actualizar");
-      throw err;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Error desconocido al actualizar usuario');
+      }
     } finally {
       setLoading(false);
     }

@@ -5,6 +5,35 @@ import { useMemo, useState } from "react";
 import type { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
 
+// helpers (pegalo arriba del componente, en el mismo archivo)
+const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
+const DEBIT_TYPES = new Set(["out", "payment", "transfer_out", "fee"]);
+
+function isCredit(type?: string, amount?: number) {
+  const t = String(type ?? "").toLowerCase();
+  if (CREDIT_TYPES.has(t)) return true;
+  if (DEBIT_TYPES.has(t)) return false;
+  // fallback: si el tipo es raro, decidimos por signo
+  return Number(amount ?? 0) > 0;
+}
+function absAmount(n?: number) {
+  return Math.abs(Number(n ?? 0));
+}
+function formatARS(n: number) {
+  return n.toLocaleString("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 2,
+  });
+}
+function dayName(dateISO?: string) {
+  if (!dateISO) return "";
+  return new Date(dateISO).toLocaleDateString("es-AR", {
+    weekday: "long",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+}
+
 type Props = {
   loading: boolean;
   transactions: TransactionType[];
@@ -105,31 +134,39 @@ export default function ActivitySection({
           </p>
         ) : (
           <ul className="mt-4 space-y-3">
-            {visible.map((tx) => (
-              <li
-                key={tx.id}
-                className="text-dark1 flex items-center justify-between text-sm"
-              >
-                <div>
-                  <p className="font-medium">
-                    {tx.description || "Sin descripción"}
-                  </p>
-                  <p className="text-xs text-gray2">
-                    {tx.createdAt
-                      ? new Date(tx.createdAt).toLocaleDateString("es-AR")
-                      : ""}
-                  </p>
-                </div>
-                <p
-                  className={`font-semibold ${
-                    tx.type === "in" ? "text-green" : "text-red-500"
-                  }`}
+            {visible.map((tx) => {
+              const credit = isCredit(tx.type, tx.amount);
+              const shown = formatARS(absAmount(tx.amount));
+
+              return (
+                <li
+                  key={tx.id}
+                  className="text-dark1 flex items-center justify-between text-sm"
                 >
-                  {tx.type === "in" ? "+" : "-"}$
-                  {(tx.amount ?? 0).toLocaleString("es-AR")}
-                </p>
-              </li>
-            ))}
+                  <div className="flex items-center gap-3">
+                    {/* bullet verde/cruz roja, opcional */}
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${credit ? "bg-green" : "bg-error"}`}
+                    />
+                    <div>
+                      <p className="font-medium">
+                        {tx.description || "Sin descripción"}
+                      </p>
+                      <p className="text-xs text-gray2">
+                        {dayName(tx.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p
+                    className={`font-semibold ${credit ? "text-dark" : "text-error"}`}
+                  >
+                    {/* {credit ? "+" : "-"} */}
+                    {shown}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         )}
 

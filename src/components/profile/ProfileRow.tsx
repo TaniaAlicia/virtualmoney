@@ -43,13 +43,17 @@ export default function ProfileRow({
   }, [value, isPassword]); // CHANGED
 
   // Validación en tiempo real
-  const validateField = async (val: string) => {
+   const validateField = async (val: string) => {
     if (!field) return;
     try {
       await registerSchema.validateAt(field, { [field]: val });
       setError(null);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('Error de validación');
+      }
     }
   };
 
