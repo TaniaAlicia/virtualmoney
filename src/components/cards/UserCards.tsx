@@ -36,7 +36,7 @@ export default function UserCards({ cardsList, onDelete, deletingId }: Props) {
           );
         })}
         {cardsList?.length === 0 && (
-          <li className="text-dark2 py-2">Aún no agregaste tarjetas.</li>
+          <li className="text-dark2 py-2">No tienes tarjetas asociadas</li>
         )}
       </ul>
     </section>
