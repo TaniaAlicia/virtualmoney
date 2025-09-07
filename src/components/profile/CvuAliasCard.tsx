@@ -30,7 +30,7 @@ export default function CvUAliasCard({ cvu, alias }: Props) {
       </div>
 
       {/* Alias */}
-      <div className="w-full flex flex-row justify-between items-start md:items-center md:pt-2 xl:pt-3">
+      <div className="w-full flex flex-row justify-between items-start md:items-center mt-2 md:pt-2 xl:pt-3">
         <div className="w-full flex flex-col items-start">
           <span className="text-green text-xl font-bold leading-normal">ALIAS</span>
           <span className="text-gray1 text-base leading-[18.83px] break-all">
