@@ -1,5 +1,7 @@
 import Navbar from "@/components/generals/Navbar";
 import SidebarDashboard from "../dashboard/SidebarDashboard";
+import CustomToaster from "./CustomToaster";
+
 
 type Props = {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ export default function BaseLayout({ children, variant }: Props) {
   return (
     <>
       <Navbar variant={variant} />
+      <CustomToaster />
        {variant === "dashboard" ? (
         <div className="flex min-h-screen bg-gray1">
           <SidebarDashboard />
