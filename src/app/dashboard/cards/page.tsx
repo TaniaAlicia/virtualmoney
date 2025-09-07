@@ -6,14 +6,22 @@ import UserCards from "@/components/cards/UserCards";
 import { useCards } from "@/hooks/useCards";
 
 export default function CardsPage() {
-  const { loading, error, cards, deletingId: deletingCardId, removeCard } = useCards(); // autoLoad = true
+  const {
+    loading,
+    error,
+    cards,
+    deletingId: deletingCardId,
+    removeCard,
+  } = useCards(); // autoLoad = true
+  const LIMIT = 10;
+  const atLimit = (cards?.length ?? 0) >= LIMIT;
 
   return (
-    <main className="max-w-8xl bg-gray1 mx-auto flex-1 space-y-5 px-6 pb-6 pt-0 text-dark">
+    <main className="max-w-8xl mx-auto flex-1 space-y-5 bg-gray1 px-6 pb-6 pt-0 text-dark">
       <MobileCrumb />
 
-      <div className="w-full flex flex-col gap-5">
-        <AddCardBanner />
+      <div className="flex w-full flex-col gap-5">
+        {!atLimit && <AddCardBanner />}
 
         {loading && <div className="text-dark2">Cargando tarjetas…</div>}
         {!loading && error && (
@@ -31,5 +39,3 @@ export default function CardsPage() {
     </main>
   );
 }
-
-

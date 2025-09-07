@@ -4,16 +4,18 @@ import type { CardType } from "@/types/card";
 type Props = {
   cardsList: CardType[];
   onDelete?: (id: CardType["id"]) => void;
-  deletingId?: CardType["id"] | null; // 👈 NUEVO
+  deletingId?: CardType["id"] | null; 
 };
 
 export default function UserCards({ cardsList, onDelete, deletingId }: Props) {
+   const LIMIT = 10; 
+  //const visible = (cardsList ?? []).slice(0, LIMIT);
   return (
     <section className="w-full rounded-[10px] bg-white shadow p-6">
       <h4 className="text-dark font-bold mb-4">Tus tarjetas</h4>
       <ul className="flex flex-col">
         {cardsList?.map((card) => {
-          const busy = deletingId === card.id; // 👈 usarla
+          const busy = deletingId === card.id; 
           return (
             <li
               key={card.id}
@@ -39,6 +41,20 @@ export default function UserCards({ cardsList, onDelete, deletingId }: Props) {
           <li className="text-dark2 py-2">No tienes tarjetas asociadas</li>
         )}
       </ul>
+       
+      {cardsList?.length >= LIMIT && (
+        <p className="mt-3 text-sm text-error">
+          Has alcanzado el <b>límite de 10 tarjetas</b>. Para agregar una nueva,
+          elimina una existente.
+        </p>
+      )}
+
+      {/* CHANGED: si hay más de 10, aclaramos que se muestran sólo 10 */}
+      {cardsList?.length > LIMIT && (
+        <p className="mt-1 text-xs text-dark2">
+          Mostrando 10 de {cardsList.length}.
+        </p>
+      )}
     </section>
   );
 }
