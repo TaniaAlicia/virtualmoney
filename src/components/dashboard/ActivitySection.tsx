@@ -1,13 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
 
-// helpers (pegalo arriba del componente, en el mismo archivo)
+// helpers
 const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
 const DEBIT_TYPES = new Set(["out", "payment", "transfer_out", "fee"]);
+
+// helper para ordenar activitys
+function toMs(dateLike?: string | number | Date) {
+  if (dateLike == null) return -Infinity;
+  if (dateLike instanceof Date) return dateLike.getTime();
+  if (typeof dateLike === "number")
+    return dateLike < 1e12 ? dateLike * 1000 : dateLike;
+
+  const s = String(dateLike).trim();
+  const t = Date.parse(s);
+  if (!Number.isNaN(t)) return t;
+
+  // dd/mm/yyyy o dd-mm-yyyy
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) {
+    const [, d, mo, y] = m.map(Number);
+    return new Date(y, mo - 1, d).getTime();
+  }
+
+  const n = Number(s);
+  if (!Number.isNaN(n)) return n < 1e12 ? n * 1000 : n;
+  return -Infinity;
+}
+
+// acepta createdAt | dated | created_at | date | updatedAt
+function getCreatedTs(tx: any) {
+  const raw =
+    tx?.createdAt ?? tx?.dated ?? tx?.created_at ?? tx?.date ?? tx?.updatedAt;
+  return toMs(raw);
+}
+
+function dayNameFrom(tx: any) {
+  const ts = getCreatedTs(tx);
+  if (!Number.isFinite(ts)) return "";
+  return new Date(ts).toLocaleDateString("es-AR", {
+    weekday: "long",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+}
+
+////////////////////////////////
 
 function isCredit(type?: string, amount?: number) {
   const t = String(type ?? "").toLowerCase();
@@ -55,6 +96,9 @@ export default function ActivitySection({
 
   const router = useRouter();
 
+  const [page, setPage] = useState(1); // 👈 página actual
+  const PAGE_SIZE = 10;
+
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const q = (e.currentTarget.value || "").trim();
@@ -74,18 +118,45 @@ export default function ActivitySection({
 
   const filtered = useMemo(() => {
     if (!search.trim()) return transactions;
-    const q = norm(search);
-    return transactions.filter((tx) => {
-      const desc = norm(tx.description || "");
-      const date = tx.createdAt
-        ? norm(new Date(tx.createdAt).toLocaleDateString("es-AR"))
+    //const q = norm(search);
+    const q = search.toLowerCase();
+    return transactions.filter((tx: TransactionType) => {
+      const desc = norm(tx.description || "").toLowerCase();
+      const amount = String(tx.amount ?? "").toLowerCase();
+      const ts = getCreatedTs(tx);
+      const date = Number.isFinite(ts)
+        ? new Date(ts).toLocaleDateString("es-AR").toLowerCase()
         : "";
-      const amount = norm(String(tx.amount ?? ""));
+
       return desc.includes(q) || date.includes(q) || amount.includes(q);
     });
   }, [search, transactions]);
 
-  const visible = limit ? filtered.slice(0, limit) : filtered;
+  //Ordenar de más reciente a más antigua por createdAt
+  const filteredSorted = useMemo<TransactionType[]>(
+    () => [...filtered].sort((a, b) => getCreatedTs(b) - getCreatedTs(a)),
+    [filtered],
+  );
+
+  // Si hay limit (dashboard), respetalo y NO pagines.
+  const totalPages = useMemo(
+    () =>
+      limit ? 1 : Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE)),
+    [filteredSorted.length, limit],
+  );
+
+  // Resetear a la página 1 cuando cambia la búsqueda o la data
+  useEffect(() => {
+    setPage(1);
+  }, [search, filteredSorted.length, limit]);
+
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const slice = limit
+    ? filteredSorted.slice(0, limit)
+    : filteredSorted.slice(start, start + PAGE_SIZE);
+
+  const visible = slice;
 
   return (
     <>
@@ -137,6 +208,7 @@ export default function ActivitySection({
             {visible.map((tx) => {
               const credit = isCredit(tx.type, tx.amount);
               const shown = formatARS(absAmount(tx.amount));
+              const sign = credit ? "+" : "-";
 
               return (
                 <li
@@ -152,18 +224,18 @@ export default function ActivitySection({
                       <p className="font-medium">
                         {tx.description || "Sin descripción"}
                       </p>
-                      <p className="text-xs text-gray2">
-                        {dayName(tx.createdAt)}
-                      </p>
                     </div>
                   </div>
-
-                  <p
-                    className={`font-semibold ${credit ? "text-dark" : "text-error"}`}
-                  >
-                    {/* {credit ? "+" : "-"} */}
-                    {shown}
-                  </p>
+                  <div className="flex flex-col items-end text-right">
+                    <p
+                      className={`font-semibold ${credit ? "text-dark" : "text-error"}`}
+                    >
+                      {sign} {shown}
+                    </p>
+                    <p className="text-xs leading-4  text-gray2 ">
+                      {dayNameFrom(tx)}
+                    </p>
+                  </div>
                 </li>
               );
             })}
@@ -199,6 +271,31 @@ export default function ActivitySection({
               </svg>
             </Link>
           </div>
+        )}
+
+        {/* Paginador: solo si NO hay limit y hay más de 10 */}
+        {!limit && totalPages > 1 && (
+          <nav
+            className="mt-4 flex items-center justify-center gap-3"
+            aria-label="Paginación"
+          >
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setPage(n)}
+                aria-current={n === currentPage ? "page" : undefined}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium
+          ${
+            n === currentPage
+              ? "cursor-default bg-[#D9D9D9] text-black"
+              : "cursor-pointer text-dark hover:bg-black/5"
+          }`}
+              >
+                {n}
+              </button>
+            ))}
+          </nav>
         )}
       </div>
     </>
