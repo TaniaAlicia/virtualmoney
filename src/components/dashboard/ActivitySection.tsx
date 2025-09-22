@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
+import type { DateLike, TxDateSource } from "@/types/date";
 
 // helpers
 const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
 const DEBIT_TYPES = new Set(["out", "payment", "transfer_out", "fee"]);
 
 // helper para ordenar activitys
-function toMs(dateLike?: string | number | Date) {
+function toMs(dateLike?: DateLike): number{
   if (dateLike == null) return -Infinity;
   if (dateLike instanceof Date) return dateLike.getTime();
   if (typeof dateLike === "number")
@@ -33,13 +34,13 @@ function toMs(dateLike?: string | number | Date) {
 }
 
 // acepta createdAt | dated | created_at | date | updatedAt
-function getCreatedTs(tx: any) {
+function getCreatedTs(tx: TxDateSource) {
   const raw =
     tx?.createdAt ?? tx?.dated ?? tx?.created_at ?? tx?.date ?? tx?.updatedAt;
   return toMs(raw);
 }
 
-function dayNameFrom(tx: any) {
+function dayNameFrom(tx: TxDateSource) {
   const ts = getCreatedTs(tx);
   if (!Number.isFinite(ts)) return "";
   return new Date(ts).toLocaleDateString("es-AR", {
@@ -67,13 +68,13 @@ function formatARS(n: number) {
     minimumFractionDigits: 2,
   });
 }
-function dayName(dateISO?: string) {
+/* function dayName(dateISO?: string) {
   if (!dateISO) return "";
   return new Date(dateISO).toLocaleDateString("es-AR", {
     weekday: "long",
     timeZone: "America/Argentina/Buenos_Aires",
-  });
-}
+  }); 
+}*/
 
 type Props = {
   loading: boolean;
