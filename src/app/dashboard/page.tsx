@@ -52,6 +52,7 @@ export default function DashboardPage() {
         loading={loading}
         transactions={transactions}
         showActivityPage={false}
+        limit={10} 
       />
     </main>
   );
