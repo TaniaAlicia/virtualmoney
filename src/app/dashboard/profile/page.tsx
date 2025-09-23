@@ -91,6 +91,10 @@ export default function ProfilePage() {
         : prev
     );
   };
+  // ADDED: valor combinado para la fila "Nombre y apellido"
+  const fullName =
+    `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(); // ADDED
+
 
   return (
     <main className="max-w-8xl mx-auto flex-1 space-y-6 px-6 pb-6 pt-3 text-dark">
@@ -101,8 +105,8 @@ export default function ProfilePage() {
         onUpdate={handleRowUpdate}
         rows={[
           { label: "Email", value: user?.email ?? "", locked: true },
-          {
-            label: "Nombre",
+          /*{
+             label: "Nombre",
             value: user?.firstName ?? "",
             field: "firstName",
             userId: account?.user_id,
@@ -112,6 +116,13 @@ export default function ProfilePage() {
             value: user?.lastName ?? "",
             field: "lastName",
             userId: account?.user_id,
+          }, */
+          
+          {
+            label: "Nombre y apellido",          // ADDED
+            value: fullName,                      // ADDED
+            field: "fullName",                    // ADDED (lo maneja ProfileRow)
+            userId: account?.user_id ?? account?.userId, // CHANGED: por si viene en otro formato
           },
           { label: "CUIT", value: String(user?.dni ?? ""), locked: true },
           {

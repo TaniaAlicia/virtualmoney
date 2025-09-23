@@ -8,17 +8,38 @@ import { registerSchema } from "@/schemas/registerSchema";
 import { EyeIcon } from "@/components/generals/EyeIcon";
 import { EyeOffIcon } from "@/components/generals/EyeOffIcon";
 
+type FieldUnion =
+  // ADDED: nuevo campo compuesto para editar nombre + apellido juntos
+  | "fullName"
+  | "firstName"
+  | "lastName"
+  | "phone"
+  | "password";
+
 type Props = {
   label: string;
   value: string;
-  field?: "firstName" | "lastName" | "phone" | "password";
+  //field?: "firstName" | "lastName" | "phone" | "password";
+   field?: FieldUnion;
   userId?: number;
   locked?: boolean;
-  onUpdate?: (
+ /*  onUpdate?: (
     field: "firstName" | "lastName" | "phone" | "password",
     value: string,
-  ) => void;
+  ) => void; */
+    onUpdate?: (field: Exclude<FieldUnion, "fullName">, value: string) => void;
 };
+
+// ADDED: helper para separar Nombre y Apellido
+function splitFullName(raw: string) {
+  const normalized = (raw ?? "").trim().replace(/\s+/g, " ");
+  if (!normalized) return { first: "", last: "" };
+  const parts = normalized.split(" ");
+  const first = parts.shift() ?? "";
+  const last = parts.join(" "); // puede quedar vacío y está bien
+  return { first, last };
+}
+
 
 export default function ProfileRow({
   label,
@@ -29,6 +50,8 @@ export default function ProfileRow({
   onUpdate,
 }: Props) {
   const isPassword = field === "password"; // CHANGED
+  const isFullName = field === "fullName"; // ADDED
+
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState(value);
   const [loading, setLoading] = useState(false);
@@ -42,9 +65,23 @@ export default function ProfileRow({
     setInputValue(isPassword ? "" : value);
   }, [value, isPassword]); // CHANGED
 
+   // ADDED: validación específica para fullName, respetando el schema existente
+  const validateFullName = async (val: string) => {
+    const { first, last } = splitFullName(val);
+    try {
+      await registerSchema.validateAt("firstName", { firstName: first });
+      await registerSchema.validateAt("lastName", { lastName: last });
+      setError(null);
+    } catch (e: unknown) {
+      if (e instanceof Error) setError(e.message);
+      else setError("Error de validación");
+    }
+  };
+
   // Validación en tiempo real
    const validateField = async (val: string) => {
     if (!field) return;
+    if (isFullName) return validateFullName(val); // ADDED: delega
     try {
       await registerSchema.validateAt(field, { [field]: val });
       setError(null);
@@ -75,11 +112,57 @@ export default function ProfileRow({
       return; // 👈 no se hace request
     }
 
+    // ADDED: lógica de guardado para fullName
+    if (isFullName) {
+      const current = (value ?? "").trim().replace(/\s+/g, " ");
+      const next = trimmed.replace(/\s+/g, " ");
+      if (current === next) {
+        setEditing(false);
+        return; // sin cambios
+      }
+
+      // validar ambos con el schema
+      const { first, last } = splitFullName(next);
+      try {
+        await registerSchema.validateAt("firstName", { firstName: first });
+        await registerSchema.validateAt("lastName", { lastName: last });
+      } catch (e: unknown) {
+        if (e instanceof Error) setError(e.message);
+        else setError("Error de validación");
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const updated = await updateUser(
+          userId,
+          { firstName: first, lastName: last }, // backend espera estos nombres
+          token
+        );
+
+        setEditing(false);
+
+        // ADDED: notificar al padre por separado (dos updates)
+        const newFirst =
+          updated?.firstname ?? updated?.firstName ?? first ?? "";
+        const newLast =
+          updated?.lastname ?? updated?.lastName ?? last ?? "";
+
+        onUpdate?.("firstName", newFirst);
+        onUpdate?.("lastName", newLast);
+      } catch (e) {
+        console.error("Error al actualizar:", e);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     // CHANGED: para campos de texto, si no cambió, no llamo al backend
     const current = (value ?? "").trim();
     if (field !== "password" && trimmed === current) {
       setEditing(false);
-      return; // 👈 no se hace request
+      return; // no se hace request
     }
 
     try {
@@ -164,13 +247,13 @@ export default function ProfileRow({
               <input
                 type={isPassword && !showPassword ? "password" : "text"}
                 className={`w-full rounded p-1 pr-9 text-sm outline-none
-    ${
-      error
-        ? "border border-error"
-        : // CHANGED: volvemos al borde gris y sin ring verde
-          "border border-gray2 focus:border-gray2 focus:ring-0"
-    }
-  `}
+                    ${
+                      error
+                        ? "border border-error"
+                        : // CHANGED: volvemos al borde gris y sin ring verde
+                          "border border-gray2 focus:border-gray2 focus:ring-0"
+                    }
+                  `}
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
@@ -179,6 +262,7 @@ export default function ProfileRow({
                 onBlur={!isPassword ? save : undefined}
                 disabled={loading}
                 autoFocus
+                placeholder={isFullName ? "Nombre Apellido" : undefined}
               />
 
               {/* Ojo (solo password) */}
@@ -215,7 +299,7 @@ export default function ProfileRow({
         <button
           type="button"
           onClick={handleEditClick} // CHANGED
-          className={`justify-self-end ${editing ? "text-green" : "text-gray2 hover:text-dark"}`} // CHANGED
+          className={`justify-self-end ${editing ? "text-green" : "text-gray2 "}`} // CHANGED
           disabled={loading} // CHANGED
           aria-label={editing ? "Guardar" : `Editar ${label}`}
           title={editing ? "Guardar" : "Editar"}

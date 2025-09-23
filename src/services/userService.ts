@@ -14,6 +14,29 @@ export const getUserById = async (userId: number, token: string) => {
   return response.data;
 };
 
+type ApiUserPatch = {
+  firstname?: string;
+  lastname?: string;
+  dni?: number;
+  email?: string;
+  password?: string;
+  phone?: string;
+};
+
+// ADDED: helper para mapear camelCase (front) → formato API
+function toApiPayload(data: Partial<RegisterDataUser>): ApiUserPatch {
+  const out: ApiUserPatch = {};
+
+  if (data.firstName !== undefined) out.firstname = data.firstName;
+  if (data.lastName !== undefined) out.lastname = data.lastName;
+  if (data.dni !== undefined) out.dni = data.dni;
+  if (data.email !== undefined) out.email = data.email;
+  if (data.password !== undefined) out.password = data.password;
+  if (data.phone !== undefined) out.phone = data.phone;
+
+  return out;
+}
+
 export const updateUser = async (
   userId: number,
   data: Partial<RegisterDataUser>,
