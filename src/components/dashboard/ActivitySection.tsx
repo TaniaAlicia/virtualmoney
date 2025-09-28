@@ -5,13 +5,14 @@ import { useEffect, useMemo, useState } from "react";
 import type { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
 import type { DateLike, TxDateSource } from "@/types/date";
+import PeriodFilter from "@/components/activity/PeriodFilter";
 
 // helpers
 const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
 const DEBIT_TYPES = new Set(["out", "payment", "transfer_out", "fee"]);
 
 // helper para ordenar activitys
-function toMs(dateLike?: DateLike): number{
+function toMs(dateLike?: DateLike): number {
   if (dateLike == null) return -Infinity;
   if (dateLike instanceof Date) return dateLike.getTime();
   if (typeof dateLike === "number")
@@ -68,13 +69,6 @@ function formatARS(n: number) {
     minimumFractionDigits: 2,
   });
 }
-/* function dayName(dateISO?: string) {
-  if (!dateISO) return "";
-  return new Date(dateISO).toLocaleDateString("es-AR", {
-    weekday: "long",
-    timeZone: "America/Argentina/Buenos_Aires",
-  }); 
-}*/
 
 type Props = {
   loading: boolean;
@@ -84,6 +78,14 @@ type Props = {
   /** si es la página completa de actividad, oculta el link “Ver toda tu actividad” */
   showActivityPage?: boolean;
   hideSearch?: boolean;
+  //  props SOLO para móvil
+  enableMobileFilter?: boolean; // <- activa el botón "Filtrar" en el header (md:hidden)
+  showFilters?: boolean; // <- estado abierto/cerrado (viene del padre)
+  onToggleFilters?: () => void; // <- abre/cierra
+  periodSelected?: string; // <- "today" | "week" | "custom" ...
+  onApplyPeriod?: (v: string) => void; // <- aplica período estándar
+  onClearPeriod?: () => void; // <- limpiar filtros
+  onApplyCustomPeriod?: (fromISO: string, toISO: string) => void; // <- aplica custom
 };
 
 export default function ActivitySection({
@@ -92,6 +94,14 @@ export default function ActivitySection({
   limit,
   showActivityPage = false,
   hideSearch = false,
+  // móvil
+  enableMobileFilter,
+  showFilters,
+  onToggleFilters,
+  periodSelected,
+  onApplyPeriod,
+  onClearPeriod,
+  onApplyCustomPeriod,
 }: Props) {
   const [search, setSearch] = useState("");
 
@@ -194,9 +204,65 @@ export default function ActivitySection({
       )}
 
       {/* Tu actividad */}
-      <div className="rounded-xl bg-light p-5 shadow">
-        <h2 className="text-base font-semibold text-dark2">Tu actividad</h2>
+      <div className="relative rounded-xl bg-light p-5 shadow">
+        {/* header: título + botón Filtrar SOLO en móvil */}
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-dark2">Tu actividad</h2>
+          {/* 🆕 botón Filtrar móvil (md:hidden) */}
+          {enableMobileFilter && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFilters?.();
+              }}
+              className="flex items-center gap-2 text-sm font-semibold text-dark underline decoration-green/60 underline-offset-2 hover:decoration-green md:hidden"
+              aria-expanded={!!showFilters}
+            >
+              Filtrar
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="13"
+                fill="none"
+              >
+                <path stroke="#201F22" d="M0 9.7h17M17 2.767H0" />
+                <circle
+                  cx="5.099"
+                  cy="9.633"
+                  r="2.333"
+                  fill="#C1FD35"
+                  stroke="#201F22"
+                />
+                <circle
+                  cx="11.901"
+                  cy="2.834"
+                  r="2.333"
+                  fill="#C1FD35"
+                  stroke="#201F22"
+                  transform="rotate(-180 11.901 2.834)"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+
         <div className="mt-3 h-px w-full bg-[#D9D9D9]" />
+
+          {/* popover anclado al header en móvil */}
+        {enableMobileFilter && showFilters && (
+          <div className="md:hidden absolute right-4 top-8 z-50">
+            <PeriodFilter
+              // ancho responsivo: ocupa casi todo en móvil, 320px en md+
+              className="w-[calc(100vw-2.5rem)] max-w-[320px]"
+              selected={periodSelected ?? ""}
+              onApply={onApplyPeriod ?? (() => {})}
+              onApplyCustom={onApplyCustomPeriod}
+              onClear={onClearPeriod ?? (() => {})}
+              onClose={onToggleFilters ?? (() => {})}
+            />
+          </div>
+        )}
 
         {loading ? (
           <p className="mt-4 text-sm text-dark/70">Cargando...</p>

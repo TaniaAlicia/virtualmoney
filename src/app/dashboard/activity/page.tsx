@@ -155,6 +155,13 @@ function ActivityInner() {
   // cerrar popover SOLO si el click ocurre fuera del wrapper
   useEffect(() => {
     if (!showFilters) return;
+
+    //  Solo desktop: evita que el popover móvil se cierre al click interno
+    const isDesktop =
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) return;
+
     const onDocPointerDown = (e: PointerEvent) => {
       if (!filterWrapRef.current?.contains(e.target as Node)) {
         setShowFilters(false);
@@ -198,8 +205,10 @@ function ActivityInner() {
         </div>
 
         {/* Botón Filtrar (solo md+) */}
-        <div ref={filterWrapRef} className="relative overflow-visible">
-          {" "}
+        <div
+          ref={filterWrapRef}
+          className="relative hidden overflow-visible md:block"
+        >
           <button
             type="button"
             className="hidden w-full items-center justify-between rounded-xl bg-green px-5 py-3 font-bold text-black shadow hover:brightness-95 md:flex"
@@ -232,21 +241,23 @@ function ActivityInner() {
           </button>
           {/* popover de filtros */}
           {showFilters && (
-            <PeriodFilter
-              selected={period}
-              onApply={(val) => setPeriod(val)}
-              onApplyCustom={(fromISO, toISO) => {
-                setCustomFrom(parseLocalDate(fromISO)); // 🛠️ CHANGED
-                setCustomTo(parseLocalDate(toISO)); // 🛠️ CHANGED
-                setPeriod("custom");
-              }}
-              onClear={() => {
-                setPeriod("");
-                setCustomFrom(null);
-                setCustomTo(null);
-              }}
-              onClose={() => setShowFilters(false)}
-            />
+            <div className="absolute right-0 top-full z-50 ">
+              <PeriodFilter
+                selected={period}
+                onApply={(val) => setPeriod(val)}
+                onApplyCustom={(fromISO, toISO) => {
+                  setCustomFrom(parseLocalDate(fromISO));
+                  setCustomTo(parseLocalDate(toISO));
+                  setPeriod("custom");
+                }}
+                onClear={() => {
+                  setPeriod("");
+                  setCustomFrom(null);
+                  setCustomTo(null);
+                }}
+                onClose={() => setShowFilters(false)}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -257,6 +268,22 @@ function ActivityInner() {
         transactions={filtered}
         showActivityPage
         hideSearch
+        /* activa el botón Filtrar en el header del card SOLO móvil */
+        enableMobileFilter
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters((s) => !s)}
+        periodSelected={period}
+        onApplyPeriod={(v) => setPeriod(v)}
+        onClearPeriod={() => {
+          setPeriod("");
+          setCustomFrom(null);
+          setCustomTo(null);
+        }}
+        onApplyCustomPeriod={(fromISO, toISO) => {
+          setCustomFrom(parseLocalDate(fromISO));
+          setCustomTo(parseLocalDate(toISO));
+          setPeriod("custom");
+        }}
       />
     </main>
   );

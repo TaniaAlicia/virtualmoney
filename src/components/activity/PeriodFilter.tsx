@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import clsx from "clsx";
 
 const periods = [
@@ -34,6 +34,19 @@ export default function PeriodFilter({
   const [fromStr, setFromStr] = useState<string>(""); //  YYYY-MM-DD
   const [toStr, setToStr] = useState<string>("");
   const [open, setOpen] = useState(true);
+
+  const uid = useId(); // ID único por instancia (evita colisiones de name=)
+
+  // SINCRONIZA cada vez que se reabre con un período ya aplicado
+  useEffect(() => {
+    setValue(selected ?? "");
+    const isCustom = (selected ?? "") === "custom";
+    setShowCustom(isCustom);
+    if (!isCustom) {
+      setFromStr("");
+      setToStr("");
+    }
+  }, [selected]);
 
   const handleApply = () => {
     if (value === "custom" && onApplyCustom && fromStr && toStr) {
@@ -136,16 +149,16 @@ export default function PeriodFilter({
                     setValue("custom");
                     setShowCustom((s) => !s);
                   }}
-                  aria-expanded={showCustom} 
-                  aria-controls="custom-range" 
+                  aria-expanded={showCustom}
+                  aria-controls="custom-range"
                   className="text-dark1/70 inline-flex h-4 w-4 items-center justify-center"
                   aria-label="Abrir rango personalizado"
                 >
                   <svg
                     viewBox="0 0 11 7"
                     className={clsx(
-                      "h-[7px] w-[11px] transition-transform", 
-                      showCustom ? "rotate-0" : "-rotate-90", 
+                      "h-[7px] w-[11px] transition-transform",
+                      showCustom ? "rotate-0" : "-rotate-90",
                     )}
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -161,11 +174,11 @@ export default function PeriodFilter({
               ) : (
                 <input
                   type="radio"
-                  name="period"
+                  name={`period-${uid}`} // nombre único por instancia
                   value={p.value}
                   checked={value === p.value}
                   onChange={() => setValue(p.value)}
-                  onMouseDown={(e) => e.preventDefault()}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className={clsx(
                     "border-dark1 relative h-4 w-4 cursor-pointer appearance-none rounded-full border",
                     "checked:border-dark2 checked:bg-green",
