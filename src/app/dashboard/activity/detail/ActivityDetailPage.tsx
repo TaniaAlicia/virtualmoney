@@ -7,6 +7,7 @@ import type { TransactionIdType } from "@/types/transaction";
 import Cookies from "js-cookie";
 import { getAccount } from "@/services/accountService";
 import CheckIcon from "@/components/icons/CheckIcon";
+import jsPDF from "jspdf";
 
 // helpers
 function formatDated(fecha: string | Date): string {
@@ -27,48 +28,9 @@ function formatDated(fecha: string | Date): string {
   // Normalizar: ejemplo → "21 de septiembre de 2025 18:47"
   fechaHora = fechaHora.replace("  ", " "); // limpiar dobles espacios
 
-  // Separar fecha y hora
-  //const [fechaParte, horaParte] = fechaHora.split(" ");
-
   // Armamos la cadena final
   return `Creada el ${fechaHora.replace(/(\d{4}) (.*)/, "$1 a las $2")} hs.`;
 }
-
-/* function getAccountIdFallback(): number | null {
-  // 1) cookie
-  const c = Cookies.get("accountId");
-  if (c && !Number.isNaN(Number(c))) return Number(c);
-
-  // 2) storage
-  try {
-    const ls =
-      typeof window !== "undefined" ? localStorage.getItem("accountId") : null;
-    if (ls && !Number.isNaN(Number(ls))) return Number(ls);
-  } catch {}
-
-  try {
-    const ss =
-      typeof window !== "undefined"
-        ? sessionStorage.getItem("accountId")
-        : null;
-    if (ss && !Number.isNaN(Number(ss))) return Number(ss);
-  } catch {}
-
-  // 3) JWT (si el token es JWT y trae el id)
-  const token = Cookies.get("token");
-  if (token && token.split(".").length === 3) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const cand =
-        payload?.account_id ??
-        payload?.accountId ??
-        payload?.account?.id ??
-        payload?.data?.account_id;
-      if (cand && !Number.isNaN(Number(cand))) return Number(cand);
-    } catch {}
-  }
-  return null;
-} */
 
 export default function ActivityDetailPage() {
   const searchParams = useSearchParams();
@@ -80,9 +42,39 @@ export default function ActivityDetailPage() {
   const [error, setError] = useState("");
 
   const idParam = searchParams.get("id");
-  //const accParam = searchParams.get("account");
 
-  //const accountId = accParam ? Number(accParam) : getAccountIdFallback();
+  const handleDownloadReceipt = () => {
+    if (!transaction) return;
+
+    const doc = new jsPDF();
+
+    // Encabezado
+    doc.setFontSize(18);
+    doc.text("Comprobante de Transacción", 20, 20);
+
+    // Datos principales
+    doc.setFontSize(12);
+    doc.text(`Estado: Aprobada`, 20, 40);
+    doc.text(`Fecha: ${formatDated(transaction.dated ?? "")}`, 20, 50);
+    doc.text(`Operación Nº: ${transaction.id}`, 20, 60);
+    doc.text(
+      `Tipo: ${transaction.type === "deposit" ? "Depósito" : "Transferencia de dinero"}`,
+      20,
+      70,
+    );
+    doc.text(
+      `Monto: ${transaction.amount.toLocaleString("es-AR", {
+        style: "currency",
+        currency: "ARS",
+      })}`,
+      20,
+      80,
+    );
+    doc.text(`Destino: ${transaction.description || "—"}`, 20, 90);
+
+    // Guardar el PDF
+    doc.save(`comprobante_${transaction.id}.pdf`);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -173,7 +165,7 @@ export default function ActivityDetailPage() {
       {/* Botones abajo */}
       <div className="flex flex-col gap-4 md:flex-row-reverse">
         <button
-          onClick={() => console.log("Descargar comprobante")}
+          onClick={handleDownloadReceipt}
           className="w-full rounded-lg bg-green py-3 font-bold text-black shadow hover:brightness-95 md:w-1/4"
         >
           Descargar comprobante
