@@ -14,3 +14,14 @@ export type NewTransactionType = {
   description?: string;
   // completa con lo que requiera tu endpoint: toAccountId, type, etc.
 };
+
+export type TransactionIdType = {
+  id: number;
+  account_id: number; 
+  amount: number;
+  dated: string;
+  description: string;
+  destination: string;
+  origin: string;
+  type: string;
+};

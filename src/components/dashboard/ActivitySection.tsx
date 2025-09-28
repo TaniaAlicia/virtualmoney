@@ -6,6 +6,7 @@ import type { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
 import type { DateLike, TxDateSource } from "@/types/date";
 import PeriodFilter from "@/components/activity/PeriodFilter";
+import Cookies from "js-cookie";
 
 // helpers
 const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
@@ -73,7 +74,6 @@ function formatARS(n: number) {
 type Props = {
   loading: boolean;
   transactions: TransactionType[];
-  /** opcional: limitar cantidad en el dashboard (p.ej. 4) */
   limit?: number;
   /** si es la página completa de actividad, oculta el link “Ver toda tu actividad” */
   showActivityPage?: boolean;
@@ -84,8 +84,8 @@ type Props = {
   onToggleFilters?: () => void; // <- abre/cierra
   periodSelected?: string; // <- "today" | "week" | "custom" ...
   onApplyPeriod?: (v: string) => void; // <- aplica período estándar
-  onClearPeriod?: () => void; // <- limpiar filtros
-  onApplyCustomPeriod?: (fromISO: string, toISO: string) => void; // <- aplica custom
+  onClearPeriod?: () => void; // <- limpia período
+  onApplyCustomPeriod?: (fromISO: string, toISO: string) => void; // <- aplicar período custom
 };
 
 export default function ActivitySection({
@@ -107,7 +107,9 @@ export default function ActivitySection({
 
   const router = useRouter();
 
-  const [page, setPage] = useState(1); // 👈 página actual
+  const accId = Cookies.get("accountId") ?? "";
+
+  const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,7 +131,6 @@ export default function ActivitySection({
 
   const filtered = useMemo(() => {
     if (!search.trim()) return transactions;
-    //const q = norm(search);
     const q = search.toLowerCase();
     return transactions.filter((tx: TransactionType) => {
       const desc = norm(tx.description || "").toLowerCase();
@@ -149,7 +150,7 @@ export default function ActivitySection({
     [filtered],
   );
 
-  // Si hay limit (dashboard), respetalo y NO pagines.
+  // Si hay limit (dashboard), respetarolo y no paginar
   const totalPages = useMemo(
     () =>
       limit ? 1 : Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE)),
@@ -171,7 +172,7 @@ export default function ActivitySection({
 
   return (
     <>
-      {/* Buscar en tu actividad (se oculta si hideSearch === true) */}
+      {/* Buscar en Tu actividad (se oculta si hideSearch === true) */}
       {!hideSearch && (
         <div className="rounded-xl bg-light px-4 py-3 shadow">
           <div className="flex items-center gap-2">
@@ -208,7 +209,7 @@ export default function ActivitySection({
         {/* header: título + botón Filtrar SOLO en móvil */}
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-semibold text-dark2">Tu actividad</h2>
-          {/* 🆕 botón Filtrar móvil (md:hidden) */}
+          {/* botón Filtrar móvil (md:hidden) */}
           {enableMobileFilter && (
             <button
               type="button"
@@ -249,9 +250,9 @@ export default function ActivitySection({
 
         <div className="mt-3 h-px w-full bg-[#D9D9D9]" />
 
-          {/* popover anclado al header en móvil */}
+        {/* popover anclado al header en móvil */}
         {enableMobileFilter && showFilters && (
-          <div className="md:hidden absolute right-4 top-8 z-50">
+          <div className="absolute right-4 top-8 z-50 md:hidden">
             <PeriodFilter
               // ancho responsivo: ocupa casi todo en móvil, 320px en md+
               className="w-[calc(100vw-2.5rem)] max-w-[320px]"
@@ -277,13 +278,22 @@ export default function ActivitySection({
               const shown = formatARS(absAmount(tx.amount));
               const sign = credit ? "+" : "-";
 
+             /*  const href = `/dashboard/activity/detail?id=${encodeURIComponent(
+                String(tx.id),
+              )}${accId ? `&acc=${encodeURIComponent(accId)}` : ""}`; */
+
               return (
                 <li
                   key={tx.id}
-                  className="text-dark1 flex items-center justify-between text-sm"
+                  className="text-dark1 relative flex items-center justify-between text-sm"
                 >
-                  <div className="flex items-center gap-3">
-                    {/* bullet verde/cruz roja, opcional */}
+                  {/* overlay que hace clickeable toda la fila */}
+                  <Link
+                    href={`/dashboard/activity/detail?id=${tx.id}&account=${tx.accountId ?? accId}`}
+                    className="absolute inset-0"
+                  />
+
+                  <div className="pointer-events-none flex items-center gap-3">
                     <span
                       className={`h-2.5 w-2.5 rounded-full ${credit ? "bg-green" : "bg-error"}`}
                     />
@@ -293,13 +303,14 @@ export default function ActivitySection({
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end text-right">
+
+                  <div className="pointer-events-none flex flex-col items-end text-right">
                     <p
                       className={`font-semibold ${credit ? "text-dark" : "text-error"}`}
                     >
                       {sign} {shown}
                     </p>
-                    <p className="text-xs leading-4  text-gray2 ">
+                    <p className="text-xs leading-4 text-gray2">
                       {dayNameFrom(tx)}
                     </p>
                   </div>

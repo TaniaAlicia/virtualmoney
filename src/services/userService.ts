@@ -14,17 +14,17 @@ export const getUserById = async (userId: number, token: string) => {
   return response.data;
 };
 
-type ApiUserPatch = {
+/* type ApiUserPatch = {
   firstname?: string;
   lastname?: string;
   dni?: number;
   email?: string;
   password?: string;
   phone?: string;
-};
+}; */
 
 // ADDED: helper para mapear camelCase (front) → formato API
-function toApiPayload(data: Partial<RegisterDataUser>): ApiUserPatch {
+/* function toApiPayload(data: Partial<RegisterDataUser>): ApiUserPatch {
   const out: ApiUserPatch = {};
 
   if (data.firstName !== undefined) out.firstname = data.firstName;
@@ -35,7 +35,7 @@ function toApiPayload(data: Partial<RegisterDataUser>): ApiUserPatch {
   if (data.phone !== undefined) out.phone = data.phone;
 
   return out;
-}
+} */
 
 export const updateUser = async (
   userId: number,
@@ -51,7 +51,7 @@ export const updateUser = async (
     data,
     {
       headers: {
-        Authorization: t, // 👈 igual que en getAccount / getUserById
+        Authorization: t, //igual que en getAccount / getUserById
         "Content-Type": "application/json",
       },
     }
@@ -59,3 +59,13 @@ export const updateUser = async (
 
   return res.data;
 };
+
+export async function getMe() {
+  const token = Cookies.get("token") ?? "";
+  if (!token) throw new Error("No auth token found");
+
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    headers: { Authorization: token, "Content-Type": "application/json" },
+  });
+  return res.data; // asegúrate de que tenga account.id o accounts[0].id
+}

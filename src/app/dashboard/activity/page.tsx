@@ -142,7 +142,7 @@ function ActivityInner() {
     const fromMs = from?.getTime();
     const toMs = to?.getTime();
 
-    return filteredByText.filter((tx: any) => {
+    return filteredByText.filter((tx: TransactionType) => {
       const ts = getCreatedTs(tx);
       if (!Number.isFinite(ts)) return false;
       return (fromMs == null || ts >= fromMs) && (toMs == null || ts < toMs);

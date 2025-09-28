@@ -1,15 +1,15 @@
-// services/transactionService.ts
+
 import axios from "axios";
 import Cookies from "js-cookie";
-import { NewTransactionType, TransactionType } from "@/types/transaction";
+import { NewTransactionType, TransactionType, TransactionIdType } from "@/types/transaction";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-// ✅ ahora puede recibir un token (fallback a cookie)
+// recibir un token (fallback a cookie)
 function authHeader(token?: string) {
   const t = token ?? Cookies.get("token") ?? "";
   if (!t) throw new Error("No auth token found");
-  return { Authorization: t };         // SIN 'Bearer' (tu backend lo pidió así)
+  return { Authorization: t };         // SIN 'Bearer'
 }
 
 export const getAllTransactions = async (
@@ -33,7 +33,7 @@ export const getTransactionById = async (
   accountId: number,
   transactionId: number,
   token?: string
-): Promise<TransactionType> => {
+): Promise<TransactionIdType> => {
   if (!accountId || !transactionId) throw new Error("Parámetros inválidos");
 
   const res = await axios.get(
@@ -46,7 +46,7 @@ export const getTransactionById = async (
     }
   );
 
-  return res.data as TransactionType;
+  return res.data as TransactionIdType;
 };
 
 export const createTransaction = async (
@@ -69,3 +69,5 @@ export const createTransaction = async (
 
   return res.data as TransactionType;
 };
+
+

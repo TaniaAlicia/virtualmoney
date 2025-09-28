@@ -27,7 +27,7 @@ export default function PeriodFilter({
   onClear,
   onClose,
   selected,
-  className,
+  /* className, */
 }: Props) {
   const [value, setValue] = useState<string>(selected ?? "");
   const [showCustom, setShowCustom] = useState<boolean>(false);
