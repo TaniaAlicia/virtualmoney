@@ -41,6 +41,10 @@
 - **js-cookie** – Manejo de tokens de sesión en cookies seguras.
 - **jwt-decode** – Decodificación de tokens JWT en el cliente.
 
+### 📄Generación de Documentos
+
+- **jsPDF** – Librería para crear y exportar comprobantes o documentos en PDF desde el cliente.
+
 ### 🧹 Code Style y Herramientas de Desarrollo
 - **ESLint** – Linter para mantener calidad de código.
 - **Prettier** – Formateador automático para estilos consistentes.
