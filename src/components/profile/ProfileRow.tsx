@@ -8,26 +8,24 @@ import { registerSchema } from "@/schemas/registerSchema";
 import { EyeIcon } from "@/components/generals/EyeIcon";
 import { EyeOffIcon } from "@/components/generals/EyeOffIcon";
 
+import { toast } from "sonner";
+
 type FieldUnion =
   // ADDED: nuevo campo compuesto para editar nombre + apellido juntos
-  | "fullName"
-  | "firstName"
-  | "lastName"
-  | "phone"
-  | "password";
+  "fullName" | "firstName" | "lastName" | "phone" | "password";
 
 type Props = {
   label: string;
   value: string;
   //field?: "firstName" | "lastName" | "phone" | "password";
-   field?: FieldUnion;
+  field?: FieldUnion;
   userId?: number;
   locked?: boolean;
- /*  onUpdate?: (
+  /*  onUpdate?: (
     field: "firstName" | "lastName" | "phone" | "password",
     value: string,
   ) => void; */
-    onUpdate?: (field: Exclude<FieldUnion, "fullName">, value: string) => void;
+  onUpdate?: (field: Exclude<FieldUnion, "fullName">, value: string) => void;
 };
 
 // ADDED: helper para separar Nombre y Apellido
@@ -39,7 +37,6 @@ function splitFullName(raw: string) {
   const last = parts.join(" "); // puede quedar vacío y está bien
   return { first, last };
 }
-
 
 export default function ProfileRow({
   label,
@@ -65,7 +62,7 @@ export default function ProfileRow({
     setInputValue(isPassword ? "" : value);
   }, [value, isPassword]); // CHANGED
 
-   // ADDED: validación específica para fullName, respetando el schema existente
+  // ADDED: validación específica para fullName, respetando el schema existente
   const validateFullName = async (val: string) => {
     const { first, last } = splitFullName(val);
     try {
@@ -79,7 +76,7 @@ export default function ProfileRow({
   };
 
   // Validación en tiempo real
-   const validateField = async (val: string) => {
+  const validateField = async (val: string) => {
     if (!field) return;
     if (isFullName) return validateFullName(val); // ADDED: delega
     try {
@@ -89,7 +86,7 @@ export default function ProfileRow({
       if (e instanceof Error) {
         setError(e.message);
       } else {
-        setError('Error de validación');
+        setError("Error de validación");
       }
     }
   };
@@ -137,21 +134,22 @@ export default function ProfileRow({
         const updated = await updateUser(
           userId,
           { firstName: first, lastName: last }, // backend espera estos nombres
-          token
+          token,
         );
 
         setEditing(false);
+        toast.success("Datos actualizados correctamente");
 
         // ADDED: notificar al padre por separado (dos updates)
         const newFirst =
           updated?.firstname ?? updated?.firstName ?? first ?? "";
-        const newLast =
-          updated?.lastname ?? updated?.lastName ?? last ?? "";
+        const newLast = updated?.lastname ?? updated?.lastName ?? last ?? "";
 
         onUpdate?.("firstName", newFirst);
         onUpdate?.("lastName", newLast);
       } catch (e) {
         console.error("Error al actualizar:", e);
+        toast.error("No se pudieron actualizar los datos");
       } finally {
         setLoading(false);
       }
