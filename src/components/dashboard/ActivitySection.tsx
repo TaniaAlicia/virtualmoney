@@ -78,6 +78,7 @@ type Props = {
   /** si es la página completa de actividad, oculta el link “Ver toda tu actividad” */
   showActivityPage?: boolean;
   hideSearch?: boolean;
+  enableSearchFilter?: boolean;
   //  props SOLO para móvil
   enableMobileFilter?: boolean; // <- activa el botón "Filtrar" en el header (md:hidden)
   showFilters?: boolean; // <- estado abierto/cerrado (viene del padre)
@@ -94,6 +95,7 @@ export default function ActivitySection({
   limit,
   showActivityPage = false,
   hideSearch = false,
+  enableSearchFilter = true,
   // móvil
   enableMobileFilter,
   showFilters,
@@ -130,6 +132,7 @@ export default function ActivitySection({
       .replace(/\p{Diacritic}/gu, "");
 
   const filtered = useMemo(() => {
+     if (!enableSearchFilter) return transactions;
     if (!search.trim()) return transactions;
     const q = search.toLowerCase();
     return transactions.filter((tx: TransactionType) => {

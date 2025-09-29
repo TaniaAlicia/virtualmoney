@@ -287,7 +287,7 @@ export default function ProfileRow({
             )}
           </>
         ) : (
-          <span className="text-dark1 truncate text-sm text-gray2">
+          <span className="truncate text-sm text-dark2/40">
             {/* CHANGED: fuera de edición, siempre asteriscos para password */}
             {isPassword ? "******" : value}
           </span>

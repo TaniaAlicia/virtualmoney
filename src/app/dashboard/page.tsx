@@ -53,6 +53,7 @@ export default function DashboardPage() {
         transactions={transactions}
         showActivityPage={false}
         limit={10} 
+        enableSearchFilter={false}
       />
     </main>
   );

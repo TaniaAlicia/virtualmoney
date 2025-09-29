@@ -11,7 +11,7 @@ type Row = {
 
 type Props = {
   rows: Row[];
-  // ⬇️ callback que baja a cada Row
+  // callback que baja a cada Row
    onUpdate?: (
     field: "firstName" | "lastName" | "phone" | "password",
     value: string
