@@ -36,7 +36,7 @@ export default function SidebarDashboard() {
   };
 
   return (
-    <aside className="hidden md:block w-[200px] bg-green text-black min-h-screen p-8">
+    <aside className="hidden md:block w-[270px] bg-green text-black min-h-screen p-8">
       <nav className="flex flex-col gap-3">
         {items.map((it) => (
           <Link

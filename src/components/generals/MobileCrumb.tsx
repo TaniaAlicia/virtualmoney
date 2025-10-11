@@ -1,4 +1,3 @@
-// components/generals/MobileCrumb.tsx
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -22,19 +21,23 @@ export default function MobileCrumb() {
 
   return (
     <div className="flex items-center gap-2 md:hidden">
-      {/* Flecha → con línea (NEGRA) */}
+      {/* Flecha → con línea */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 flex-none text-dark"
+        className="h-8 w-8 flex-none text-dark dark:text-light"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h14m0 0l-4-4m4 4l-4 4" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4 12h14m0 0l-4-4m4 4l-4 4"
+        />
       </svg>
 
-      <p className="!text-dark1 text-lg font-medium underline underline-offset-2">
+      <p className="text-dark dark:text-light text-lg font-medium underline underline-offset-2">
         {currentCrumb.label}
       </p>
     </div>
