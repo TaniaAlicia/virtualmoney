@@ -126,15 +126,27 @@ export default function ActivityDetailPage() {
     <main className="flex flex-col gap-6 p-6">
       {/* Caja detalle */}
       <div className="rounded-lg bg-dark p-6 text-white shadow-md">
-        <div className="mb-4 flex items-center justify-between border-b-2 border-gray-500 pb-2">
-          <div className="flex items-center gap-2">
-            <CheckIcon className="h-6 w-6 text-green" />
-            <h2 className="text-xl font-bold text-green">Aprobada</h2>
-          </div>
-          <span className="text-sm">
-            {formatDated(transaction.dated ?? "")}
-          </span>
-        </div>
+        <div className="mb-4">
+          {/* Encabezado */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            {/* Título con línea (mobile y desktop) */}
+            <div className="border-b-2 border-gray-500 pb-2 sm:border-none sm:pb-0">
+              <div className="flex items-center gap-2">
+                <CheckIcon className="h-6 w-6 text-green" />
+                <h2 className="text-xl font-bold text-green">Aprobada</h2>
+              </div>
+            </div>
+
+    {/* Fecha */}
+    <p className="pt-2 text-sm text-gray-300 sm:pt-0 sm:text-right sm:ml-4">
+      {formatDated(transaction.dated ?? "")}
+    </p>
+  </div>
+
+  {/* Línea visible solo en desktop */}
+  <div className="hidden border-b-2 border-gray-500 sm:block"></div>
+</div>
+
 
         <div className="flex flex-col gap-3">
           <div>
