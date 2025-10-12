@@ -117,8 +117,10 @@ export default function AddCardPage() {
 
   return (
     <section className="flex w-full flex-col items-center gap-5 rounded-[10px] bg-white p-6 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] md:p-8 xl:px-28 xl:py-8">
-      <MobileCrumb />
-      
+      <div className="flex w-full justify-start">
+        <MobileCrumb />
+      </div>
+
       {/* Tarjetita (react-credit-cards-2) */}
       <ImageCard
         number={cardValues.numberCard || ""}
@@ -206,7 +208,7 @@ export default function AddCardPage() {
           <div className="w-full md:mt-5 lg:col-span-1 lg:col-start-2 lg:mt-0">
             <button
               type="submit"
-              disabled={!isValid || creating} 
+              disabled={!isValid || creating}
               className={clsx(
                 "w-full rounded-xl border px-6 py-3 font-bold transition-all duration-200",
                 "shadow-[0_1.5px_1.5px_rgba(0,0,0,0.10),0_6px_14px_rgba(0,0,0,0.08)]",
