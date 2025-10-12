@@ -1,20 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import PlusIcon from "@/components/icons/PlusIcon";
-import { CardType } from "@/types/card";
-import clsx from "clsx";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import UserCards from "@/components/cards/UserCards";
 import { toast } from "sonner";
+
+import PlusIcon from "@/components/icons/PlusIcon";
+import UserCards from "@/components/cards/UserCards";
+import CustomToaster from "@/components/generals/CustomToaster";
+
+import { CardType } from "@/types/card";
+import { useSelectCard } from "@/context/moneyContext";
+import { useTransaction } from "@/context/transactionContext";
 
 type SelectedCardProps = {
   cardsList: CardType[];
   accountId: number;
   token: string;
-  showAddMoneyPage?: boolean;
-  showPayServicePage?: boolean;
+  accountCvu?: string;
   onDeleteCard?: (id: CardType["id"]) => void;
   deletingId?: CardType["id"] | null;
 };
@@ -22,88 +26,120 @@ type SelectedCardProps = {
 export default function SelectedCard({
   cardsList,
   accountId,
-  token,
-  showAddMoneyPage,
-  showPayServicePage,
+  accountCvu,
   onDeleteCard,
   deletingId,
 }: SelectedCardProps) {
   const router = useRouter();
+  const { setCardId } = useSelectCard();
+  const { setTransaction } = useTransaction();
   const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(null);
 
-  const handleAction = () => {
+  // 🔁 Sincroniza selección local con global
+  useEffect(() => {
+    if (selectedCardId) setCardId(selectedCardId);
+  }, [selectedCardId, setCardId]);
+
+  // 💳 Validar selección antes de continuar
+  const handleAddMoney = () => {
     if (!selectedCardId) {
-      toast.error("Por favor selecciona una tarjeta");
+      toast.error("Por favor seleccioná una tarjeta", {
+        style: {
+          background: "#ffebeb",
+          color: "#d60000",
+          fontWeight: 600,
+          border: "1px solid #ffbaba",
+        },
+      });
       return;
     }
 
-    toast.success("Redirigiendo...");
+    // ✅ Guardamos sólo la selección, sin crear el depósito aún
+    setTransaction({
+      id: 0,
+      account_id: accountId,
+      amount: 0,
+      dated: new Date().toISOString(),
+      description: "Ingreso de dinero",
+      destination: "Digital Money House",
+      origin: "Cuenta propia",
+      type: "deposit",
+      destinationCvu: accountCvu,
+    });
+
+    toast.success("Tarjeta seleccionada correctamente");
     router.push("/dashboard/add-money/card/amount");
   };
 
   return (
     <section className="flex flex-col gap-5">
-      {/* Caja principal */}
-      <div className="bg-dark flex flex-col gap-3 rounded-[10px] p-5 md:px-12 md:py-12 shadow-sm">
-        {/* Título */}
-        <h2 className="font-bold text-xl text-green pb-3 md:text-2xl">
+      <CustomToaster />
+
+      <div className="flex flex-col gap-3 rounded-[10px] bg-dark p-5 shadow-sm md:px-12 md:py-12">
+        <h2 className="pb-3 text-xl font-bold text-green md:text-2xl">
           Seleccionar tarjeta
         </h2>
 
-        {/* Lista de tarjetas (modo selección activo) */}
+        {/* Lista de tarjetas */}
         <UserCards
           cardsList={cardsList}
-          selectable // 👈 activa los círculos tipo radio
+          selectable
           selectedId={selectedCardId}
-          onSelect={setSelectedCardId}
+          onSelect={(cardId) => {
+            const card = cardsList.find((c) => c.id === cardId);
+            setSelectedCardId(cardId);
+            if (card?.number_id) {
+              toast.success(
+                `Se seleccionó la tarjeta terminada en ${card.number_id
+                  .toString()
+                  .slice(-4)}`
+              );
+            }
+          }}
           onDelete={onDeleteCard}
           deletingId={deletingId ?? null}
         />
 
         {/* Nueva tarjeta + botón continuar */}
-        <div className="w-full md:flex md:flex-col xl:flex-row md:gap-3 md:justify-between md:items-start xl:items-center xl:mt-5">
-          {/* Nueva tarjeta */}
+        <div className="w-full md:flex md:flex-col md:items-start md:justify-between md:gap-3 xl:mt-5 xl:flex-row xl:items-center">
           <Link
-            href="/dashboard/cards/add-card"
-            className="w-full flex flex-col md:gap-5 pt-4 pb-2"
+            href="/dashboard/cards/new-card"
+            className="flex w-full flex-col pb-2 pt-4 md:gap-5"
           >
-            <div className="flex items-center justify-start gap-4 md:pt-2 md:pb-3">
-              <PlusIcon className="w-7 h-7 md:w-8 md:h-8 text-green" />
-              <p className="text-green font-bold md:text-xl">Nueva tarjeta</p>
+            <div className="flex items-center justify-start gap-4 md:pb-3 md:pt-2">
+              <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
+              <p className="font-bold text-green md:text-xl">Nueva tarjeta</p>
             </div>
           </Link>
 
-          {/* Botón continuar (desktop) */}
-          <div className="hidden md:w-full xl:w-2/4 md:flex md:h-[64px] xl:justify-end md:items-center">
+          <div className="hidden md:flex md:h-[64px] md:w-full md:items-center xl:w-2/4 xl:justify-end">
             <button
-              onClick={handleAction}
+              onClick={handleAddMoney}
               className={clsx(
-                "p-5 md:w-full xl:w-[233px] font-bold text-center text-dark rounded-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.10)] transition",
+                "rounded-[10px] p-5 text-center font-bold text-dark shadow transition md:w-full xl:w-[233px]",
                 selectedCardId
                   ? "bg-[#C1FD35] hover:brightness-110"
-                  : "bg-gray-400 cursor-not-allowed opacity-80",
+                  : "bg-gray-400 hover:brightness-105"
               )}
-              disabled={!selectedCardId}
             >
-              {showPayServicePage ? "Pagar" : "Continuar"}
+              Continuar
             </button>
           </div>
         </div>
       </div>
 
       {/* Botón continuar (mobile) */}
-      <div className="w-full mb-5 h-[50px] flex justify-end md:hidden">
+      <div className="mb-5 flex h-[50px] w-full justify-end md:hidden">
         <button
-          onClick={handleAction}
+          onClick={handleAddMoney}
           className={clsx(
-            "p-3 w-[165px] font-bold text-dark rounded-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.10)] transition",
+            "w-[165px] rounded-[10px] p-3 font-bold text-dark shadow transition",
             selectedCardId
               ? "bg-[#C1FD35] hover:brightness-110"
-              : "bg-gray-400 cursor-not-allowed opacity-80",
+              : "bg-gray-400 hover:brightness-105"
           )}
-          disabled={!selectedCardId}
         >
-          {showPayServicePage ? "Pagar" : "Continuar"}
+          Continuar
         </button>
       </div>
     </section>

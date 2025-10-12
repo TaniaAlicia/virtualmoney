@@ -25,3 +25,17 @@ export type TransactionIdType = {
   origin: string;
   type: string;
 };
+
+/* export type TransactionType = {
+  id: number;
+  accountId: number;
+  amount: number;             // en pesos (negativo o positivo)
+  type?: "in" | "out";        // opcional, depende del backend
+  description?: string;
+  origin?: string;
+  destination?: string;
+  dated?: string;             // 🔹 Fecha de creación ISO (nuevo campo)
+  destinationCvu?: string;    // 🔹 CVU destino opcional
+  createdAt?: string;         // 🔹 Por compatibilidad
+  updatedAt?: string;
+}; */

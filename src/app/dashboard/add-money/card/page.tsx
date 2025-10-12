@@ -1,39 +1,56 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import MobileCrumb from "@/components/generals/MobileCrumb";
 import SelectedCard from "@/components/add-money/SelectedCard";
 import { useCards } from "@/hooks/useCards";
+import { getAccount } from "@/services/accountService";
+import Cookies from "js-cookie";
 
 export default function CardPage() {
-  const {
-    loading,
-    error,
-    cards,
-    deletingId: deletingCardId,
-    removeCard,
-  } = useCards(); // carga automática de tarjetas
+  const { loading, error, cards, deletingId, removeCard } = useCards();
+  const [accountData, setAccountData] = useState<any>(null);
+  const [loading1, setLoading1] = useState(true);
+  const [token, setToken] = useState("");
 
-  const accountId = 1; // por ahora fijo (luego puedes traerlo del contexto de usuario)
-  const token = "fake-token"; // igual, luego reemplazas con el real
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      try {
+        const storedToken = Cookies.get("token");
+        if (!storedToken) {
+          console.error("No se encontró el token en las cookies");
+          return;
+        }
+
+        setToken(storedToken);
+        const account = await getAccount();
+        setAccountData(account);
+      } catch (error) {
+        console.error("Error al obtener la cuenta:", error);
+      } finally {
+        setLoading1(false);
+      }
+    };
+
+    fetchAccountData();
+  }, []);
 
   return (
     <main className="max-w-8xl mx-auto flex-1 space-y-5 bg-gray1 px-6 pb-6 pt-0 text-dark">
-      {/* Migas de pan (mobile) */}
       <MobileCrumb />
 
-      {/* Estado de carga / error */}
       {loading && <p className="text-dark2">Cargando tarjetas…</p>}
-      {!loading && error && <p className="text-red-600">Error: {error}</p>}
+      {error && <p className="text-red-600">Error: {error}</p>}
 
-      {/* Lista de tarjetas + botón continuar */}
-      {!loading && (
+      {!loading && accountData && (
         <SelectedCard
           cardsList={cards ?? []}
-          accountId={accountId}
+          accountId={accountData.id}
+          accountCvu={accountData.cvu}
           token={token}
-          showAddMoneyPage
-          onDeleteCard={removeCard} 
-          deletingId={deletingCardId}
+          /* showAddMoneyPage */
+          onDeleteCard={removeCard}
+          deletingId={deletingId}
         />
       )}
     </main>
