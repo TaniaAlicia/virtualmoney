@@ -27,17 +27,15 @@ export default function PeriodFilter({
   onClear,
   onClose,
   selected,
-  /* className, */
 }: Props) {
   const [value, setValue] = useState<string>(selected ?? "");
   const [showCustom, setShowCustom] = useState<boolean>(false);
-  const [fromStr, setFromStr] = useState<string>(""); //  YYYY-MM-DD
+  const [fromStr, setFromStr] = useState<string>("");
   const [toStr, setToStr] = useState<string>("");
   const [open, setOpen] = useState(true);
 
-  const uid = useId(); // ID único por instancia (evita colisiones de name=)
+  const uid = useId();
 
-  // SINCRONIZA cada vez que se reabre con un período ya aplicado
   useEffect(() => {
     setValue(selected ?? "");
     const isCustom = (selected ?? "") === "custom";
@@ -77,7 +75,6 @@ export default function PeriodFilter({
     >
       {/* Header */}
       <div className="flex items-center justify-between gap-4 px-6 pb-3 pt-5">
-        {/* 🆕 botón accesible que sólo colapsa/expande */}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -115,7 +112,6 @@ export default function PeriodFilter({
         </button>
       </div>
 
-      {/* Línea separadora sólo si está abierto */}
       {open && <div className="h-px w-full bg-black" />}
 
       {/* Opciones */}
@@ -126,70 +122,34 @@ export default function PeriodFilter({
               key={p.value}
               className={clsx(
                 "flex cursor-pointer items-center justify-between",
-                p.value === "custom" && "opacity-100", // visible, manejará subpanel
+                p.value === "custom" && "opacity-100",
               )}
+              onClick={() => {
+                setValue(p.value);
+                if (p.value === "custom") setShowCustom((s) => !s);
+              }}
             >
               <span
                 className={clsx("text-sm md:text-base", {
                   "text-dark1 font-bold": value === p.value,
                   "text-black/70": value !== p.value,
                 })}
-                onClick={() => {
-                  setValue(p.value);
-                  if (p.value === "custom") setShowCustom((s) => !s); // toggle subpanel
-                }}
               >
                 {p.label}
               </span>
 
-              {p.value === "custom" ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setValue("custom");
-                    setShowCustom((s) => !s);
-                  }}
-                  aria-expanded={showCustom}
-                  aria-controls="custom-range"
-                  className="text-dark1/70 inline-flex h-4 w-4 items-center justify-center"
-                  aria-label="Abrir rango personalizado"
-                >
-                  <svg
-                    viewBox="0 0 11 7"
-                    className={clsx(
-                      "h-[7px] w-[11px] transition-transform",
-                      showCustom ? "rotate-0" : "-rotate-90",
-                    )}
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 1L5.5 5L10 1"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              ) : (
-                <input
-                  type="radio"
-                  name={`period-${uid}`} // nombre único por instancia
-                  value={p.value}
-                  checked={value === p.value}
-                  onChange={() => setValue(p.value)}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className={clsx(
-                    "border-dark1 relative h-4 w-4 cursor-pointer appearance-none rounded-full border",
-                    "checked:border-dark2 checked:bg-green",
-                    "checked:after:absolute checked:after:left-1/2 checked:after:top-1/2",
-                    "checked:after:h-2 checked:after:w-2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2",
-                    "checked:after:rounded-full checked:after:bg-dark",
-                    "outline-none ring-0 focus:outline-none focus:ring-0",
-                    "accent-dark",
-                  )}
-                />
-              )}
+              {/* Custom radio sin input */}
+              <span
+                className={clsx(
+                  "relative flex h-5 w-5 items-center justify-center rounded-full border border-dark transition-all duration-150",
+                  "hover:brightness-110",
+                  value === p.value && "bg-[#C1FD35]",
+                )}
+              >
+                {value === p.value && (
+                  <span className="absolute h-3 w-3 rounded-full bg-dark" />
+                )}
+              </span>
             </label>
           ))}
 
