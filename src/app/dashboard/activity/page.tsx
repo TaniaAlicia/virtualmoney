@@ -29,6 +29,8 @@ function ActivityInner() {
   const [customFrom, setCustomFrom] = useState<Date | null>(null);
   const [customTo, setCustomTo] = useState<Date | null>(null);
 
+  const [operationType, setOperationType] = useState<string>("all"); // ✅ nuevo: tipo de operación
+
   useEffect(() => setSearch(initialQ), [initialQ]);
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -42,7 +44,7 @@ function ActivityInner() {
     }
   };
 
-  const filteredByText = useMemo(() => {
+  /* const filteredByText = useMemo(() => {
     if (!search.trim()) return transactions;
     const q = search.toLowerCase();
     return transactions.filter((tx: TransactionType) => {
@@ -53,7 +55,7 @@ function ActivityInner() {
         : "";
       return desc.includes(q) || amount.includes(q) || date.includes(q);
     });
-  }, [transactions, search]);
+  }, [transactions, search]); */
 
   const startOfDay = (d: Date) =>
     new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -82,8 +84,10 @@ function ActivityInner() {
         return { from: addDays(today0, -15), to: addDays(today0, 1) };
       case "month":
         return { from: addDays(today0, -30), to: addDays(today0, 1) };
-      case "year":
-        return { from: addDays(today0, -365), to: addDays(today0, 1) };
+      case "3months":
+        return { from: addDays(today0, -90), to: addDays(today0, 1) };
+      /* case "year":
+        return { from: addDays(today0, -365), to: addDays(today0, 1) }; */
       case "custom": // lo que eligió el usuario
         if (customFrom && customTo) {
           const from = startOfDay(customFrom);
@@ -135,19 +139,46 @@ function ActivityInner() {
     );
   }
 
-  // filtro por período
   const filtered = useMemo(() => {
-    if (!period) return filteredByText;
-    const { from, to } = getRangeFor(period);
-    const fromMs = from?.getTime();
-    const toMs = to?.getTime();
+    // 1️⃣ Base: todas las transacciones
+    let result = transactions;
 
-    return filteredByText.filter((tx: TransactionType) => {
-      const ts = getCreatedTs(tx);
-      if (!Number.isFinite(ts)) return false;
-      return (fromMs == null || ts >= fromMs) && (toMs == null || ts < toMs);
-    });
-  }, [filteredByText, period, customFrom, customTo]);
+    // 2️⃣ Filtro de texto (si hay búsqueda activa)
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((tx: TransactionType) => {
+        const desc = (tx.description || "").toLowerCase();
+        const amount = String(tx.amount ?? "").toLowerCase();
+        const date = tx.createdAt
+          ? new Date(tx.createdAt).toLocaleDateString("es-AR").toLowerCase()
+          : "";
+        return desc.includes(q) || amount.includes(q) || date.includes(q);
+      });
+    }
+
+    // 3️⃣ Filtro de fechas (solo si hay período seleccionado)
+    if (period) {
+      const { from, to } = getRangeFor(period);
+      const fromMs = from?.getTime();
+      const toMs = to?.getTime();
+      result = result.filter((tx: TransactionType) => {
+        const ts = getCreatedTs(tx);
+        if (!Number.isFinite(ts)) return false;
+        return (fromMs == null || ts >= fromMs) && (toMs == null || ts < toMs);
+      });
+    }
+
+    // 4️⃣ Filtro por tipo de operación (siempre)
+    if (operationType !== "all") {
+      result = result.filter((tx: TransactionType) => {
+        const amount = Number(tx.amount ?? 0);
+        const isIncome = amount > 0;
+        return operationType === "ingresos" ? isIncome : !isIncome;
+      });
+    }
+
+    return result;
+  }, [transactions, search, period, customFrom, customTo, operationType]);
 
   // wrapper para botón + popover (para detectar click afuera)
   const filterWrapRef = useRef<HTMLDivElement>(null);
@@ -244,16 +275,21 @@ function ActivityInner() {
             <div className="absolute right-0 top-full z-50 ">
               <PeriodFilter
                 selected={period}
-                onApply={(val) => setPeriod(val)}
-                onApplyCustom={(fromISO, toISO) => {
+                onApply={(val, type) => {
+                  setPeriod(val);
+                  setOperationType(type ?? "all");
+                }}
+                onApplyCustom={(fromISO, toISO, type) => {
                   setCustomFrom(parseLocalDate(fromISO));
                   setCustomTo(parseLocalDate(toISO));
                   setPeriod("custom");
+                  setOperationType(type ?? "all");
                 }}
                 onClear={() => {
                   setPeriod("");
                   setCustomFrom(null);
                   setCustomTo(null);
+                  setOperationType("all");
                 }}
                 onClose={() => setShowFilters(false)}
               />
@@ -274,6 +310,7 @@ function ActivityInner() {
         onToggleFilters={() => setShowFilters((s) => !s)}
         periodSelected={period}
         onApplyPeriod={(v) => setPeriod(v)}
+        onApplyOperationType={(t) => setOperationType(t)}
         onClearPeriod={() => {
           setPeriod("");
           setCustomFrom(null);

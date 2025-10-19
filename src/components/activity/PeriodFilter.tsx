@@ -8,13 +8,21 @@ const periods = [
   { label: "Última semana", value: "week" },
   { label: "Últimos 15 días", value: "15days" },
   { label: "Último mes", value: "month" },
-  { label: "Último año", value: "year" },
+  { label: "Últimos 3 meses", value: "3months" },
+  /* { label: "Último año", value: "year" }, */
   { label: "Otro período", value: "custom" },
 ];
 
+// 🔹 Tipos de operación (nuevo bloque)
+const operationTypes = [
+  { label: "Todos", value: "all" },
+  { label: "Ingresos", value: "ingresos" },
+  { label: "Egresos", value: "egresos" },
+];
+
 type Props = {
-  onApply: (value: string) => void;
-  onApplyCustom?: (fromISO: string, toISO: string) => void;
+  onApply: (value: string, type?: string) => void;
+  onApplyCustom?: (fromISO: string, toISO: string, type?: string) => void;
   onClear: () => void;
   onClose: () => void;
   selected?: string;
@@ -34,6 +42,9 @@ export default function PeriodFilter({
   const [toStr, setToStr] = useState<string>("");
   const [open, setOpen] = useState(true);
 
+  // ✅ nuevo estado para tipo de operación
+  const [operationType, setOperationType] = useState<string>("all");
+
   const uid = useId();
 
   useEffect(() => {
@@ -48,14 +59,14 @@ export default function PeriodFilter({
 
   const handleApply = () => {
     if (value === "custom" && onApplyCustom && fromStr && toStr) {
-      onApplyCustom(fromStr, toStr);
+      onApplyCustom(fromStr, toStr, operationType);
       onClose();
       return;
     }
-    if (value) {
-      onApply(value);
-      onClose();
-    }
+
+    // ✅ Siempre permitir aplicar, incluso si no hay período
+    onApply(value || "", operationType);
+    onClose();
   };
 
   const handleClear = () => {
@@ -63,6 +74,7 @@ export default function PeriodFilter({
     setFromStr("");
     setToStr("");
     setShowCustom(false);
+    setOperationType("all"); // ✅ resetea tipo
     onClear();
     onClose();
   };
@@ -182,12 +194,46 @@ export default function PeriodFilter({
         </div>
       )}
 
+      {/* 🔽 NUEVO BLOQUE: Tipo de operación (alineado con períodos) */}
+      <div className="mt-4 border-t border-black/20 px-6 pt-4">
+        <h4 className="text-dark1 mb-3 text-sm font-bold">Tipo de operación</h4>
+        <div className="flex flex-col gap-4">
+          {operationTypes.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex cursor-pointer items-center justify-between"
+              onClick={() => setOperationType(opt.value)}
+            >
+              <span
+                className={clsx("text-sm md:text-base", {
+                  "text-dark1 font-bold": operationType === opt.value,
+                  "text-black/70": operationType !== opt.value,
+                })}
+              >
+                {opt.label}
+              </span>
+              <span
+                className={clsx(
+                  "relative flex h-5 w-5 items-center justify-center rounded-full border border-dark transition-all duration-150",
+                  "hover:brightness-110",
+                  operationType === opt.value && "bg-[#C1FD35]",
+                )}
+              >
+                {operationType === opt.value && (
+                  <span className="absolute h-3 w-3 rounded-full bg-dark" />
+                )}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
       {/* Acciones */}
-      <div className="px-6 pb-5">
+      <div className="mt-4 px-6 pb-5">
         <button
           onClick={handleApply}
           className="text-dark1 w-full rounded-lg bg-green py-2 text-sm font-bold shadow hover:opacity-90"
-          disabled={value === "custom" ? !(fromStr && toStr) : !value}
+          disabled={value === "custom" ? !(fromStr && toStr) : false}
         >
           Aplicar
         </button>

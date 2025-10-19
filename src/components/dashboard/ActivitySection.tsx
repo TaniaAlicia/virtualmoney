@@ -87,6 +87,7 @@ type Props = {
   onApplyPeriod?: (v: string) => void; // <- aplica período estándar
   onClearPeriod?: () => void; // <- limpia período
   onApplyCustomPeriod?: (fromISO: string, toISO: string) => void; // <- aplicar período custom
+  onApplyOperationType?: (type: string) => void;
 };
 
 export default function ActivitySection({
@@ -104,6 +105,7 @@ export default function ActivitySection({
   onApplyPeriod,
   onClearPeriod,
   onApplyCustomPeriod,
+  onApplyOperationType,
 }: Props) {
   const [search, setSearch] = useState("");
 
@@ -132,7 +134,7 @@ export default function ActivitySection({
       .replace(/\p{Diacritic}/gu, "");
 
   const filtered = useMemo(() => {
-     if (!enableSearchFilter) return transactions;
+    if (!enableSearchFilter) return transactions;
     if (!search.trim()) return transactions;
     const q = search.toLowerCase();
     return transactions.filter((tx: TransactionType) => {
@@ -260,9 +262,21 @@ export default function ActivitySection({
               // ancho responsivo: ocupa casi todo en móvil, 320px en md+
               className="w-[calc(100vw-2.5rem)] max-w-[320px]"
               selected={periodSelected ?? ""}
-              onApply={onApplyPeriod ?? (() => {})}
-              onApplyCustom={onApplyCustomPeriod}
-              onClear={onClearPeriod ?? (() => {})}
+              onApply={(val, type) => {
+                onApplyPeriod?.(val);
+                onApplyOperationType?.(type ?? "all"); // ✅ ahora se propaga al padre
+                onToggleFilters?.();
+              }}
+              onApplyCustom={(fromISO, toISO, type) => {
+                onApplyCustomPeriod?.(fromISO, toISO);
+                onApplyOperationType?.(type ?? "all"); // ✅ también aquí
+                onToggleFilters?.();
+              }}
+              onClear={() => {
+                onClearPeriod?.(); // limpia fechas
+                onApplyOperationType?.("all"); // ✅ limpia tipo también
+                onToggleFilters?.(); // cierra el panel
+              }}
               onClose={onToggleFilters ?? (() => {})}
             />
           </div>
@@ -281,7 +295,7 @@ export default function ActivitySection({
               const shown = formatARS(absAmount(tx.amount));
               const sign = credit ? "+" : "-";
 
-             /*  const href = `/dashboard/activity/detail?id=${encodeURIComponent(
+              /*  const href = `/dashboard/activity/detail?id=${encodeURIComponent(
                 String(tx.id),
               )}${accId ? `&acc=${encodeURIComponent(accId)}` : ""}`; */
 
