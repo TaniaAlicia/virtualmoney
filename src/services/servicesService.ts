@@ -1,37 +1,38 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import { ServiceType } from "@/types/service";
 
-const API = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URL;
 
-// helper para token
-function authHeader(token?: string) {
-  const t = token ?? Cookies.get("token") ?? "";
-  if (!t) throw new Error("No auth token found");
-  return { Authorization: t }; // sin "Bearer"
-}
+// ✅ Obtener todos los servicios
+export const getAllServices = async (): Promise<ServiceType[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/service`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-// Obtener un servicio por ID
-export const getServiceId = async (serviceId: string, token?: string) => {
-  if (!serviceId) throw new Error("serviceId inválido");
+    const text = await response.text(); // leemos la respuesta como texto una sola vez
 
-  const res = await axios.get(`${API}/services/${serviceId}`, {
-    headers: {
-      ...authHeader(token),
-      "Content-Type": "application/json",
-    },
-  });
+    if (!response.ok) {
+      let errorMessage = text;
+      try {
+        const errorData = JSON.parse(text);
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // no era JSON, usamos el texto crudo
+      }
+      throw new Error(`Error ${response.status}: ${errorMessage}`);
+    }
 
-  return res.data;
-};
-
-// (Opcional) obtener todos los servicios
-export const getAllServices = async (token?: string) => {
-  const res = await axios.get(`${API}/services`, {
-    headers: {
-      ...authHeader(token),
-      "Content-Type": "application/json",
-    },
-  });
-
-  return res.data;
+    const data = JSON.parse(text);
+    return Array.isArray(data) ? data : [];
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error al obtener servicios:", error.message);
+    } else {
+      console.error("Error desconocido al obtener servicios:", error);
+    }
+    return [];
+  }
 };
