@@ -44,19 +44,6 @@ function ActivityInner() {
     }
   };
 
-  /* const filteredByText = useMemo(() => {
-    if (!search.trim()) return transactions;
-    const q = search.toLowerCase();
-    return transactions.filter((tx: TransactionType) => {
-      const desc = (tx.description || "").toLowerCase();
-      const amount = String(tx.amount ?? "").toLowerCase();
-      const date = tx.createdAt
-        ? new Date(tx.createdAt).toLocaleDateString("es-AR").toLowerCase()
-        : "";
-      return desc.includes(q) || amount.includes(q) || date.includes(q);
-    });
-  }, [transactions, search]); */
-
   const startOfDay = (d: Date) =>
     new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const addDays = (d: Date, days: number) =>
@@ -86,8 +73,7 @@ function ActivityInner() {
         return { from: addDays(today0, -30), to: addDays(today0, 1) };
       case "3months":
         return { from: addDays(today0, -90), to: addDays(today0, 1) };
-      /* case "year":
-        return { from: addDays(today0, -365), to: addDays(today0, 1) }; */
+
       case "custom": // lo que eligió el usuario
         if (customFrom && customTo) {
           const from = startOfDay(customFrom);
