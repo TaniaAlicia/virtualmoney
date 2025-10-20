@@ -56,7 +56,7 @@ export default function ServicesList({ servicesList, showServicePage }: Props) {
                   </div>
 
                   {/* 🔹 Nombre (centrado en mobile, a la izquierda en desktop) */}
-                  <div className="flex-1 text-center md:text-left md:pl-36">
+                  <div className="flex-1 text-center md:text-left md:pl-28">
                     <span className="text-base font-medium text-black">
                       {service.name}
                     </span>
