@@ -17,10 +17,16 @@ import { useTransaction } from "@/context/transactionContext";
 type SelectedCardProps = {
   cardsList: CardType[];
   accountId: number;
-  token: string;
+  token?: string;
   accountCvu?: string;
   onDeleteCard?: (id: CardType["id"]) => void;
   deletingId?: CardType["id"] | null;
+
+  /** Reutilización del CTA */
+  ctaText?: string; // default: "Continuar"
+  onContinue?: () => void; // si viene, se usa como acción principal
+  showNewCardLink?: boolean; // default: true (en checked: false)
+  ctaAlwaysGreen?: boolean; // default: false (en checked: true)
 };
 
 export default function SelectedCard({
@@ -29,19 +35,23 @@ export default function SelectedCard({
   accountCvu,
   onDeleteCard,
   deletingId,
+  ctaText = "Continuar",
+  onContinue,
+  showNewCardLink = true,
+  ctaAlwaysGreen = false,
 }: SelectedCardProps) {
   const router = useRouter();
   const { setCardId } = useSelectCard();
   const { setTransaction } = useTransaction();
-  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
+    null,
+  );
 
-  // 🔁 Sincroniza selección local con global
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
   }, [selectedCardId, setCardId]);
 
-  // 💳 Validar selección antes de continuar
-  const handleAddMoney = () => {
+  const handlePrimaryAction = () => {
     if (!selectedCardId) {
       toast.error("Por favor seleccioná una tarjeta", {
         style: {
@@ -54,7 +64,12 @@ export default function SelectedCard({
       return;
     }
 
-    // ✅ Guardamos sólo la selección, sin crear el depósito aún
+    if (onContinue) {
+      onContinue(); // ej: Pagar
+      return;
+    }
+
+    // fallback: flujo de Add Money
     setTransaction({
       id: 0,
       account_id: accountId,
@@ -71,75 +86,71 @@ export default function SelectedCard({
     router.push("/dashboard/add-money/card/amount");
   };
 
+  const btnColor = ctaAlwaysGreen
+    ? "bg-[#C1FD35] hover:brightness-110"
+    : selectedCardId
+      ? "bg-[#C1FD35] hover:brightness-110"
+      : "bg-gray1 text-dark/70 hover:brightness-105"; // gris clarito cuando no hay selección (modo Add Money)
+
   return (
     <section className="flex flex-col gap-5">
       <CustomToaster />
 
-      <div className="flex flex-col gap-3 rounded-[10px] bg-dark p-5 shadow-sm md:px-12 md:py-12">
-        <h2 className="pb-3 text-xl font-bold text-green md:text-2xl">
-          Seleccionar tarjeta
-        </h2>
+      <UserCards
+        cardsList={cardsList}
+        selectable
+        selectedId={selectedCardId}
+        onSelect={(cardId) => {
+          const card = cardsList.find((c) => c.id === cardId);
+          setSelectedCardId(cardId);
+          if (card?.number_id) {
+            toast.success(
+              `Se seleccionó la tarjeta terminada en ${card.number_id
+                .toString()
+                .slice(-4)}`,
+            );
+          }
+        }}
+        onDelete={onDeleteCard}
+        deletingId={deletingId ?? null}
+      />
 
-        {/* Lista de tarjetas */}
-        <UserCards
-          cardsList={cardsList}
-          selectable
-          selectedId={selectedCardId}
-          onSelect={(cardId) => {
-            const card = cardsList.find((c) => c.id === cardId);
-            setSelectedCardId(cardId);
-            if (card?.number_id) {
-              toast.success(
-                `Se seleccionó la tarjeta terminada en ${card.number_id
-                  .toString()
-                  .slice(-4)}`
-              );
-            }
-          }}
-          onDelete={onDeleteCard}
-          deletingId={deletingId ?? null}
-        />
-
-        {/* Nueva tarjeta + botón continuar */}
-        <div className="w-full md:flex md:flex-col md:items-start md:justify-between md:gap-3 xl:mt-5 xl:flex-row xl:items-center">
+      <div className="hidden items-center justify-between md:flex">
+        {showNewCardLink ? (
           <Link
             href="/dashboard/cards/new-card"
-            className="flex w-full flex-col pb-2 pt-4 md:gap-5"
+            className="flex items-center gap-3"
           >
-            <div className="flex items-center justify-start gap-4 md:pb-3 md:pt-2">
-              <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
-              <p className="font-bold text-green md:text-xl">Nueva tarjeta</p>
-            </div>
+            <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
+            <span className="font-bold text-green md:text-xl">
+              Nueva tarjeta
+            </span>
           </Link>
+        ) : (
+          <span /> // placeholder para mantener el CTA a la derecha
+        )}
 
-          <div className="hidden md:flex md:h-[64px] md:w-full md:items-center xl:w-2/4 xl:justify-end">
-            <button
-              onClick={handleAddMoney}
-              className={clsx(
-                "rounded-[10px] p-5 text-center font-bold text-dark shadow transition md:w-full xl:w-[233px]",
-                selectedCardId
-                  ? "bg-[#C1FD35] hover:brightness-110"
-                  : "bg-gray-400 hover:brightness-105"
-              )}
-            >
-              Continuar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Botón continuar (mobile) */}
-      <div className="mb-5 flex h-[50px] w-full justify-end md:hidden">
         <button
-          onClick={handleAddMoney}
+          onClick={handlePrimaryAction}
           className={clsx(
-            "w-[165px] rounded-[10px] p-3 font-bold text-dark shadow transition",
-            selectedCardId
-              ? "bg-[#C1FD35] hover:brightness-110"
-              : "bg-gray-400 hover:brightness-105"
+            "w-[180px] h-[50px] rounded-[10px] text-center font-bold text-dark shadow transition",
+            btnColor,
           )}
         >
-          Continuar
+          {ctaText}
+        </button>
+      </div>
+
+      {/* CTA móvil (ancho completo) */}
+      <div className= "flex w-full justify-end md:hidden">
+        <button
+          onClick={handlePrimaryAction}
+          className={clsx(
+            "w-[133px] h-[50px] h-[50px]rounded-[10px] font-bold text-dark shadow transition",
+            btnColor,
+          )}
+        >
+          {ctaText}
         </button>
       </div>
     </section>

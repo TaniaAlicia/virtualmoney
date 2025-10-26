@@ -36,3 +36,29 @@ export const getAllServices = async (): Promise<ServiceType[]> => {
     return [];
   }
 };
+
+export const getServiceId = async (
+  id: string,
+  token?: string
+): Promise<ServiceType> => {
+  const response = await fetch(`${BASE_URL}/service/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: token } : {}),
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    let msg = text;
+    try {
+      const json = JSON.parse(text);
+      msg = json.message || msg;
+    } catch {}
+    throw new Error(`Error ${response.status}: ${msg}`);
+  }
+
+  return response.json();
+};
