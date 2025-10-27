@@ -44,11 +44,15 @@ export default function CardPage() {
 
       {!loading && accountData && (
         <SelectedCard
+          framed
+          title="Seleccionar tarjeta"
           cardsList={cards ?? []}
           accountId={accountData.id}
           accountCvu={accountData.cvu}
           token={token}
-          /* showAddMoneyPage */
+          ctaText="Continuar"
+          showNewCardLink={true}
+          ctaAlwaysGreen={false}
           onDeleteCard={removeCard}
           deletingId={deletingId}
         />

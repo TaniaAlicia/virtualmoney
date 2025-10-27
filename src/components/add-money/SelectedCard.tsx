@@ -23,10 +23,14 @@ type SelectedCardProps = {
   deletingId?: CardType["id"] | null;
 
   /** Reutilización del CTA */
-  ctaText?: string; // default: "Continuar"
-  onContinue?: () => void; // si viene, se usa como acción principal
-  showNewCardLink?: boolean; // default: true (en checked: false)
-  ctaAlwaysGreen?: boolean; // default: false (en checked: true)
+  ctaText?: string;               // default: "Continuar"
+  onContinue?: () => void;        // si viene, se usa como acción principal
+  showNewCardLink?: boolean;      // default: true (en checked: false)
+  ctaAlwaysGreen?: boolean;       // default: false (en checked: true)
+
+  /** Layout */
+  framed?: boolean;               // default: false (en CardPage: true)
+  title?: string;                 // default: "Seleccionar tarjeta" (cuando framed)
 };
 
 export default function SelectedCard({
@@ -39,13 +43,13 @@ export default function SelectedCard({
   onContinue,
   showNewCardLink = true,
   ctaAlwaysGreen = false,
+  framed = false,
+  title = "Seleccionar tarjeta",
 }: SelectedCardProps) {
   const router = useRouter();
   const { setCardId } = useSelectCard();
   const { setTransaction } = useTransaction();
-  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
-    null,
-  );
+  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(null);
 
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
@@ -65,11 +69,11 @@ export default function SelectedCard({
     }
 
     if (onContinue) {
-      onContinue(); // ej: Pagar
+      onContinue();
       return;
     }
 
-    // fallback: flujo de Add Money
+    // Flujo por defecto: Add Money
     setTransaction({
       id: 0,
       account_id: accountId,
@@ -90,12 +94,47 @@ export default function SelectedCard({
     ? "bg-[#C1FD35] hover:brightness-110"
     : selectedCardId
       ? "bg-[#C1FD35] hover:brightness-110"
-      : "bg-gray1 text-dark/70 hover:brightness-105"; // gris clarito cuando no hay selección (modo Add Money)
+      : "bg-gray1 text-dark/70 hover:brightness-105";
 
-  return (
-    <section className="flex flex-col gap-5">
-      <CustomToaster />
+  const DesktopFooter = (
+    <div className="hidden items-center justify-between md:flex">
+      {showNewCardLink ? (
+        <Link href="/dashboard/cards/new-card" className="flex items-center gap-3">
+          <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
+          <span className="font-bold text-green md:text-xl">Nueva tarjeta</span>
+        </Link>
+      ) : (
+        <span />
+      )}
 
+      <button
+        onClick={handlePrimaryAction}
+        className={clsx(
+          "flex h-[50px] w-[233px] items-center justify-center rounded-[10px] font-bold text-dark shadow transition",
+          btnColor,
+        )}
+      >
+        {ctaText}
+      </button>
+    </div>
+  );
+
+  const MobileFooter = (
+    <div className="flex w-full justify-end md:hidden">
+      <button
+        onClick={handlePrimaryAction}
+        className={clsx(
+          "flex h-[50px] w-[165px] items-center justify-center rounded-[10px] font-bold text-dark shadow transition",
+          btnColor,
+        )}
+      >
+        {ctaText}
+      </button>
+    </div>
+  );
+
+  const ListBlock = (
+    <>
       <UserCards
         cardsList={cardsList}
         selectable
@@ -114,45 +153,26 @@ export default function SelectedCard({
         onDelete={onDeleteCard}
         deletingId={deletingId ?? null}
       />
+      {DesktopFooter}
+      {MobileFooter}
+    </>
+  );
 
-      <div className="hidden items-center justify-between md:flex">
-        {showNewCardLink ? (
-          <Link
-            href="/dashboard/cards/new-card"
-            className="flex items-center gap-3"
-          >
-            <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
-            <span className="font-bold text-green md:text-xl">
-              Nueva tarjeta
-            </span>
-          </Link>
-        ) : (
-          <span /> // placeholder para mantener el CTA a la derecha
-        )}
+  return (
+    <section className="flex flex-col gap-5">
+      <CustomToaster />
 
-        <button
-          onClick={handlePrimaryAction}
-          className={clsx(
-            "w-[180px] h-[50px] rounded-[10px] text-center font-bold text-dark shadow transition",
-            btnColor,
-          )}
-        >
-          {ctaText}
-        </button>
-      </div>
-
-      {/* CTA móvil (ancho completo) */}
-      <div className= "flex w-full justify-end md:hidden">
-        <button
-          onClick={handlePrimaryAction}
-          className={clsx(
-            "w-[133px] h-[50px] h-[50px]rounded-[10px] font-bold text-dark shadow transition",
-            btnColor,
-          )}
-        >
-          {ctaText}
-        </button>
-      </div>
+      {framed ? (
+        // 🔲 Versión ENMARCADA (Add Money)
+        <div className="flex flex-col gap-4 rounded-[10px] bg-dark p-5 shadow-sm md:px-12 md:py-12">
+          <h2 className="pb-1 text-xl font-bold text-green md:text-2xl">{title}</h2>
+          {/* Caja blanca con tarjetas ya la pinta UserCards */}
+          {ListBlock}
+        </div>
+      ) : (
+        // 🧾 Versión SIMPLE (Checked)
+        <>{ListBlock}</>
+      )}
     </section>
   );
 }

@@ -59,7 +59,7 @@ export default function CheckedPage() {
         cardsList={cards}
         accountId={accountId}
         ctaText="Pagar"
-        onContinue={() => router.push("/dashboard/pay-services/confirm")}
+        onContinue={() => router.push("/dashboard/payments/confirm")}
         showNewCardLink={false}
         ctaAlwaysGreen={true}
       />
