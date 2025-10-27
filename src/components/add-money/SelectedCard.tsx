@@ -23,14 +23,14 @@ type SelectedCardProps = {
   deletingId?: CardType["id"] | null;
 
   /** Reutilización del CTA */
-  ctaText?: string;               // default: "Continuar"
-  onContinue?: () => void;        // si viene, se usa como acción principal
-  showNewCardLink?: boolean;      // default: true (en checked: false)
-  ctaAlwaysGreen?: boolean;       // default: false (en checked: true)
+  ctaText?: string; // default: "Continuar"
+  onContinue?: () => void; // si viene, se usa como acción principal
+  showNewCardLink?: boolean; // default: true (en checked: false)
+  ctaAlwaysGreen?: boolean; // default: false (en checked: true)
 
   /** Layout */
-  framed?: boolean;               // default: false (en CardPage: true)
-  title?: string;                 // default: "Seleccionar tarjeta" (cuando framed)
+  framed?: boolean; // default: false (en CardPage: true)
+  title?: string; // default: "Seleccionar tarjeta" (cuando framed)
 };
 
 export default function SelectedCard({
@@ -49,7 +49,9 @@ export default function SelectedCard({
   const router = useRouter();
   const { setCardId } = useSelectCard();
   const { setTransaction } = useTransaction();
-  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
+    null,
+  );
 
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
@@ -70,6 +72,12 @@ export default function SelectedCard({
 
     if (onContinue) {
       onContinue();
+      return;
+    }
+
+    // ✅ Caso Checked: cuando el CTA es "Pagar", ir a confirm directamente
+    if (ctaText.toLowerCase() === "pagar") {
+      router.push("/dashboard/payments/account/checked/success");
       return;
     }
 
@@ -99,7 +107,10 @@ export default function SelectedCard({
   const DesktopFooter = (
     <div className="hidden items-center justify-between md:flex">
       {showNewCardLink ? (
-        <Link href="/dashboard/cards/new-card" className="flex items-center gap-3">
+        <Link
+          href="/dashboard/cards/add-card"
+          className="flex items-center gap-3"
+        >
           <PlusIcon className="h-7 w-7 text-green md:h-8 md:w-8" />
           <span className="font-bold text-green md:text-xl">Nueva tarjeta</span>
         </Link>
@@ -165,7 +176,9 @@ export default function SelectedCard({
       {framed ? (
         // 🔲 Versión ENMARCADA (Add Money)
         <div className="flex flex-col gap-4 rounded-[10px] bg-dark p-5 shadow-sm md:px-12 md:py-12">
-          <h2 className="pb-1 text-xl font-bold text-green md:text-2xl">{title}</h2>
+          <h2 className="pb-1 text-xl font-bold text-green md:text-2xl">
+            {title}
+          </h2>
           {/* Caja blanca con tarjetas ya la pinta UserCards */}
           {ListBlock}
         </div>

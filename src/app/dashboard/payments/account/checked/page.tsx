@@ -10,6 +10,7 @@ import SelectedCard from "@/components/add-money/SelectedCard";
 import { getAccount } from "@/services/accountService";
 import { getAllCards } from "@/services/cardService";
 import type { CardType } from "@/types/card";
+import MobileCrumb from "@/components/generals/MobileCrumb";
 
 export default function CheckedPage() {
   const router = useRouter();
@@ -51,6 +52,7 @@ export default function CheckedPage() {
 
   return (
     <main className="flex flex-col gap-6">
+      <MobileCrumb />
       {/* Cabecera con nombre del servicio + total */}
       <DetailService />
 
@@ -59,7 +61,7 @@ export default function CheckedPage() {
         cardsList={cards}
         accountId={accountId}
         ctaText="Pagar"
-        onContinue={() => router.push("/dashboard/payments/confirm")}
+        onContinue={() => router.push("/dashboard/payments/account/checked/success")}
         showNewCardLink={false}
         ctaAlwaysGreen={true}
       />
