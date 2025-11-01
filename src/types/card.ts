@@ -14,6 +14,7 @@ export type CardBodyType = {
   first_last_name: string;
   expiration_date: string;  // "YYYY-MM"
   cod: number;              // CVV
+  brand?: string;
 };
 
 export type CardFormData = {

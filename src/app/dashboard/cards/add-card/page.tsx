@@ -12,6 +12,7 @@ import { convertDateFormat } from "@/utils/convertDateFormat";
 import { useCards } from "@/hooks/useCards";
 import type { CardBodyType, CardFormData } from "@/types/card";
 import MobileCrumb from "@/components/generals/MobileCrumb";
+import { detectBrandFromNumber } from "@/services/cardService";
 
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 const formatCardNumber = (v: string) =>
@@ -95,11 +96,15 @@ export default function AddCardPage() {
 
   const onSubmit = async (data: CardFormData) => {
     try {
+      const numberDigits = Number(onlyDigits(data.numberCard));
+      const brand = detectBrandFromNumber(numberDigits) ?? undefined;
+
       const payload: CardBodyType = {
         cod: Number(data.securityCode),
         expiration_date: convertDateFormat(data.expirationDate), // "YYYY-MM"
         first_last_name: data.nameTitular,
         number_id: Number(onlyDigits(data.numberCard)),
+        brand,
       };
 
       await addCard(payload);

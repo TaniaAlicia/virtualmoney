@@ -4,6 +4,22 @@ import type { CardBodyType, CardType } from "@/types/card";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
+export function detectBrandFromNumber(num?: string | number): string | null {
+  if (!num) return null;
+  const s = String(num);
+
+  if (/^4\d{12,18}$/.test(s)) return "Visa"; // 4...
+  const iin6 = parseInt(s.slice(0, 6), 10);
+  const iin2 = parseInt(s.slice(0, 2), 10);
+  if ((iin2 >= 51 && iin2 <= 55) || (iin6 >= 222100 && iin6 <= 272099))
+    return "MasterCard"; // 51–55, 2221–2720
+  if (/^(34|37)\d{13}$/.test(s)) return "American Express"; // 34/37
+
+  // agrega otras si las usas (Cabal, Naranja, etc.)
+  return null;
+}
+
+
 // Lo que devuelve el backend (shape conocido + campos opcionales)
 type RawCardFromAPI = {
   id?: number | string;
@@ -24,6 +40,9 @@ function normalize(c: RawCardFromAPI): CardType {
     (c.last4 ??
       String(c.number_id ?? c.number ?? "").toString().slice(-4)) || "----";
 
+  const computedBrand =
+    c.brand ?? detectBrandFromNumber(c.number_id ?? c.number) ?? undefined;
+
   return {
     // forzamos tipos a los del front
     id: (c.id ?? "") as number | string,
@@ -33,7 +52,7 @@ function normalize(c: RawCardFromAPI): CardType {
     first_last_name: c.first_last_name,
     expiration_date: c.expiration_date,
     cod: c.cod,
-    brand: c.brand,
+    brand: computedBrand,
     createdAt: c.createdAt,
     last4,
   };

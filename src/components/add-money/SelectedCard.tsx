@@ -46,12 +46,12 @@ export default function SelectedCard({
   title = "Seleccionar tarjeta",
 }: SelectedCardProps) {
   const router = useRouter();
-  //const { setCardId } = useSelectCard();
+  const { setCardId, setCardLast4, setCardBrand } = useSelectCard();
   const { setTransaction } = useTransaction();
   const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
     null,
   );
-  const { setCardId, setCardLast4 } = useSelectCard();
+  
 
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
@@ -152,6 +152,7 @@ export default function SelectedCard({
         selectedId={selectedCardId}
         onSelect={(cardId) => {
           const card = cardsList.find((c) => c.id === cardId);
+          console.log("[SelectedCard] card seleccionada:", card);
           setSelectedCardId(cardId);
           setCardId(cardId);
           const last4 =
@@ -159,6 +160,9 @@ export default function SelectedCard({
             (card?.number_id ? String(card.number_id).slice(-4) : null);
 
           setCardLast4(last4); // ← guarda en el store
+
+          const brand = card?.brand ?? null; // p. ej. "visa", "mastercard"
+          setCardBrand(brand);
 
           if (last4) {
             toast.success(`Se seleccionó la tarjeta terminada en ${last4}`);

@@ -27,6 +27,17 @@ function formatDated(fecha?: string | Date) {
   return base.replace(", ", " a las ") + " hs.";
 }
 
+function prettyBrand(b?: string | null) {
+  if (!b) return null;
+  const x = b.toLowerCase();
+  if (x.includes("visa")) return "Visa";
+  if (x.includes("master")) return "MasterCard";
+  if (x.includes("amex") || x.includes("american")) return "American Express";
+  if (x.includes("naranja")) return "Naranja";
+  if (x.includes("cabal")) return "Cabal";
+  return b.charAt(0).toUpperCase() + b.slice(1);
+}
+
 const currency = (n?: number) =>
   (n ?? 0).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
@@ -54,7 +65,8 @@ export default function SuccessPage() {
   const [serviceAmount, setServiceAmount] = useState<number | undefined>(
     undefined,
   );
-  const { last4 } = useSelectCard();
+  const { brand, last4 } = useSelectCard();
+  const brandLabel = prettyBrand(brand) ?? "Tarjeta";
 
   // Cargamos el detalle del servicio por si lo necesitamos (nombre / invoice_value)
   useEffect(() => {
@@ -97,9 +109,8 @@ export default function SuccessPage() {
   const finalServiceName =
     transaction?.description || serviceName || "Servicio";
 
-  const maskedCard = last4
-    ? `Tarjeta terminada en ${last4}`
-    : "Tarjeta no disponible";
+  const maskedCard =
+  last4 ? `${brandLabel}************${last4}` : "Tarjeta no disponible";
 
   const handleDownload = () => {
     // Aquí luego podés integrar tu PDF (jsPDF/Receipt)

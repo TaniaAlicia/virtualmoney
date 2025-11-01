@@ -6,6 +6,9 @@ type UseSelectCard = {
 
   last4: string | null; // ← no opcional
   setCardLast4: (last4: string | null) => void; // ← no opcional
+
+   brand: string | null;                     
+  setCardBrand: (brand: string | null) => void; 
 };
 
 export const useSelectCard = create<UseSelectCard>((set) => ({
@@ -13,6 +16,8 @@ export const useSelectCard = create<UseSelectCard>((set) => ({
   setCardId: (cardId) => set({ cardId }),
   last4: null, // ← inicial
   setCardLast4: (last4) => set({ last4 }), // ← setter
+  brand: null,                              
+  setCardBrand: (brand) => set({ brand }),  
 }));
 
 // 👉 Guarda el monto ingresado (cuando se carga dinero)
