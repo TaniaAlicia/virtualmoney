@@ -33,7 +33,7 @@ export default function AccountPage() {
 
     const numberAccount = Number(account);
     if (numberAccount !== ACCOUNT) {
-      router.push("/dashboard/payments/account/error");
+      router.push("/dashboard/payments/account/checked/error");
     } else {
       router.push("/dashboard/payments/account/checked");
     }

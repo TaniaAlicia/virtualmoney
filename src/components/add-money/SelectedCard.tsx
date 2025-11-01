@@ -51,7 +51,6 @@ export default function SelectedCard({
   const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
     null,
   );
-  
 
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
@@ -152,7 +151,6 @@ export default function SelectedCard({
         selectedId={selectedCardId}
         onSelect={(cardId) => {
           const card = cardsList.find((c) => c.id === cardId);
-          console.log("[SelectedCard] card seleccionada:", card);
           setSelectedCardId(cardId);
           setCardId(cardId);
           const last4 =
