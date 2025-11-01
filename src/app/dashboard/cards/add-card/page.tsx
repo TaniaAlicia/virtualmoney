@@ -12,7 +12,8 @@ import { convertDateFormat } from "@/utils/convertDateFormat";
 import { useCards } from "@/hooks/useCards";
 import type { CardBodyType, CardFormData } from "@/types/card";
 import MobileCrumb from "@/components/generals/MobileCrumb";
-import { detectBrandFromNumber } from "@/services/cardService";
+import { detectBrandFromNumber } from "@/utils/detectBrandFromNumber";
+
 
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 const formatCardNumber = (v: string) =>

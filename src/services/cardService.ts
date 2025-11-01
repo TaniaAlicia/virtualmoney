@@ -1,24 +1,9 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import type { CardBodyType, CardType } from "@/types/card";
+import { detectBrandFromNumber } from "@/utils/detectBrandFromNumber";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
-
-export function detectBrandFromNumber(num?: string | number): string | null {
-  if (!num) return null;
-  const s = String(num);
-
-  if (/^4\d{12,18}$/.test(s)) return "Visa"; // 4...
-  const iin6 = parseInt(s.slice(0, 6), 10);
-  const iin2 = parseInt(s.slice(0, 2), 10);
-  if ((iin2 >= 51 && iin2 <= 55) || (iin6 >= 222100 && iin6 <= 272099))
-    return "MasterCard"; // 51–55, 2221–2720
-  if (/^(34|37)\d{13}$/.test(s)) return "American Express"; // 34/37
-
-  // agrega otras si las usas (Cabal, Naranja, etc.)
-  return null;
-}
-
 
 // Lo que devuelve el backend (shape conocido + campos opcionales)
 type RawCardFromAPI = {
@@ -38,7 +23,10 @@ type RawCardFromAPI = {
 function normalize(c: RawCardFromAPI): CardType {
   const last4 =
     (c.last4 ??
-      String(c.number_id ?? c.number ?? "").toString().slice(-4)) || "----";
+      String(c.number_id ?? c.number ?? "")
+        .toString()
+        .slice(-4)) ||
+    "----";
 
   const computedBrand =
     c.brand ?? detectBrandFromNumber(c.number_id ?? c.number) ?? undefined;
@@ -79,7 +67,7 @@ function errorMessage(e: unknown): string {
 /** Obtener todas las tarjetas de una cuenta */
 export async function getAllCards(
   accountId: number,
-  token?: string
+  token?: string,
 ): Promise<CardType[]> {
   if (!accountId) throw new Error("accountId inválido");
   try {
@@ -97,13 +85,13 @@ export async function getAllCards(
 export async function getCardById(
   accountId: number,
   cardId: number,
-  token?: string
+  token?: string,
 ): Promise<CardType> {
   if (!accountId || !cardId) throw new Error("Parámetros inválidos");
   try {
     const res = await axios.get(
       `${API}/accounts/${accountId}/cards/${cardId}`,
-      { headers: { ...authHeader(token) } }
+      { headers: { ...authHeader(token) } },
     );
     return normalize(res.data as RawCardFromAPI);
   } catch (e) {
@@ -115,7 +103,7 @@ export async function getCardById(
 export async function createCard(
   accountId: number,
   payload: CardBodyType,
-  token?: string
+  token?: string,
 ): Promise<CardType> {
   if (!accountId) throw new Error("accountId inválido");
   try {
@@ -127,7 +115,7 @@ export async function createCard(
           ...authHeader(token),
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     return normalize(res.data as RawCardFromAPI);
   } catch (e) {
@@ -139,7 +127,7 @@ export async function createCard(
 export async function deleteCard(
   accountId: number,
   cardId: number,
-  token?: string
+  token?: string,
 ): Promise<void> {
   if (!accountId || !cardId) throw new Error("Parámetros inválidos");
   try {

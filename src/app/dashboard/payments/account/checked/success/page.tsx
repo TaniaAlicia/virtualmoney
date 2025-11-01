@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useTransaction } from "@/context/transactionContext";
 import { useSelectCard, useSelectService } from "@/context/moneyContext";
 import { getServiceId } from "@/services/servicesService";
+import { downloadServiceReceiptPDF } from "@/utils/downloadServiceReceiptPDF";
 
 // helpers
 function formatDated(fecha?: string | Date) {
@@ -58,14 +59,14 @@ const Check = (props: React.SVGProps<SVGSVGElement>) => (
 export default function SuccessPage() {
   const router = useRouter();
   const { transaction } = useTransaction();
-  const { cardId } = useSelectCard();
+  const { cardId, brand, last4 } = useSelectCard();
   const { serviceId } = useSelectService();
 
   const [serviceName, setServiceName] = useState<string>("Servicio");
   const [serviceAmount, setServiceAmount] = useState<number | undefined>(
     undefined,
   );
-  const { brand, last4 } = useSelectCard();
+
   const brandLabel = prettyBrand(brand) ?? "Tarjeta";
 
   // Cargamos el detalle del servicio por si lo necesitamos (nombre / invoice_value)
@@ -109,12 +110,29 @@ export default function SuccessPage() {
   const finalServiceName =
     transaction?.description || serviceName || "Servicio";
 
-  const maskedCard =
-  last4 ? `${brandLabel}************${last4}` : "Tarjeta no disponible";
+  const maskedCard = last4
+    ? `${brandLabel}************${last4}`
+    : "Tarjeta no disponible";
 
   const handleDownload = () => {
-    // Aquí luego podés integrar tu PDF (jsPDF/Receipt)
-    // Por ahora queda como placeholder.
+    // mismo monto pero POSITIVO para el comprobante
+    const amountAbs =
+      typeof transaction?.amount === "number"
+        ? Math.abs(transaction.amount)
+        : Math.abs(serviceAmount ?? 0);
+
+    // mismos datos que ya mostrás en pantalla
+    const last4Safe =
+      last4 ?? (cardId != null ? String(cardId).slice(-4) : "----");
+
+    const cardMasked = `${brandLabel} ************${last4}`;
+
+    downloadServiceReceiptPDF({
+      amount: amountAbs,
+      dated: transaction?.dated ? new Date(transaction.dated) : new Date(),
+      serviceName: finalServiceName,
+      cardMasked,
+    });
   };
 
   return (
