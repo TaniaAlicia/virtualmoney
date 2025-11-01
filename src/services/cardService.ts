@@ -1,4 +1,3 @@
-// src/services/cardService.ts
 import axios from "axios";
 import Cookies from "js-cookie";
 import type { CardBodyType, CardType } from "@/types/card";

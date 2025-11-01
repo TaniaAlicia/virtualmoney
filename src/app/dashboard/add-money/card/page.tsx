@@ -52,7 +52,7 @@ export default function CardPage() {
           token={token}
           ctaText="Continuar"
           showNewCardLink={true}
-          ctaAlwaysGreen={false}
+          ctaAlwaysGreen={true}
           onDeleteCard={removeCard}
           deletingId={deletingId}
         />

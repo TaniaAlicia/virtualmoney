@@ -23,14 +23,13 @@ type SelectedCardProps = {
   deletingId?: CardType["id"] | null;
 
   /** Reutilización del CTA */
-  ctaText?: string; // default: "Continuar"
-  onContinue?: () => void; // si viene, se usa como acción principal
-  showNewCardLink?: boolean; // default: true (en checked: false)
-  ctaAlwaysGreen?: boolean; // default: false (en checked: true)
-
+  ctaText?: string;
+  onContinue?: () => void;
+  showNewCardLink?: boolean;
+  ctaAlwaysGreen?: boolean;
   /** Layout */
-  framed?: boolean; // default: false (en CardPage: true)
-  title?: string; // default: "Seleccionar tarjeta" (cuando framed)
+  framed?: boolean;
+  title?: string;
 };
 
 export default function SelectedCard({
@@ -47,11 +46,12 @@ export default function SelectedCard({
   title = "Seleccionar tarjeta",
 }: SelectedCardProps) {
   const router = useRouter();
-  const { setCardId } = useSelectCard();
+  //const { setCardId } = useSelectCard();
   const { setTransaction } = useTransaction();
   const [selectedCardId, setSelectedCardId] = useState<CardType["id"] | null>(
     null,
   );
+  const { setCardId, setCardLast4 } = useSelectCard();
 
   useEffect(() => {
     if (selectedCardId) setCardId(selectedCardId);
@@ -153,14 +153,25 @@ export default function SelectedCard({
         onSelect={(cardId) => {
           const card = cardsList.find((c) => c.id === cardId);
           setSelectedCardId(cardId);
-          if (card?.number_id) {
+          setCardId(cardId);
+          const last4 =
+            card?.last4 ??
+            (card?.number_id ? String(card.number_id).slice(-4) : null);
+
+          setCardLast4(last4); // ← guarda en el store
+
+          if (last4) {
+            toast.success(`Se seleccionó la tarjeta terminada en ${last4}`);
+          }
+        }}
+        /* if (card?.number_id) {
             toast.success(
               `Se seleccionó la tarjeta terminada en ${card.number_id
                 .toString()
                 .slice(-4)}`,
             );
-          }
-        }}
+          } 
+        }}*/
         onDelete={onDeleteCard}
         deletingId={deletingId ?? null}
       />

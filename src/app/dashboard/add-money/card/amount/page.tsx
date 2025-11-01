@@ -94,7 +94,7 @@ export default function AmountPage() {
           onClick={handleContinue}
           className={clsx(
             "w-[165px] rounded-[10px] p-3 font-bold text-dark shadow transition",
-            "bg-gray2 hover:brightness-110"
+            "bg-green hover:brightness-110"
           )}
         >
           {loading ? "Procesando..." : "Continuar"}
@@ -107,7 +107,7 @@ export default function AmountPage() {
           onClick={handleContinue}
           className={clsx(
             "rounded-[10px] p-5 font-bold text-dark shadow transition md:w-[233px]",
-            "bg-gray2 hover:brightness-110"
+            "bg-green hover:brightness-110"
           )}
         >
           {loading ? "Procesando..." : "Continuar"}

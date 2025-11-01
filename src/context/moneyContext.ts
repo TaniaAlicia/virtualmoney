@@ -1,16 +1,19 @@
-// src/context/moneyContext.ts
 import { create } from "zustand";
 
 type UseSelectCard = {
   cardId: string | number | null;
   setCardId: (cardId: string | number | null) => void;
+
+  last4: string | null; // ← no opcional
+  setCardLast4: (last4: string | null) => void; // ← no opcional
 };
 
 export const useSelectCard = create<UseSelectCard>((set) => ({
   cardId: null,
   setCardId: (cardId) => set({ cardId }),
+  last4: null, // ← inicial
+  setCardLast4: (last4) => set({ last4 }), // ← setter
 }));
-
 
 // 👉 Guarda el monto ingresado (cuando se carga dinero)
 type UseSetAmount = {
