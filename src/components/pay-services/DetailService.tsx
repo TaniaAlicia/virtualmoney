@@ -2,14 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { useSelectService } from "@/context/moneyContext";
 import { getServiceId } from "@/services/servicesService";
 
 type ServiceDetail = {
   id: number;
   name: string;
-  date: string;           // ISO (backend)
+  date: string; // ISO (backend)
   invoice_value?: number; // Monto
   // Si el backend suma más campos en el futuro, se mostrarán abajo
 };
@@ -51,7 +50,7 @@ export default function DetailService() {
   }, [serviceId]);
 
   // Derivados simples para el bloque de detalle
-  const title = loading ? "Cargando…" : service?.name ?? "Servicio";
+  const title = loading ? "Cargando…" : (service?.name ?? "Servicio");
   const total = loading ? "—" : currency(service?.invoice_value);
   const fechaEmision = useMemo(() => fmtDate(service?.date), [service?.date]);
 
@@ -65,7 +64,7 @@ export default function DetailService() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="text-left text-sm font-bold underline decoration-white/50 underline-offset-2 hover:decoration-white/60 text-light leading-none -mt-1 md:mt-0"
+          className="-mt-1 text-left text-sm font-bold leading-none text-light underline decoration-white/50 underline-offset-2 hover:decoration-white/60 md:mt-0"
           aria-expanded={open}
         >
           Ver detalles del pago
@@ -77,13 +76,17 @@ export default function DetailService() {
       {/* Total */}
       <div className="mt-6 flex items-center justify-between">
         <p className="text-lg font-bold text-light md:text-xl">Total a pagar</p>
-        <p className="text-2xl font-extrabold text-light md:text-3xl">{total}</p>
+        <p className="text-2xl font-extrabold text-light md:text-3xl">
+          {total}
+        </p>
       </div>
 
       {/* Detalle (desplegable) */}
       <div
         className={`grid transition-all duration-200 ${
-          open ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0 mt-0"
+          open
+            ? "mt-5 grid-rows-[1fr] opacity-100"
+            : "mt-0 grid-rows-[0fr] opacity-0"
         }`}
       >
         <div className="overflow-hidden">
@@ -93,9 +96,16 @@ export default function DetailService() {
               <Detail label="Fecha de emisión" value={fechaEmision} />
               <Detail
                 label="Importe"
-                value={service?.invoice_value != null ? currency(service.invoice_value) : "—"}
+                value={
+                  service?.invoice_value != null
+                    ? currency(service.invoice_value)
+                    : "—"
+                }
               />
-              <Detail label="Identificador" value={service?.id ? `#${service.id}` : "—"} />
+              <Detail
+                label="Identificador"
+                value={service?.id ? `#${service.id}` : "—"}
+              />
               {/* Espacio para más campos cuando el backend los exponga */}
             </dl>
 

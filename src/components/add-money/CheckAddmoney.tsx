@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { createDeposit } from "@/services/transferencesService";
 import { useTransaction } from "@/context/transactionContext";
 import type { DepositType } from "@/types/deposit";
+import { AccountType } from "@/types/account";
 
 type CheckAddMoneyProps = {
-  accountData: any;
+  accountData: AccountType;
   token: string;
 };
 

@@ -59,7 +59,7 @@ const Check = (props: React.SVGProps<SVGSVGElement>) => (
 export default function SuccessPage() {
   const router = useRouter();
   const { transaction } = useTransaction();
-  const { cardId, brand, last4 } = useSelectCard();
+  const { brand, last4 } = useSelectCard();
   const { serviceId } = useSelectService();
 
   const [serviceName, setServiceName] = useState<string>("Servicio");
@@ -122,8 +122,8 @@ export default function SuccessPage() {
         : Math.abs(serviceAmount ?? 0);
 
     // mismos datos que ya mostrás en pantalla
-    const last4Safe =
-      last4 ?? (cardId != null ? String(cardId).slice(-4) : "----");
+    /* const last4Safe =
+      last4 ?? (cardId != null ? String(cardId).slice(-4) : "----"); */
 
     const cardMasked = `${brandLabel} ************${last4}`;
 

@@ -1,6 +1,4 @@
 import { ServiceType } from "@/types/service";
-import axios from "axios";
-import { getAuthHeader } from "@/services/authService"; 
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URL;
 
@@ -65,13 +63,13 @@ export const getServiceId = async (
   return response.json();
 };
 
-async function readAsJsonSafe<T = unknown>(res: Response): Promise<T | null> {
+/* async function readAsJsonSafe<T = unknown>(res: Response): Promise<T | null> {
   try {
     return (await res.json()) as T;
   } catch {
     return null;
   }
-}
+} */
 /* ------------------- Pago de servicio ------------------- */
 export type PayFailReason = "insufficient_funds" | "no_invoice" | "generic";
 

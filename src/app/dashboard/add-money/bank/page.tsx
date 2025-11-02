@@ -4,18 +4,10 @@ import CvuAliasCard from "@/components/profile/CvuAliasCard";
 import { getAccount } from "@/services/accountService";
 import Cookies from "js-cookie";
 import MobileCrumb from "@/components/generals/MobileCrumb";
-
-type Account = {
-  id: number;
-  user_id?: number;
-  userId?: number;
-  cvu?: string;
-  alias?: string;
-  balance?: number;
-};
+import type { AccountType } from "@/types/account";
 
 const BankPage = () => {
-  const [account, setAccount] = useState<Account | null>(null);
+  const [account, setAccount] = useState<AccountType | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -30,9 +22,9 @@ const BankPage = () => {
 
         const acc = await getAccount();
         if (!mounted) return;
-        setAccount(acc as Account);
+        setAccount(acc as AccountType);
 
-        const userId = (acc as Account)?.user_id ?? (acc as Account)?.userId;
+        const userId = (acc as AccountType)?.user_id;
         if (userId == null) {
           console.error("userId faltante en account:", acc);
           return;

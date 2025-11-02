@@ -8,12 +8,13 @@ import MobileCrumb from "@/components/generals/MobileCrumb";
 import CheckIcon from "@/components/icons/CheckIcon";
 import { getAccount } from "@/services/accountService";
 import Cookies from "js-cookie";
+import { AccountType } from "@/types/account";
 
 export default function AddMoneySuccessPage() {
   const router = useRouter();
   const { transaction } = useTransaction();
 
-  const [accountData, setAccountData] = useState<any>(null);
+  const [accountData, setAccountData] = useState<AccountType | null>(null);
   const [loading, setLoading] = useState(true);
 
   // 🧾 Traemos los datos de la cuenta para mostrar el CVU real

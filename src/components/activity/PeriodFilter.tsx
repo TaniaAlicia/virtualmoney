@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 const periods = [
@@ -44,8 +44,6 @@ export default function PeriodFilter({
 
   // ✅ nuevo estado para tipo de operación
   const [operationType, setOperationType] = useState<string>("all");
-
-  const uid = useId();
 
   useEffect(() => {
     setValue(selected ?? "");

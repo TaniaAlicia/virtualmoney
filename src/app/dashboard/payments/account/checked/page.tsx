@@ -11,11 +11,7 @@ import { createTransaction } from "@/services/transactionService";
 
 import { getAccount } from "@/services/accountService";
 import { getAllCards } from "@/services/cardService";
-import {
-  getServiceId,
-  payService,
-  PayServiceError,
-} from "@/services/servicesService";
+import { getServiceId } from "@/services/servicesService";
 import { readBalance } from "@/utils/readBalance";
 
 import type { CardType } from "@/types/card";
@@ -34,7 +30,7 @@ export default function CheckedPage() {
   const [error, setError] = useState("");
 
   const { serviceId } = useSelectService();
-  const { cardId, last4, brand } = useSelectCard();
+  const { cardId} = useSelectCard();
   const { setTransaction } = useTransaction();
 
   useEffect(() => {

@@ -1,5 +1,7 @@
+import { AccountType } from "@/types/account";
+
 export function readBalance(acc: unknown): number {
-  const a = acc as any;
+  const a = acc as AccountType;
   const candidates = [a?.available_amount];
   for (const v of candidates) {
     if (typeof v === "number" && Number.isFinite(v)) return v;

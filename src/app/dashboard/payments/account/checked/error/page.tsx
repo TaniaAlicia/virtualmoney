@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import ErrorMessage from '@/components/commons/ErrorMessage';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function PayServicesErrorPage() {
+function PayServicesErrorInner() {
   const sp = useSearchParams();
   const router = useRouter();
 
@@ -15,7 +16,8 @@ export default function PayServicesErrorPage() {
   const variants = {
     funds: {
       title: 'Hubo un problema con tu pago',
-      description: 'Puede deberse a fondos insuficientes. Comunicate con la entidad emisora de la tarjeta.',
+      description:
+        'Puede deberse a fondos insuficientes. Comunicate con la entidad emisora de la tarjeta.',
       buttonText: 'Volver a intentarlo',
       onClick: () => router.back(),
     },
@@ -45,5 +47,14 @@ export default function PayServicesErrorPage() {
         onClick={v.onClick}
       />
     </main>
+  );
+}
+
+// ✅ Wrapping the client logic in Suspense fixes the build error
+export default function PayServicesErrorPage() {
+  return (
+    <Suspense fallback={<p className="text-dark">Cargando…</p>}>
+      <PayServicesErrorInner />
+    </Suspense>
   );
 }

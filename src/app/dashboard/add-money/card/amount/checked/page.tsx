@@ -6,10 +6,11 @@ import CheckAddMoney from "@/components/add-money/CheckAddMoney";
 import { getAccount } from "@/services/accountService";
 import MobileCrumb from "@/components/generals/MobileCrumb";
 import CustomToaster from "@/components/generals/CustomToaster";
+import type { AccountType } from "@/types/account";
 
 export default function AddMoneyCheckedPage() {
   const [token, setToken] = useState<string | null>(null);
-  const [accountData, setAccountData] = useState<any>(null);
+  const [accountData, setAccountData] = useState<AccountType | null>(null);
   const [loading, setLoading] = useState(true);
 
    useEffect(() => {
