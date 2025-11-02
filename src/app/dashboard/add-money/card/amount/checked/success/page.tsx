@@ -9,6 +9,8 @@ import CheckIcon from "@/components/icons/CheckIcon";
 import { getAccount } from "@/services/accountService";
 import Cookies from "js-cookie";
 import { AccountType } from "@/types/account";
+import { downloadServiceReceiptPDF } from "@/utils/downloadServiceReceiptPDF";
+
 
 export default function AddMoneySuccessPage() {
   const router = useRouter();
@@ -65,7 +67,25 @@ export default function AddMoneySuccessPage() {
   });
 
   const handleGoHome = () => router.push("/dashboard");
-  const handleDownload = () => alert("📄 Descargando comprobante (simulado)");
+
+ const handleDownload = () => {
+  if (!transaction) return;
+
+  const amountAbs = Math.abs(transaction.amount);
+  const dated = new Date(
+    transaction.dated || transaction.createdAt || new Date()
+  );
+
+  downloadServiceReceiptPDF({
+    amount: amountAbs,
+    dated,
+    serviceName: "Carga de dinero a cuenta propia",
+    cardMasked: "Cuenta bancaria / CVU",
+    accountHolderCvu: accountData?.cvu ?? undefined,
+    operationType: "addMoney",
+  });
+};
+
 
   return (
     <main className="max-w-8xl mx-auto flex-1 space-y-5 bg-gray1 px-6 pb-8 pt-0 text-dark">

@@ -2,13 +2,14 @@
 import jsPDF from "jspdf";
 
 export type ServiceReceiptInput = {
-  amount: number;                 // en ARS (positivo)
-  dated: Date;                    // fecha/hora
-  serviceName: string;            // p.ej. "Cablevisión"
-  cardMasked: string;             // p.ej. "Visa ************3241"
-  operationCode?: string;         // opcional; si no viene, se genera uno
-  accountHolderName?: string;     // opcional para usar en "De"
-  accountHolderCvu?: string;      // opcional para usar en "De"
+  amount: number; // en ARS (positivo)
+  dated: Date; // fecha/hora
+  serviceName: string; // p.ej. "Cablevisión"
+  cardMasked: string; // p.ej. "Visa ************3241"
+  operationCode?: string; // opcional; si no viene, se genera uno
+  accountHolderName?: string; // opcional para usar en "De"
+  accountHolderCvu?: string; // opcional para usar en "De"
+  operationType?: "payService" | "addMoney";
 };
 
 const currency = (n: number) =>
@@ -24,9 +25,10 @@ const formatDateTime = (d: Date) => {
     hour12: false,
   };
   // "10 de agosto de 2022 a las 16:34 hs."
-  return new Intl.DateTimeFormat("es-AR", opts)
-    .format(d)
-    .replace(", ", " a las ") + " hs.";
+  return (
+    new Intl.DateTimeFormat("es-AR", opts).format(d).replace(", ", " a las ") +
+    " hs."
+  );
 };
 
 export function downloadServiceReceiptPDF({
@@ -37,6 +39,7 @@ export function downloadServiceReceiptPDF({
   operationCode,
   accountHolderName,
   accountHolderCvu,
+  operationType,
 }: ServiceReceiptInput) {
   const doc = new jsPDF({ unit: "pt", format: "a4" }); // 595 x 842 pt aprox
   const W = doc.internal.pageSize.getWidth();
@@ -78,7 +81,11 @@ export function downloadServiceReceiptPDF({
   doc.setTextColor(green);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
-  doc.text("Comprobante de pago de servicio", M + 10, M + bannerH + 40);
+  const title =
+    operationType === "addMoney"
+      ? "Comprobante de carga de dinero"
+      : "Comprobante de pago de servicio";
+  doc.text(title, M + 10, M + bannerH + 40);
 
   doc.setTextColor(light);
   doc.setFont("helvetica", "normal");
@@ -166,7 +173,8 @@ export function downloadServiceReceiptPDF({
   // Código de operación
   const code =
     operationCode ||
-    String(Date.now()).slice(-7) + String(Math.floor(Math.random() * 900) + 100);
+    String(Date.now()).slice(-7) +
+      String(Math.floor(Math.random() * 900) + 100);
   doc.setFont("helvetica", "normal");
   doc.setTextColor("#666");
   doc.setFontSize(12);

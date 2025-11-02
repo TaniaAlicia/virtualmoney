@@ -132,6 +132,7 @@ export default function SuccessPage() {
       dated: transaction?.dated ? new Date(transaction.dated) : new Date(),
       serviceName: finalServiceName,
       cardMasked,
+       operationType: "payService",
     });
   };
 
