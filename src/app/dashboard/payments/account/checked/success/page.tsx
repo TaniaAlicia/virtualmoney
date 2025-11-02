@@ -8,6 +8,7 @@ import { useTransaction } from "@/context/transactionContext";
 import { useSelectCard, useSelectService } from "@/context/moneyContext";
 import { getServiceId } from "@/services/servicesService";
 import { downloadServiceReceiptPDF } from "@/utils/downloadServiceReceiptPDF";
+import MobileCrumb from "@/components/generals/MobileCrumb"; 
 
 // helpers
 function formatDated(fecha?: string | Date) {
@@ -138,6 +139,9 @@ export default function SuccessPage() {
 
   return (
     <main className="flex flex-col gap-6">
+       {/* ✅ MobileCrumb visible en mobile */}
+      <MobileCrumb />
+      
       {/* Banner éxito */}
       <section className="flex flex-col items-center justify-center gap-3 rounded-[10px] bg-green py-5">
         <Check className="h-16 w-16" />

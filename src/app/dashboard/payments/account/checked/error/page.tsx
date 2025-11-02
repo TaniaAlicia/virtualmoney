@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import ErrorMessage from '@/components/commons/ErrorMessage';
-import { useSearchParams, useRouter } from 'next/navigation';
-
+import { Suspense } from "react";
+import ErrorMessage from "@/components/commons/ErrorMessage";
+import { useSearchParams, useRouter } from "next/navigation";
+import MobileCrumb from "@/components/generals/MobileCrumb";
 
 function PayServicesErrorInner() {
   const sp = useSearchParams();
   const router = useRouter();
 
-  const type = (sp.get('type') || 'generic') as
-    | 'funds'
-    | 'no-invoice'
-    | 'generic';
+  const type = (sp.get("type") || "generic") as
+    | "funds"
+    | "no-invoice"
+    | "generic";
 
   const variants = {
     funds: {
-      title: 'Hubo un problema con tu pago',
+      title: "Hubo un problema con tu pago",
       description:
-        'Puede deberse a fondos insuficientes. Comunicate con la entidad emisora de la tarjeta.',
-      buttonText: 'Volver a intentarlo',
+        "Puede deberse a fondos insuficientes. Comunicate con la entidad emisora de la tarjeta.",
+      buttonText: "Volver a intentarlo",
       onClick: () => router.back(),
     },
-    'no-invoice': {
-      title: 'No encontramos facturas asociadas a este dato',
+    "no-invoice": {
+      title: "No encontramos facturas asociadas a este dato",
       description:
-        'Revisá el dato ingresado. Si es correcto, es posible que la empresa aún no haya cargado tu factura.',
-      buttonText: 'Revisar dato',
-      onClick: () => router.push('/dashboard/payments/account'),
+        "Revisá el dato ingresado. Si es correcto, es posible que la empresa aún no haya cargado tu factura.",
+      buttonText: "Revisar dato",
+      onClick: () => router.push("/dashboard/payments/account"),
     },
     generic: {
-      title: 'Hubo un problema con tu pago',
-      description: 'Intentalo nuevamente en unos minutos.',
-      buttonText: 'Volver a intentarlo',
+      title: "Hubo un problema con tu pago",
+      description: "Intentalo nuevamente en unos minutos.",
+      buttonText: "Volver a intentarlo",
       onClick: () => router.back(),
     },
   } as const;
@@ -41,6 +41,9 @@ function PayServicesErrorInner() {
 
   return (
     <main className="flex flex-col gap-6">
+      {/* ✅ MobileCrumb para mobile */}
+      <MobileCrumb />
+
       <ErrorMessage
         title={v.title}
         description={v.description}

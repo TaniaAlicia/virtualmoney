@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const crumbs = [
   { label: "Inicio", path: "/dashboard" },
@@ -13,15 +13,24 @@ const crumbs = [
 
 export default function MobileCrumb() {
   const pathname = usePathname();
+  const router = useRouter();
 
+  // Detecta la ruta más específica (por ejemplo, /dashboard/payments/success)
   const currentCrumb =
     crumbs
       .filter((c) => pathname === c.path || pathname.startsWith(c.path + "/"))
       .sort((a, b) => b.path.length - a.path.length)[0] || crumbs[0];
 
+  const handleClick = () => {
+    router.push(currentCrumb.path);
+  };
+
   return (
-    <div className="flex items-center gap-2 md:hidden">
-      {/* Flecha → con línea */}
+    <div
+      className="flex items-center gap-2 md:hidden cursor-pointer select-none"
+      onClick={handleClick}
+    >
+      {/* Flecha ← con línea */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-8 w-8 flex-none text-dark dark:text-light"
@@ -33,7 +42,7 @@ export default function MobileCrumb() {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M4 12h14m0 0l-4-4m4 4l-4 4"
+          d="M20 12H6m0 0l4-4m-4 4l4 4"
         />
       </svg>
 
