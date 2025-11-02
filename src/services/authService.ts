@@ -29,3 +29,21 @@ export const registerUser = async (data: RegisterDataUser) => {
   const response = await axios.post('/api/register', data);
   return response.data;
 };
+
+/** Devuelve { Authorization: "<token>" } o con Bearer si lo pedís */
+export function getAuthHeader(
+  explicitToken?: string,
+  withBearer = false
+): Record<string, string> {
+  const token = explicitToken ?? Cookies.get("token") ?? "";
+  if (!token) return {};
+
+  return {
+    Authorization: withBearer ? `Bearer ${token}` : token,
+  };
+}
+
+/** Si solo querés el token crudo (sin Bearer) */
+export function getAuthToken(): string | null {
+  return Cookies.get("token") ?? null;
+}

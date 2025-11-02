@@ -1,4 +1,6 @@
 import { ServiceType } from "@/types/service";
+import axios from "axios";
+import { getAuthHeader } from "@/services/authService"; 
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URL;
 
@@ -62,3 +64,61 @@ export const getServiceId = async (
 
   return response.json();
 };
+
+async function readAsJsonSafe<T = unknown>(res: Response): Promise<T | null> {
+  try {
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+/* ------------------- Pago de servicio ------------------- */
+export type PayFailReason = "insufficient_funds" | "no_invoice" | "generic";
+
+export class PayServiceError extends Error {
+  reason: PayFailReason;
+  constructor(reason: PayFailReason, message?: string) {
+    super(message ?? reason);
+    this.reason = reason;
+  }
+}
+
+export async function payService(params: {
+  accountId: number;
+  serviceId: number | string;
+  cardId: number | string;
+  amount: number;
+  token?: string;
+}) {
+  const { accountId, serviceId, cardId, amount, token } = params;
+
+  const res = await fetch(`${BASE_URL}/service/pay`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: token } : {}),
+    },
+    body: JSON.stringify({
+      account_id: accountId,
+      service_id: serviceId,
+      card_id: cardId,
+      amount,
+    }),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const status = res.status;
+    const code = data?.code || data?.error;
+
+    if (status === 402 || code === "INSUFFICIENT_FUNDS")
+      throw new PayServiceError("insufficient_funds");
+    if (status === 404 || code === "INVOICE_NOT_FOUND")
+      throw new PayServiceError("no_invoice");
+
+    throw new PayServiceError("generic", data?.message ?? `Error ${status}`);
+  }
+
+  return data;
+}

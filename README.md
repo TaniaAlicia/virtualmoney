@@ -32,10 +32,10 @@
 
 ### 🔗 Fetching y Datos
 - **Axios** – Cliente HTTP para conectarse con APIs REST.
-      - **React Query** – Sincronización, caching y estado de datos remoto.
+- **React Query** – Sincronización, caching y estado de datos remoto.
 
 ### 🧠 Estado Global
-     - **Zustand** – Store global liviano y flexible para manejar estados.
+- **Zustand** – Store global liviano y flexible para manejar estados.
 
 ### 🔐 Autenticación y Seguridad
 - **js-cookie** – Manejo de tokens de sesión en cookies seguras.

@@ -6,8 +6,12 @@ export type TransactionType = {
   description?: string;
   createdAt: string;          // ISO
   updatedAt?: string;
-  // agrega campos que necesites según tu API: counterparty, status, etc.
+  destination?: string;
+  origin?: string;
+  dated?: string;             // Fecha de la transacción ISO
+  
 };
+
 
 export type NewTransactionType = {
   amount: number;

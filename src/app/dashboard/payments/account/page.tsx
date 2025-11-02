@@ -33,10 +33,10 @@ export default function AccountPage() {
 
     const numberAccount = Number(account);
     if (numberAccount !== ACCOUNT) {
-      router.push("/dashboard/payments/account/checked/error");
-    } else {
-      router.push("/dashboard/payments/account/checked");
+      router.push("/dashboard/payments/account/checked/error?type=no-invoice");
+      return;
     }
+    router.push("/dashboard/payments/account/checked");
   };
 
   return (
@@ -94,10 +94,10 @@ export default function AccountPage() {
             aria-disabled={account.length !== 11}
             className={clsx(
               "flex h-[50px] w-[165px] items-center justify-center rounded-[10px] font-bold shadow-[0_4px_4px_rgba(0,0,0,0.1)] transition-colors",
-              "bg-green text-dark", 
+              "bg-green text-dark",
               account.length === 11
                 ? "hover:brightness-95"
-                : "cursor-not-allowed opacity-60", 
+                : "cursor-not-allowed opacity-60",
             )}
           >
             Continuar

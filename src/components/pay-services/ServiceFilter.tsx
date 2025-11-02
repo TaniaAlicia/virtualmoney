@@ -1,15 +1,92 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
 import SearchIcon from "@/components/icons/SearchIcon";
 
-export default function ServiceFilter() {
+type Props = {
+  /** valor controlado (opcional) */
+  value?: string;
+  /** callback inmediato en cada tecla (opcional) */
+  onChange?: (v: string) => void;
+  /** callback con debounce (opcional) */
+  onDebouncedChange?: (v: string) => void;
+  /** ms para el debounce; por defecto 300 */
+  debounceMs?: number;
+  /** limpiar desde el padre (opcional) */
+  onClear?: () => void;
+  placeholder?: string;
+  className?: string;
+};
+
+export default function ServiceFilter({
+  value = "",
+  onChange,
+  onDebouncedChange,
+  debounceMs = 300,
+  onClear,
+  placeholder = "Buscá entre más de 5.000 empresas",
+  className = "",
+}: Props) {
+  // estado interno para poder debouncer aunque el padre no controle `value`
+  const [text, setText] = useState(value);
+
+  // si cambia el value externo, sincronizamos
+  useEffect(() => setText(value), [value]);
+
+  // debounce del texto
+  useEffect(() => {
+    if (!onDebouncedChange) return;
+    const t = setTimeout(() => onDebouncedChange(text), debounceMs);
+    return () => clearTimeout(t);
+  }, [text, debounceMs, onDebouncedChange]);
+
+  const showClear = useMemo(() => text.length > 0, [text]);
+
   return (
-    <div className="w-full h-[64px] flex items-center gap-4 px-5 bg-white border border-gray1 rounded-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.1)]">
+    <div
+      className={[
+        "flex h-[64px] w-full items-center gap-4 rounded-[10px] border border-gray1",
+        "bg-white px-5 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.1)]",
+        "focus-within:outline-none focus-within:ring-0",
+        className,
+      ].join(" ")}
+    >
       <SearchIcon />
       <input
+        value={text}
+        onChange={(e) => {
+          const v = e.target.value;
+          setText(v);
+          onChange?.(v);
+        }}
         type="text"
-        placeholder="Buscá entre más de 5.000 empresas"
-        className="w-full text-dark1 text-base placeholder:text-gray-400 outline-none border-none bg-transparent"
+        spellCheck={false}
+        placeholder={placeholder}
+        aria-label="Buscar servicio"
+        className="
+    w-full appearance-none border-0 bg-transparent
+    text-base
+    text-dark outline-none ring-0 placeholder:text-gray-500
+    focus:border-0 focus:outline-none focus:ring-0
+  "
       />
+
+      {showClear && (
+        <button
+          type="button"
+          onClick={() => {
+            setText("");
+            onClear?.();
+            onChange?.("");
+            onDebouncedChange?.("");
+          }}
+          className="
+            text-sm font-bold text-dark2 underline decoration-dark2/40
+            outline-none hover:decoration-dark2 focus:outline-none focus:ring-0
+          "
+        >
+          Limpiar
+        </button>
+      )}
     </div>
   );
 }
