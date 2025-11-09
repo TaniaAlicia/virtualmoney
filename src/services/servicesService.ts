@@ -1,6 +1,6 @@
 import { ServiceType } from "@/types/service";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URL;
+const BASE_URL = "https://digitalmoney.digitalhouse.com";
 
 // ✅ Obtener todos los servicios
 export const getAllServices = async (): Promise<ServiceType[]> => {

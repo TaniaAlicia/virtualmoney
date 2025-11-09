@@ -4,7 +4,7 @@ import type { RegisterDataUser } from "@/types/user"
 
 export const getUserById = async (userId: number, token: string) => {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    `https://digitalmoney.digitalhouse.com/api/users/${userId}`,
     {
       headers: {
         Authorization: `${token}`,
@@ -25,7 +25,7 @@ export const updateUser = async (
   if (!t) throw new Error("No auth token");
 
   const res = await axios.patch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    `https://digitalmoney.digitalhouse.com/api/users/${userId}`,
     data,
     {
       headers: {
@@ -42,7 +42,7 @@ export async function getMe() {
   const token = Cookies.get("token") ?? "";
   if (!token) throw new Error("No auth token found");
 
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+  const res = await axios.get(`https://digitalmoney.digitalhouse.com/api/users/me`, {
     headers: { Authorization: token, "Content-Type": "application/json" },
   });
   return res.data; // asegúrate de que tenga account.id o accounts[0].id

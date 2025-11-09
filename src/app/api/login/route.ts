@@ -2,7 +2,7 @@
 // utilizando el App Router de Next.js (app/api/) como capa intermedia
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "https://digitalmoney.digitalhouse.com/api";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

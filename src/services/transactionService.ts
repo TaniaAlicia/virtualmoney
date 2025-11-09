@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { NewTransactionType, TransactionType, TransactionIdType } from "@/types/transaction";
 
-const API = process.env.NEXT_PUBLIC_API_URL;
+const API = "https://digitalmoney.digitalhouse.com/api";
 
 // recibir un token (fallback a cookie)
 function authHeader(token?: string) {

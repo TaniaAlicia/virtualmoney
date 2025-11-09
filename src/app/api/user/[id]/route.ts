@@ -1,7 +1,7 @@
 // app/api/user/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL = "https://digitalmoney.digitalhouse.com/api";
 
 type Ctx = { params: Promise<{ id: string }> };
 

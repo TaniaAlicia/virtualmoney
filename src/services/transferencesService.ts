@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import type { DepositType } from "@/types/deposit";
 
-const API = process.env.NEXT_PUBLIC_API_URL;
+const API = "https://digitalmoney.digitalhouse.com/api";
 
 const getAuthHeaders = (token?: string) => ({
   Authorization: token ?? Cookies.get("token") ?? "",

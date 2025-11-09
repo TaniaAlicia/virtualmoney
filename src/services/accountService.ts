@@ -6,7 +6,7 @@ export const getAccount = async (): Promise<AccountType> => {
   const token = Cookies.get("token") ?? ""; 
   if (!token) throw new Error("No auth token found");
 
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/account`, {
+  const res = await axios.get(`https://digitalmoney.digitalhouse.com/api/account`, {
     headers: {
       Authorization: token,
     },

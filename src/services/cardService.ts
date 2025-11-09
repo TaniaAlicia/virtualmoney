@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import type { CardBodyType, CardType } from "@/types/card";
 import { detectBrandFromNumber } from "@/utils/detectBrandFromNumber";
 
-const API = process.env.NEXT_PUBLIC_API_URL;
+const API = "https://digitalmoney.digitalhouse.com/api";
 
 // Lo que devuelve el backend (shape conocido + campos opcionales)
 type RawCardFromAPI = {
