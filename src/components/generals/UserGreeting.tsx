@@ -4,7 +4,7 @@ import { useUserData } from "@/hooks/useUserData";
 import Link from "next/link";
 
 type Props = {
-  compact?: boolean; // NUEVO
+  compact?: boolean;
 };
 
 function UserGreeting({ compact = false }: Props) {
@@ -14,12 +14,10 @@ function UserGreeting({ compact = false }: Props) {
 
   return (
     <div className="flex items-center space-x-2">
-      {/* Badge con iniciales */}
       <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-green font-bold text-black">
         {initials}
       </div>
 
-      {/* Texto visible solo si NO es compacto */}
       {!compact && (
         <Link href="/dashboard" className="no-underline">
           <span className="text-sm font-semibold">

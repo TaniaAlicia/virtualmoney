@@ -14,7 +14,6 @@ import type { CardBodyType, CardFormData } from "@/types/card";
 import MobileCrumb from "@/components/generals/MobileCrumb";
 import { detectBrandFromNumber } from "@/utils/detectBrandFromNumber";
 
-
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 const formatCardNumber = (v: string) =>
   onlyDigits(v)
@@ -41,16 +40,12 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           ref={ref}
           {...props}
           className={clsx(
-            // base
             "w-full rounded-xl border-green bg-white px-4 py-3 text-dark placeholder-dark2/70",
             "border border-[#DDE8E0]",
-            // relieve base
             "shadow-[0_1.5px_1.5px_rgba(0,0,0,0.10),0_8px_16px_rgba(0,0,0,0.08)]",
-            // foco: mantener azul + verde más fuerte y suave
             "focus:outline-green-400 focus:outline-2",
             "focus:border-[#C1FD35] focus:ring-4 focus:ring-[#C1FD35]/45",
             "transition-[box-shadow,border,outline,ring] duration-200 ease-out",
-            // error
             error &&
               "border-red-500 focus:outline-red-500 focus:ring-red-500/30",
             className,
@@ -227,7 +222,6 @@ export default function AddCardPage() {
             </button>
           </div>
 
-          {/* Error del servidor */}
           {serverError && (
             <p className="text-error1 mt-4 w-[300px] text-center text-sm font-semibold italic md:w-[360px] md:text-base">
               {serverError}

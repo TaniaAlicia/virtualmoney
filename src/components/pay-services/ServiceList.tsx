@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ServiceType } from "@/types/service";
 import { servicesData } from "@/data/service";
-import { useSelectService } from "@/context/moneyContext"; // ✅ mismo contexto que tu compañera
+import { useSelectService } from "@/context/moneyContext";
 
 type Props = {
   servicesList: ServiceType[];
@@ -13,9 +13,8 @@ type Props = {
 
 export default function ServicesList({ servicesList, showServicePage }: Props) {
   const router = useRouter();
-  const { setServiceId } = useSelectService(); // ✅ función del contexto
+  const { setServiceId } = useSelectService();
 
-  // Maneja el click del botón
   const handleSelectService = (service: ServiceType) => {
     setServiceId(service.id.toString());
     router.push("/dashboard/payments/account");
@@ -39,10 +38,8 @@ export default function ServicesList({ servicesList, showServicePage }: Props) {
                 key={service.id}
                 className="flex items-center justify-between border-b border-gray-200 py-4"
               >
-                {/* 🟢 Contenedor principal alineado */}
                 <div className="flex w-full items-center justify-between gap-4">
-                  {/* 🔹 Logo */}
-                  <div className="flex h-[30px] w-[70px] items-center justify-center shrink-0">
+                  <div className="flex h-[30px] w-[70px] shrink-0 items-center justify-center">
                     <Image
                       src={
                         servicesData[service.id]?.src ??
@@ -55,19 +52,17 @@ export default function ServicesList({ servicesList, showServicePage }: Props) {
                     />
                   </div>
 
-                  {/* 🔹 Nombre (centrado en mobile, a la izquierda en desktop) */}
-                  <div className="flex-1 text-center md:text-left md:pl-28">
+                  <div className="flex-1 text-center md:pl-28 md:text-left">
                     <span className="text-base font-medium text-black">
                       {service.name}
                     </span>
                   </div>
 
-                  {/* 🔹 Botón Seleccionar con lógica funcional */}
                   {showServicePage && (
                     <div className="w-fit flex-shrink-0">
                       <button
                         onClick={() => handleSelectService(service)}
-                        className="text-base font-bold text-[#004B32] hover:text-green-600"
+                        className="hover:text-green-600 text-base font-bold text-[#004B32]"
                       >
                         Seleccionar
                       </button>

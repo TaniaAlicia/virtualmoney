@@ -4,7 +4,7 @@ declare module "react-credit-cards-2" {
   const Cards: React.ComponentType<{
     number?: string;
     name?: string;
-    expiry?: string; // MM/YY
+    expiry?: string;
     cvc?: string;
     focused?: Focused;
     placeholders?: { name?: string };

@@ -49,11 +49,11 @@ export function useCards({ autoLoad = true }: { autoLoad?: boolean } = {}): UseC
       if (!accountId) return;
       setDeletingId(id);
       const prev = cards;
-      setCards((c) => c.filter((x) => x.id !== id)); // optimista
+      setCards((c) => c.filter((x) => x.id !== id)); 
       try {
         await deleteCard(accountId, Number(id));
       } catch (e: unknown) {
-        setCards(prev); // rollback
+        setCards(prev); 
         setError(e instanceof Error ? e.message : "No se pudo eliminar la tarjeta");
       } finally {
         setDeletingId(null);

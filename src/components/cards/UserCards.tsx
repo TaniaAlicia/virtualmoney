@@ -44,7 +44,7 @@ export default function UserCards({
               key={card.id}
               className="flex items-center justify-between border-b border-black/10 py-4 last:border-b-0"
             >
-              {/* Bolita verde fija + texto */}
+
               <div className="flex items-center gap-3">
                 <span className="inline-block h-4 w-4 rounded-full bg-[#C1FD35]" />
                 <span className="select-none text-[15px] text-dark">
@@ -52,7 +52,6 @@ export default function UserCards({
                 </span>
               </div>
 
-              {/* 🔘 Selector custom (sin input nativo) */}
               {selectable ? (
                 <span
                   onClick={() => handleSelect(card.id)}

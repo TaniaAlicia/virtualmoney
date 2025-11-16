@@ -5,16 +5,16 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 type TokenPayload = {
-  exp: number; // tiempo de expiración en segundos
+  exp: number; 
 };
 
 function isTokenExpired(token: string): boolean {
   try {
     const decoded = jwtDecode<TokenPayload>(token);
-    const now = Date.now() / 1000; // en segundos
+    const now = Date.now() / 1000; 
     return decoded.exp < now;
   } catch {
-    return true; // si falla la decodificación, tratamos como expirado
+    return true; 
   }
 }
 
@@ -24,11 +24,6 @@ function isTokenExpired(token: string): boolean {
  */
 export default function useAuthRedirect(redirectTo: string = "/login") {
   const router = useRouter();
-
-   /*  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) router.push('/login');
-  }, [router]); */
 
   useEffect(() => {
     const token = Cookies.get("token");

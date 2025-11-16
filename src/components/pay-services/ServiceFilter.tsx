@@ -3,15 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import SearchIcon from "@/components/icons/SearchIcon";
 
 type Props = {
-  /** valor controlado (opcional) */
   value?: string;
-  /** callback inmediato en cada tecla (opcional) */
   onChange?: (v: string) => void;
-  /** callback con debounce (opcional) */
   onDebouncedChange?: (v: string) => void;
-  /** ms para el debounce; por defecto 300 */
   debounceMs?: number;
-  /** limpiar desde el padre (opcional) */
   onClear?: () => void;
   placeholder?: string;
   className?: string;
@@ -26,13 +21,10 @@ export default function ServiceFilter({
   placeholder = "Buscá entre más de 5.000 empresas",
   className = "",
 }: Props) {
-  // estado interno para poder debouncer aunque el padre no controle `value`
   const [text, setText] = useState(value);
 
-  // si cambia el value externo, sincronizamos
   useEffect(() => setText(value), [value]);
 
-  // debounce del texto
   useEffect(() => {
     if (!onDebouncedChange) return;
     const t = setTimeout(() => onDebouncedChange(text), debounceMs);

@@ -40,7 +40,6 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
           </Link>
         </div>
 
-        {/*SECCIÓN PARA LANDING */}
         {variant === "landing" && (
           <div className="flex items-center space-x-2">
             <Link
@@ -58,15 +57,12 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
           </div>
         )}
 
-        {/* Dashboard: saludo + avatar */}
         {variant === "dashboard" && (
           <>
-            {/* Desktop: saludo completo */}
             <div className="hidden md:block">
               <UserGreeting compact={false} />
             </div>
 
-            {/* Mobile: solo avatar + hamburguesa */}
             <div className="flex items-center md:hidden">
               <UserGreeting compact />
 
@@ -96,7 +92,6 @@ export default function Navbar({ variant = "landing" }: NavbarProps) {
           </>
         )}
       </nav>
-      {/* Drawer mobile */}
       {variant === "dashboard" && (
         <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
       )}

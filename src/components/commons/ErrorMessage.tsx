@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 type Props = {
   title: string;
   description: string;
-  buttonText?: string; // default: "Revisar dato"
-  onClick?: () => void; // si querés customizar la acción
+  buttonText?: string; 
+  onClick?: () => void; 
   className?: string;
 };
 
-// Iconito rojo inline para evitar dependencias
 const ErrorIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 64 64" fill="none" {...props}>
     <circle cx="32" cy="32" r="24" stroke="#ff3b3b" strokeWidth="4" />

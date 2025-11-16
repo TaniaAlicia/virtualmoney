@@ -1,4 +1,3 @@
-// components/generals/MobileMenu.tsx
 "use client";
 
 import { createPortal } from "react-dom";
@@ -47,7 +46,6 @@ export default function MobileMenu({ open, onClose }: Props) {
 
   const node = (
     <>
-      {/* Overlay */}
       <div
         onClick={onClose}
         className={clsx(
@@ -58,22 +56,16 @@ export default function MobileMenu({ open, onClose }: Props) {
         )}
       />
 
-      {/* Panel */}
       <aside
         className={clsx(
-          // posición y dimensiones
           "fixed inset-y-0 right-0 z-[9999] h-screen w-[82vw] max-w-[360px]",
-          // estilos
           "bg-green text-black shadow-xl",
-          // animación
           "transition-transform duration-300 ease-out",
-          // 👇 translate exclusivo (o entra o está fuera)
           open ? "translate-x-0" : "translate-x-full",
         )}
         role="dialog"
         aria-modal="true"
       >
-        {/* Header */}
         <div className="flex items-center justify-between bg-dark px-5 py-4 text-white">
           <div className="flex flex-col leading-5">
             <span className="text-base font-bold">Hola,</span>
@@ -101,7 +93,6 @@ export default function MobileMenu({ open, onClose }: Props) {
           </button>
         </div>
 
-        {/* Links */}
         <nav className="flex flex-col gap-4 px-6 py-6">
           {items.map((it) => (
             <Link
@@ -130,7 +121,6 @@ export default function MobileMenu({ open, onClose }: Props) {
     </>
   );
 
-  // Evita hidratar en SSR
   if (!mounted) return null;
   return createPortal(node, document.body);
 }

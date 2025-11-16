@@ -2,7 +2,6 @@ import { ServiceType } from "@/types/service";
 
 const BASE_URL = "https://digitalmoney.digitalhouse.com";
 
-// ✅ Obtener todos los servicios
 export const getAllServices = async (): Promise<ServiceType[]> => {
   try {
     const response = await fetch(`${BASE_URL}/service`, {
@@ -12,7 +11,7 @@ export const getAllServices = async (): Promise<ServiceType[]> => {
       },
     });
 
-    const text = await response.text(); // leemos la respuesta como texto una sola vez
+    const text = await response.text(); 
 
     if (!response.ok) {
       let errorMessage = text;
@@ -20,7 +19,7 @@ export const getAllServices = async (): Promise<ServiceType[]> => {
         const errorData = JSON.parse(text);
         errorMessage = errorData.message || errorMessage;
       } catch {
-        // no era JSON, usamos el texto crudo
+       
       }
       throw new Error(`Error ${response.status}: ${errorMessage}`);
     }
@@ -63,14 +62,6 @@ export const getServiceId = async (
   return response.json();
 };
 
-/* async function readAsJsonSafe<T = unknown>(res: Response): Promise<T | null> {
-  try {
-    return (await res.json()) as T;
-  } catch {
-    return null;
-  }
-} */
-/* ------------------- Pago de servicio ------------------- */
 export type PayFailReason = "insufficient_funds" | "no_invoice" | "generic";
 
 export class PayServiceError extends Error {

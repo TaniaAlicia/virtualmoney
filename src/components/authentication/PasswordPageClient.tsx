@@ -30,9 +30,8 @@ export default function PasswordPageClient() {
   const onSubmit = async (data: FormData) => {
     try {
       const response = await login(email, data.password);
-      //localStorage.setItem("token", response.token);
       Cookies.set("token", response.token, {
-        expires: 1 / 24, // 1 hora
+        expires: 1 / 24,
         path: "/",
         secure: true,
         sameSite: "strict",

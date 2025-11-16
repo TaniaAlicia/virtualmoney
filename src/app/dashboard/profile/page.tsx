@@ -74,10 +74,9 @@ export default function ProfilePage() {
     };
   }, []);
 
-  // NEW: actualiza el estado local para reflejar el cambio inmediatamente
   const handleRowUpdate = (
     field: "firstName" | "lastName" | "phone" | "password",
-    value: string
+    value: string,
   ) => {
     setUser((prev) =>
       prev
@@ -86,43 +85,27 @@ export default function ProfilePage() {
             ...(field === "firstName" && { firstName: value }),
             ...(field === "lastName" && { lastName: value }),
             ...(field === "phone" && { phone: value }),
-            // password no se refleja en pantalla
           }
-        : prev
+        : prev,
     );
   };
-  // ADDED: valor combinado para la fila "Nombre y apellido"
-  const fullName =
-    `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(); // ADDED
 
+  const fullName = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
 
   return (
     <main className="max-w-8xl mx-auto flex-1 space-y-6 px-6 pb-6 pt-3 text-dark">
       <MobileCrumb />
 
       <ProfileCard
-        // NEW: pasamos el callback para refrescar la UI sin recargar
         onUpdate={handleRowUpdate}
         rows={[
           { label: "Email", value: user?.email ?? "", locked: true },
-          /*{
-             label: "Nombre",
-            value: user?.firstName ?? "",
-            field: "firstName",
-            userId: account?.user_id,
-          },
+
           {
-            label: "Apellido",
-            value: user?.lastName ?? "",
-            field: "lastName",
-            userId: account?.user_id,
-          }, */
-          
-          {
-            label: "Nombre y apellido",          // ADDED
-            value: fullName,                      // ADDED
-            field: "fullName",                    // ADDED (lo maneja ProfileRow)
-            userId: account?.user_id ?? account?.userId, // CHANGED: por si viene en otro formato
+            label: "Nombre y apellido",
+            value: fullName,
+            field: "fullName",
+            userId: account?.user_id ?? account?.userId,
           },
           { label: "CUIT", value: String(user?.dni ?? ""), locked: true },
           {
@@ -133,7 +116,7 @@ export default function ProfilePage() {
           },
           {
             label: "Contraseña",
-            value: "", // NEW: password vacío al cargar (no "******")
+            value: "",
             field: "password",
             userId: account?.user_id,
           },

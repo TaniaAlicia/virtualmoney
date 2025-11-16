@@ -9,11 +9,9 @@ const periods = [
   { label: "Últimos 15 días", value: "15days" },
   { label: "Último mes", value: "month" },
   { label: "Últimos 3 meses", value: "3months" },
-  /* { label: "Último año", value: "year" }, */
   { label: "Otro período", value: "custom" },
 ];
 
-// 🔹 Tipos de operación (nuevo bloque)
 const operationTypes = [
   { label: "Todos", value: "all" },
   { label: "Ingresos", value: "ingresos" },
@@ -42,7 +40,6 @@ export default function PeriodFilter({
   const [toStr, setToStr] = useState<string>("");
   const [open, setOpen] = useState(true);
 
-  // ✅ nuevo estado para tipo de operación
   const [operationType, setOperationType] = useState<string>("all");
 
   useEffect(() => {
@@ -62,7 +59,6 @@ export default function PeriodFilter({
       return;
     }
 
-    // ✅ Siempre permitir aplicar, incluso si no hay período
     onApply(value || "", operationType);
     onClose();
   };
@@ -72,7 +68,7 @@ export default function PeriodFilter({
     setFromStr("");
     setToStr("");
     setShowCustom(false);
-    setOperationType("all"); // ✅ resetea tipo
+    setOperationType("all");
     onClear();
     onClose();
   };
@@ -83,7 +79,6 @@ export default function PeriodFilter({
       role="dialog"
       aria-label="Filtrar por período"
     >
-      {/* Header */}
       <div className="flex items-center justify-between gap-4 px-6 pb-3 pt-5">
         <button
           type="button"
@@ -124,7 +119,6 @@ export default function PeriodFilter({
 
       {open && <div className="h-px w-full bg-black" />}
 
-      {/* Opciones */}
       {open && (
         <div className="flex flex-col gap-4 px-6 py-4">
           {periods.map((p) => (
@@ -148,7 +142,6 @@ export default function PeriodFilter({
                 {p.label}
               </span>
 
-              {/* Custom radio sin input */}
               <span
                 className={clsx(
                   "relative flex h-5 w-5 items-center justify-center rounded-full border border-dark transition-all duration-150",
@@ -163,7 +156,6 @@ export default function PeriodFilter({
             </label>
           ))}
 
-          {/* Subpanel “Otro período” */}
           {showCustom && (
             <div className="mt-2 grid grid-cols-1 gap-3">
               <div className="grid grid-cols-2 gap-3">
@@ -192,7 +184,6 @@ export default function PeriodFilter({
         </div>
       )}
 
-      {/* 🔽 NUEVO BLOQUE: Tipo de operación (alineado con períodos) */}
       <div className="mt-4 border-t border-black/20 px-6 pt-4">
         <h4 className="text-dark1 mb-3 text-sm font-bold">Tipo de operación</h4>
         <div className="flex flex-col gap-4">
@@ -226,7 +217,6 @@ export default function PeriodFilter({
         </div>
       </div>
 
-      {/* Acciones */}
       <div className="mt-4 px-6 pb-5">
         <button
           onClick={handleApply}

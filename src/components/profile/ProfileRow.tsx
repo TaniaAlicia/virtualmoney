@@ -10,31 +10,23 @@ import { EyeOffIcon } from "@/components/generals/EyeOffIcon";
 
 import { toast } from "sonner";
 
-type FieldUnion =
-  // ADDED: nuevo campo compuesto para editar nombre + apellido juntos
-  "fullName" | "firstName" | "lastName" | "phone" | "password";
+type FieldUnion = "fullName" | "firstName" | "lastName" | "phone" | "password";
 
 type Props = {
   label: string;
   value: string;
-  //field?: "firstName" | "lastName" | "phone" | "password";
   field?: FieldUnion;
   userId?: number;
   locked?: boolean;
-  /*  onUpdate?: (
-    field: "firstName" | "lastName" | "phone" | "password",
-    value: string,
-  ) => void; */
   onUpdate?: (field: Exclude<FieldUnion, "fullName">, value: string) => void;
 };
 
-// ADDED: helper para separar Nombre y Apellido
 function splitFullName(raw: string) {
   const normalized = (raw ?? "").trim().replace(/\s+/g, " ");
   if (!normalized) return { first: "", last: "" };
   const parts = normalized.split(" ");
   const first = parts.shift() ?? "";
-  const last = parts.join(" "); // puede quedar vacío y está bien
+  const last = parts.join(" ");
   return { first, last };
 }
 
@@ -46,8 +38,8 @@ export default function ProfileRow({
   locked,
   onUpdate,
 }: Props) {
-  const isPassword = field === "password"; // CHANGED
-  const isFullName = field === "fullName"; // ADDED
+  const isPassword = field === "password";
+  const isFullName = field === "fullName";
 
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState(value);
@@ -55,14 +47,10 @@ export default function ProfileRow({
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Mantener sincronizado con el padre.
   useEffect(() => {
-    // CHANGED: para password, cuando llega un nuevo value desde el padre
-    // mantenemos el input vacío fuera de edición
     setInputValue(isPassword ? "" : value);
-  }, [value, isPassword]); // CHANGED
+  }, [value, isPassword]);
 
-  // ADDED: validación específica para fullName, respetando el schema existente
   const validateFullName = async (val: string) => {
     const { first, last } = splitFullName(val);
     try {
@@ -75,10 +63,9 @@ export default function ProfileRow({
     }
   };
 
-  // Validación en tiempo real
   const validateField = async (val: string) => {
     if (!field) return;
-    if (isFullName) return validateFullName(val); // ADDED: delega
+    if (isFullName) return validateFullName(val);
     try {
       await registerSchema.validateAt(field, { [field]: val });
       setError(null);
@@ -91,34 +78,29 @@ export default function ProfileRow({
     }
   };
 
-  // Guarda en el backend y avisa al padre para refrescar UI
   const save = async () => {
     if (!field || !userId || error) return;
 
     const token = Cookies.get("token");
     if (!token) return;
 
-    // CHANGED: normalizo valor para comparar / validar
     const trimmed = (inputValue ?? "").trim();
 
-    // CHANGED: si es password y no escribieron nada -> no guardamos
     if (field === "password" && trimmed === "") {
       setEditing(false);
       setShowPassword(false);
       setError(null);
-      return; // 👈 no se hace request
+      return;
     }
 
-    // ADDED: lógica de guardado para fullName
     if (isFullName) {
       const current = (value ?? "").trim().replace(/\s+/g, " ");
       const next = trimmed.replace(/\s+/g, " ");
       if (current === next) {
         setEditing(false);
-        return; // sin cambios
+        return;
       }
 
-      // validar ambos con el schema
       const { first, last } = splitFullName(next);
       try {
         await registerSchema.validateAt("firstName", { firstName: first });
@@ -133,14 +115,13 @@ export default function ProfileRow({
         setLoading(true);
         const updated = await updateUser(
           userId,
-          { firstName: first, lastName: last }, // backend espera estos nombres
+          { firstName: first, lastName: last },
           token,
         );
 
         setEditing(false);
         toast.success("Datos actualizados correctamente");
 
-        // ADDED: notificar al padre por separado (dos updates)
         const newFirst =
           updated?.firstname ?? updated?.firstName ?? first ?? "";
         const newLast = updated?.lastname ?? updated?.lastName ?? last ?? "";
@@ -156,11 +137,10 @@ export default function ProfileRow({
       return;
     }
 
-    // CHANGED: para campos de texto, si no cambió, no llamo al backend
     const current = (value ?? "").trim();
     if (field !== "password" && trimmed === current) {
       setEditing(false);
-      return; // no se hace request
+      return;
     }
 
     try {
@@ -172,7 +152,7 @@ export default function ProfileRow({
           ? "firstname"
           : field === "lastName"
             ? "lastname"
-            : field; // phone | password
+            : field;
 
       const updated = await updateUser(
         userId,
@@ -190,10 +170,9 @@ export default function ProfileRow({
         else if (field === "lastName")
           nextValue = updated.lastname ?? updated.lastName ?? inputValue;
         else if (field === "phone") nextValue = updated.phone ?? inputValue;
-        // password no se refleja
       }
 
-      onUpdate?.(field, nextValue); // 👈 siempre notificamos con un valor válido
+      onUpdate?.(field, nextValue);
     } catch (e) {
       console.error("Error al actualizar:", e);
     } finally {
@@ -201,7 +180,6 @@ export default function ProfileRow({
     }
   };
 
-  // CHANGED: el lápiz alterna entre "entrar a editar" y "guardar" si ya está editando
   const handleEditClick = async () => {
     if (loading || locked) return;
 
@@ -209,20 +187,18 @@ export default function ProfileRow({
       setEditing(true);
       if (field === "password") {
         setShowPassword(false);
-        setInputValue(""); // mantenemos oculto
+        setInputValue("");
         setError(null);
       }
       return;
     }
 
-    // Si ya está en edición:
     if (field === "password") {
-      // CHANGED: si no escribió nada, tratamos como "cancelar"
       if ((inputValue ?? "").trim() === "") {
         setEditing(false);
         setShowPassword(false);
         setError(null);
-        return; // 👈 no se guarda vacío
+        return;
       }
       await validateField(inputValue);
       if (!error) await save();
@@ -234,10 +210,8 @@ export default function ProfileRow({
 
   return (
     <div className="grid grid-cols-[160px,1fr,28px] items-start py-2">
-      {/* Label */}
       <span className="pt-2 text-sm text-dark">{label}</span>
 
-      {/* Valor / Input */}
       <div className="relative w-full">
         {editing ? (
           <>
@@ -248,8 +222,7 @@ export default function ProfileRow({
                     ${
                       error
                         ? "border border-error"
-                        : // CHANGED: volvemos al borde gris y sin ring verde
-                          "border border-gray2 focus:border-gray2 focus:ring-0"
+                        : "border border-gray2 focus:border-gray2 focus:ring-0"
                     }
                   `}
                 value={inputValue}
@@ -263,12 +236,11 @@ export default function ProfileRow({
                 placeholder={isFullName ? "Nombre Apellido" : undefined}
               />
 
-              {/* Ojo (solo password) */}
               {isPassword && (
                 <button
                   type="button"
                   className="absolute right-2 text-gray2 hover:text-dark disabled:opacity-50"
-                  onMouseDown={(e) => e.preventDefault()} // CHANGED: evita blur y autosave accidental
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setShowPassword((s) => !s)}
                   disabled={loading}
                   aria-label={
@@ -286,19 +258,17 @@ export default function ProfileRow({
           </>
         ) : (
           <span className="truncate text-sm text-dark2/40">
-            {/* CHANGED: fuera de edición, siempre asteriscos para password */}
             {isPassword ? "******" : value}
           </span>
         )}
       </div>
 
-      {/* Ícono editar / guardar */}
       {!locked ? (
         <button
           type="button"
-          onClick={handleEditClick} // CHANGED
-          className={`justify-self-end ${editing ? "text-green" : "text-gray2 "}`} // CHANGED
-          disabled={loading} // CHANGED
+          onClick={handleEditClick}
+          className={`justify-self-end ${editing ? "text-green" : "text-gray2 "}`}
+          disabled={loading}
           aria-label={editing ? "Guardar" : `Editar ${label}`}
           title={editing ? "Guardar" : "Editar"}
         >

@@ -12,7 +12,6 @@ function errorMessage(e: unknown): string {
   if (e instanceof Error) return e.message;
   if (typeof e === "string") return e;
   try {
-    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const maybe = e as any;
     if (maybe?.message && typeof maybe.message === "string") return maybe.message;
@@ -39,7 +38,6 @@ export function useDashboardData() {
         const token = Cookies.get("token") ?? "";
         if (!token) throw new Error("No auth token");
 
-        // Si getAccount ya está tipado, cambia AccountMin por ese tipo
         const acc = (await getAccount()) as AccountMin;
         if (!mounted) return;
         setBalance(acc?.balance ?? 0);

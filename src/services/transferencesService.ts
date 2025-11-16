@@ -20,20 +20,17 @@ export const createDeposit = async (
   accountId: number,
   body: DepositBody,
   token?: string,
-  accountCvu?: string, // 👈 nuevo parámetro opcional
+  accountCvu?: string,
 ): Promise<DepositType> => {
-  const res = await axios.post(
-    `${API}/accounts/${accountId}/deposits`,
-    body,
-    { headers: getAuthHeaders(token) },
-  );
+  const res = await axios.post(`${API}/accounts/${accountId}/deposits`, body, {
+    headers: getAuthHeaders(token),
+  });
 
   const deposit = res.data as DepositType;
 
-  // ✅ Adaptamos para UI (sin hardcodear)
   return {
     ...deposit,
     createdAt: deposit.dated,
-    destinationCvu: accountCvu ?? deposit.destination, // usa el CVU real del usuario si está disponible
+    destinationCvu: accountCvu ?? deposit.destination,
   };
 };

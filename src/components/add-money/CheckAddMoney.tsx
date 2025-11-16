@@ -36,7 +36,7 @@ const CheckAddMoney = ({ accountData, token }: CheckAddMoneyProps) => {
       };
 
       const deposit: DepositType = await createDeposit(accountData.id, body, token);
-      setTransaction(deposit); // ✅ ahora guarda el depósito real
+      setTransaction(deposit); 
 
       router.push("/dashboard/add-money/card/amount/checked/success");
     } catch (error) {

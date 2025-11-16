@@ -1,14 +1,13 @@
-// src/utils/downloadServiceReceiptPDF.ts
 import jsPDF from "jspdf";
 
 export type ServiceReceiptInput = {
-  amount: number; // en ARS (positivo)
-  dated: Date; // fecha/hora
-  serviceName: string; // p.ej. "Cablevisión"
-  cardMasked: string; // p.ej. "Visa ************3241"
-  operationCode?: string; // opcional; si no viene, se genera uno
-  accountHolderName?: string; // opcional para usar en "De"
-  accountHolderCvu?: string; // opcional para usar en "De"
+  amount: number;
+  dated: Date;
+  serviceName: string;
+  cardMasked: string;
+  operationCode?: string;
+  accountHolderName?: string;
+  accountHolderCvu?: string;
   operationType?: "payService" | "addMoney";
 };
 
@@ -24,7 +23,7 @@ const formatDateTime = (d: Date) => {
     minute: "2-digit",
     hour12: false,
   };
-  // "10 de agosto de 2022 a las 16:34 hs."
+
   return (
     new Intl.DateTimeFormat("es-AR", opts).format(d).replace(", ", " a las ") +
     " hs."
@@ -41,22 +40,19 @@ export function downloadServiceReceiptPDF({
   accountHolderCvu,
   operationType,
 }: ServiceReceiptInput) {
-  const doc = new jsPDF({ unit: "pt", format: "a4" }); // 595 x 842 pt aprox
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
   const W = doc.internal.pageSize.getWidth();
-  const M = 48; // margen
+  const M = 48;
 
-  // Colores
   const dark = "#171717";
   const light = "#ffffff";
-  const green = "#C1FD35"; // tu verde UI
+  const green = "#C1FD35";
   const text = "#0f0f0f";
   const gray = "#e8e8e8";
 
-  // Fondo
   doc.setFillColor(dark);
   doc.rect(0, 0, W, doc.internal.pageSize.getHeight(), "F");
 
-  // Banner superior
   const bannerH = 64;
   doc.setFillColor(green);
   doc.rect(M + 10, M, W - (M + 10) * 2, bannerH, "F");
@@ -66,7 +62,6 @@ export function downloadServiceReceiptPDF({
   doc.setFontSize(20);
   doc.text("DIGITAL", M + 28, M + 40);
   doc.setFillColor(dark);
-  // “etiqueta” oscura para “MONEY HOUSE”
   const tagX = M + 120;
   const tagY = M + 18;
   const tagW = 190;
@@ -77,7 +72,6 @@ export function downloadServiceReceiptPDF({
   doc.setFontSize(16);
   doc.text("MONEY HOUSE", tagX + 12, M + 40);
 
-  // Título y fecha
   doc.setTextColor(green);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
@@ -92,7 +86,6 @@ export function downloadServiceReceiptPDF({
   doc.setFontSize(12);
   doc.text(formatDateTime(dated), M + 10, M + bannerH + 60);
 
-  // Tarjeta principal blanca
   const cardY = M + bannerH + 80;
   const cardH = 440;
   doc.setFillColor(light);
@@ -101,7 +94,6 @@ export function downloadServiceReceiptPDF({
   const x = M + 28;
   let y = cardY + 34;
 
-  // Encabezado “Transferencia / Pago de servicio” y Monto
   doc.setTextColor(text);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
@@ -112,14 +104,12 @@ export function downloadServiceReceiptPDF({
   doc.text(currency(amount), x, y);
   y += 14;
 
-  // Separador
   y += 16;
   doc.setDrawColor(gray);
   doc.setLineWidth(0.8);
   doc.line(x, y, W - x, y);
   y += 28;
 
-  // “Para”
   doc.setFont("helvetica", "normal");
   doc.setTextColor("#666");
   doc.setFontSize(12);
@@ -130,7 +120,6 @@ export function downloadServiceReceiptPDF({
   doc.setFontSize(18);
   doc.text(serviceName, x, y);
 
-  // “Tarjeta”
   y += 34;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
@@ -140,7 +129,6 @@ export function downloadServiceReceiptPDF({
   doc.setTextColor(text);
   doc.text(cardMasked, x, y);
 
-  // (Opcional) Datos del emisor (De:)
   if (accountHolderName || accountHolderCvu) {
     y += 30;
     doc.setFont("helvetica", "normal");
@@ -163,14 +151,12 @@ export function downloadServiceReceiptPDF({
     }
   }
 
-  // Separador
   y += 16;
   doc.setDrawColor(gray);
   doc.setLineWidth(0.8);
   doc.line(x, y, W - x, y);
   y += 28;
 
-  // Código de operación
   const code =
     operationCode ||
     String(Date.now()).slice(-7) +
@@ -183,6 +169,5 @@ export function downloadServiceReceiptPDF({
   doc.setTextColor(text);
   doc.text(code, x, y);
 
-  // Guardar
   doc.save(`comprobante_${code}.pdf`);
 }

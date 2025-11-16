@@ -1,4 +1,3 @@
-//endpoints internos para register 
 import { NextRequest, NextResponse } from 'next/server';
 
 const API_URL = "https://digitalmoney.digitalhouse.com/api";

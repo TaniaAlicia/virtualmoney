@@ -18,7 +18,7 @@ export default function PaymentsPage() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const token = Cookies.get("token") ?? ""; // ✅ mismo método que en ActivityDetailPage
+        const token = Cookies.get("token") ?? ""; 
         if (!token) {
           setError(
             "No se encontró el token de sesión. Iniciá sesión nuevamente.",
@@ -27,7 +27,7 @@ export default function PaymentsPage() {
           return;
         }
 
-        const data = await getAllServices(); // ✅ pasamos el token
+        const data = await getAllServices(); 
         setServicesList(data);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -70,14 +70,12 @@ export default function PaymentsPage() {
     <main className="flex w-full flex-col gap-6 p-4 md:p-6">
       <MobileCrumb />
 
-      {/* 🔍 Filtro superior */}
       <ServiceFilter
         debounceMs={250}
         onDebouncedChange={setQuery}
         placeholder="Buscá entre más de 5.000 empresas"
       />
 
-      {/* 📋 Listado de servicios */}
       <ServicesList servicesList={filteredServices} showServicePage={true} />
     </main>
   );

@@ -25,11 +25,11 @@ function ActivityInner() {
   const [search, setSearch] = useState(initialQ);
 
   const [showFilters, setShowFilters] = useState(false);
-  const [period, setPeriod] = useState<string>(""); // "", "today", "yesterday", "week", "15days", "month", "year"
+  const [period, setPeriod] = useState<string>("");
   const [customFrom, setCustomFrom] = useState<Date | null>(null);
   const [customTo, setCustomTo] = useState<Date | null>(null);
 
-  const [operationType, setOperationType] = useState<string>("all"); // ✅ nuevo: tipo de operación
+  const [operationType, setOperationType] = useState<string>("all");
 
   useEffect(() => setSearch(initialQ), [initialQ]);
 
@@ -51,10 +51,9 @@ function ActivityInner() {
 
   const parseLocalDate = (iso: string) => {
     const [y, m, d] = iso.split("-").map(Number);
-    return new Date(y, (m ?? 1) - 1, d ?? 1); // crea Date en hora local
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
   };
 
-  //helpers de rango según período
   const getRangeFor = (p: string): { from?: Date; to?: Date } => {
     const now = new Date();
     const today0 = startOfDay(now);
@@ -74,7 +73,7 @@ function ActivityInner() {
       case "3months":
         return { from: addDays(today0, -90), to: addDays(today0, 1) };
 
-      case "custom": // lo que eligió el usuario
+      case "custom":
         if (customFrom && customTo) {
           const from = startOfDay(customFrom);
           const to = addDays(startOfDay(customTo), 1); // incluir “hasta”
@@ -86,7 +85,6 @@ function ActivityInner() {
     }
   };
 
-  // helpers para leer el timestamp desde múltiples campos (igual que ActivitySection)
   type DateLike = string | number | Date | undefined | null; // 🆕
   type TxDateSource = {
     createdAt?: DateLike;
@@ -166,14 +164,11 @@ function ActivityInner() {
     return result;
   }, [transactions, search, period, customFrom, customTo, operationType]);
 
-  // wrapper para botón + popover (para detectar click afuera)
   const filterWrapRef = useRef<HTMLDivElement>(null);
 
-  // cerrar popover SOLO si el click ocurre fuera del wrapper
   useEffect(() => {
     if (!showFilters) return;
 
-    //  Solo desktop: evita que el popover móvil se cierre al click interno
     const isDesktop =
       typeof window !== "undefined" &&
       window.matchMedia("(min-width: 768px)").matches;
@@ -192,9 +187,7 @@ function ActivityInner() {
     <main className="max-w-8xl mx-auto flex-1 space-y-6 bg-gray1 px-6 pb-6 pt-0 text-dark">
       <MobileCrumb />
 
-      {/* Buscador + botón Filtrar */}
       <div className="relative grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px]">
-        {/* Buscador */}
         <div className="flex items-center gap-2 rounded-xl bg-light px-4 py-3 shadow">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -221,7 +214,6 @@ function ActivityInner() {
           />
         </div>
 
-        {/* Botón Filtrar (solo md+) */}
         <div
           ref={filterWrapRef}
           className="relative hidden overflow-visible md:block"
@@ -256,7 +248,7 @@ function ActivityInner() {
               />
             </svg>
           </button>
-          {/* popover de filtros */}
+
           {showFilters && (
             <div className="absolute right-0 top-full z-50 ">
               <PeriodFilter
@@ -284,13 +276,11 @@ function ActivityInner() {
         </div>
       </div>
 
-      {/* Listado */}
       <ActivitySection
         loading={loading}
         transactions={filtered}
         showActivityPage
         hideSearch
-        /* activa el botón Filtrar en el header del card SOLO móvil */
         enableMobileFilter
         showFilters={showFilters}
         onToggleFilters={() => setShowFilters((s) => !s)}

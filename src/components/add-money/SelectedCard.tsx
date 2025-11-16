@@ -22,12 +22,10 @@ type SelectedCardProps = {
   onDeleteCard?: (id: CardType["id"]) => void;
   deletingId?: CardType["id"] | null;
 
-  /** Reutilización del CTA */
   ctaText?: string;
   onContinue?: () => void;
   showNewCardLink?: boolean;
   ctaAlwaysGreen?: boolean;
-  /** Layout */
   framed?: boolean;
   title?: string;
 };
@@ -74,13 +72,11 @@ export default function SelectedCard({
       return;
     }
 
-    // ✅ Caso Checked: cuando el CTA es "Pagar", ir a confirm directamente
     if (ctaText.toLowerCase() === "pagar") {
       router.push("/dashboard/payments/account/checked/success");
       return;
     }
 
-    // Flujo por defecto: Add Money
     setTransaction({
       id: 0,
       account_id: accountId,
@@ -157,23 +153,15 @@ export default function SelectedCard({
             card?.last4 ??
             (card?.number_id ? String(card.number_id).slice(-4) : null);
 
-          setCardLast4(last4); // ← guarda en el store
+          setCardLast4(last4);
 
-          const brand = card?.brand ?? null; // p. ej. "visa", "mastercard"
+          const brand = card?.brand ?? null;
           setCardBrand(brand);
 
           if (last4) {
             toast.success(`Se seleccionó la tarjeta terminada en ${last4}`);
           }
         }}
-        /* if (card?.number_id) {
-            toast.success(
-              `Se seleccionó la tarjeta terminada en ${card.number_id
-                .toString()
-                .slice(-4)}`,
-            );
-          } 
-        }}*/
         onDelete={onDeleteCard}
         deletingId={deletingId ?? null}
       />
@@ -187,16 +175,13 @@ export default function SelectedCard({
       <CustomToaster />
 
       {framed ? (
-        // 🔲 Versión ENMARCADA (Add Money)
         <div className="flex flex-col gap-4 rounded-[10px] bg-dark p-5 shadow-sm md:px-12 md:py-12">
           <h2 className="pb-1 text-xl font-bold text-green md:text-2xl">
             {title}
           </h2>
-          {/* Caja blanca con tarjetas ya la pinta UserCards */}
           {ListBlock}
         </div>
       ) : (
-        // 🧾 Versión SIMPLE (Checked)
         <>{ListBlock}</>
       )}
     </section>

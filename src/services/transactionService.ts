@@ -5,11 +5,10 @@ import { NewTransactionType, TransactionType, TransactionIdType } from "@/types/
 
 const API = "https://digitalmoney.digitalhouse.com/api";
 
-// recibir un token (fallback a cookie)
 function authHeader(token?: string) {
   const t = token ?? Cookies.get("token") ?? "";
   if (!t) throw new Error("No auth token found");
-  return { Authorization: t };         // SIN 'Bearer'
+  return { Authorization: t };         
 }
 
 export const getAllTransactions = async (

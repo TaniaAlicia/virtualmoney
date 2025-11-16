@@ -8,11 +8,9 @@ import type { DateLike, TxDateSource } from "@/types/date";
 import PeriodFilter from "@/components/activity/PeriodFilter";
 import Cookies from "js-cookie";
 
-// helpers
 const CREDIT_TYPES = new Set(["in", "deposit", "transfer_in", "refund"]);
 const DEBIT_TYPES = new Set(["out", "payment", "transfer_out", "fee"]);
 
-// helper para ordenar activitys
 function toMs(dateLike?: DateLike): number {
   if (dateLike == null) return -Infinity;
   if (dateLike instanceof Date) return dateLike.getTime();
@@ -23,7 +21,6 @@ function toMs(dateLike?: DateLike): number {
   const t = Date.parse(s);
   if (!Number.isNaN(t)) return t;
 
-  // dd/mm/yyyy o dd-mm-yyyy
   const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (m) {
     const [, d, mo, y] = m.map(Number);
@@ -35,7 +32,6 @@ function toMs(dateLike?: DateLike): number {
   return -Infinity;
 }
 
-// acepta createdAt | dated | created_at | date | updatedAt
 function getCreatedTs(tx: TxDateSource) {
   const raw =
     tx?.createdAt ?? tx?.dated ?? tx?.created_at ?? tx?.date ?? tx?.updatedAt;
@@ -51,13 +47,11 @@ function dayNameFrom(tx: TxDateSource) {
   });
 }
 
-////////////////////////////////
-
 function isCredit(type?: string, amount?: number) {
   const t = String(type ?? "").toLowerCase();
   if (CREDIT_TYPES.has(t)) return true;
   if (DEBIT_TYPES.has(t)) return false;
-  // fallback: si el tipo es raro, decidimos por signo
+
   return Number(amount ?? 0) > 0;
 }
 function absAmount(n?: number) {
@@ -75,18 +69,16 @@ type Props = {
   loading: boolean;
   transactions: TransactionType[];
   limit?: number;
-  /** si es la página completa de actividad, oculta el link “Ver toda tu actividad” */
   showActivityPage?: boolean;
   hideSearch?: boolean;
   enableSearchFilter?: boolean;
-  //  props SOLO para móvil
-  enableMobileFilter?: boolean; // <- activa el botón "Filtrar" en el header (md:hidden)
-  showFilters?: boolean; // <- estado abierto/cerrado (viene del padre)
-  onToggleFilters?: () => void; // <- abre/cierra
-  periodSelected?: string; // <- "today" | "week" | "custom" ...
-  onApplyPeriod?: (v: string) => void; // <- aplica período estándar
-  onClearPeriod?: () => void; // <- limpia período
-  onApplyCustomPeriod?: (fromISO: string, toISO: string) => void; // <- aplicar período custom
+  enableMobileFilter?: boolean;
+  showFilters?: boolean;
+  onToggleFilters?: () => void;
+  periodSelected?: string;
+  onApplyPeriod?: (v: string) => void;
+  onClearPeriod?: () => void;
+  onApplyCustomPeriod?: (fromISO: string, toISO: string) => void;
   onApplyOperationType?: (type: string) => void;
 };
 
@@ -149,20 +141,17 @@ export default function ActivitySection({
     });
   }, [search, transactions]);
 
-  //Ordenar de más reciente a más antigua por createdAt
   const filteredSorted = useMemo<TransactionType[]>(
     () => [...filtered].sort((a, b) => getCreatedTs(b) - getCreatedTs(a)),
     [filtered],
   );
 
-  // Si hay limit (dashboard), respetarolo y no paginar
   const totalPages = useMemo(
     () =>
       limit ? 1 : Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE)),
     [filteredSorted.length, limit],
   );
 
-  // Resetear a la página 1 cuando cambia la búsqueda o la data
   useEffect(() => {
     setPage(1);
   }, [search, filteredSorted.length, limit]);
@@ -177,11 +166,9 @@ export default function ActivitySection({
 
   return (
     <>
-      {/* Buscar en Tu actividad (se oculta si hideSearch === true) */}
       {!hideSearch && (
         <div className="rounded-xl bg-light px-4 py-3 shadow">
           <div className="flex items-center gap-2">
-            {/* Lupa */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 text-dark/40"
@@ -209,12 +196,10 @@ export default function ActivitySection({
         </div>
       )}
 
-      {/* Tu actividad */}
       <div className="relative rounded-xl bg-light p-5 shadow">
-        {/* header: título + botón Filtrar SOLO en móvil */}
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-semibold text-dark2">Tu actividad</h2>
-          {/* botón Filtrar móvil (md:hidden) */}
+
           {enableMobileFilter && (
             <button
               type="button"
@@ -255,27 +240,25 @@ export default function ActivitySection({
 
         <div className="mt-3 h-px w-full bg-[#D9D9D9]" />
 
-        {/* popover anclado al header en móvil */}
         {enableMobileFilter && showFilters && (
           <div className="absolute right-4 top-8 z-50 md:hidden">
             <PeriodFilter
-              // ancho responsivo: ocupa casi todo en móvil, 320px en md+
               className="w-[calc(100vw-2.5rem)] max-w-[320px]"
               selected={periodSelected ?? ""}
               onApply={(val, type) => {
                 onApplyPeriod?.(val);
-                onApplyOperationType?.(type ?? "all"); // ✅ ahora se propaga al padre
+                onApplyOperationType?.(type ?? "all");
                 onToggleFilters?.();
               }}
               onApplyCustom={(fromISO, toISO, type) => {
                 onApplyCustomPeriod?.(fromISO, toISO);
-                onApplyOperationType?.(type ?? "all"); // ✅ también aquí
+                onApplyOperationType?.(type ?? "all");
                 onToggleFilters?.();
               }}
               onClear={() => {
-                onClearPeriod?.(); // limpia fechas
-                onApplyOperationType?.("all"); // ✅ limpia tipo también
-                onToggleFilters?.(); // cierra el panel
+                onClearPeriod?.();
+                onApplyOperationType?.("all");
+                onToggleFilters?.();
               }}
               onClose={onToggleFilters ?? (() => {})}
             />
@@ -295,16 +278,11 @@ export default function ActivitySection({
               const shown = formatARS(absAmount(tx.amount));
               const sign = credit ? "+" : "-";
 
-              /*  const href = `/dashboard/activity/detail?id=${encodeURIComponent(
-                String(tx.id),
-              )}${accId ? `&acc=${encodeURIComponent(accId)}` : ""}`; */
-
               return (
                 <li
                   key={tx.id}
                   className="text-dark1 relative flex items-center justify-between text-sm"
                 >
-                  {/* overlay que hace clickeable toda la fila */}
                   <Link
                     href={`/dashboard/activity/detail?id=${tx.id}&account=${tx.accountId ?? accId}`}
                     className="absolute inset-0"
@@ -368,7 +346,6 @@ export default function ActivitySection({
           </div>
         )}
 
-        {/* Paginador: solo si NO hay limit y hay más de 10 */}
         {!limit && totalPages > 1 && (
           <nav
             className="mt-4 flex items-center justify-center gap-3"

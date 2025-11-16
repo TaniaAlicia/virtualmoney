@@ -9,7 +9,6 @@ import { getAccount } from "@/services/accountService";
 import CheckIcon from "@/components/icons/CheckIcon";
 import jsPDF from "jspdf";
 
-// helpers
 function formatDated(fecha: string | Date): string {
   const date = new Date(fecha);
 
@@ -22,13 +21,11 @@ function formatDated(fecha: string | Date): string {
     hour12: false,
   };
 
-  // Generamos la fecha en español
   let fechaHora = new Intl.DateTimeFormat("es-AR", opciones).format(date);
 
   // Normalizar: ejemplo → "21 de septiembre de 2025 18:47"
-  fechaHora = fechaHora.replace("  ", " "); // limpiar dobles espacios
+  fechaHora = fechaHora.replace("  ", " ");
 
-  // Armamos la cadena final
   return `Creada el ${fechaHora.replace(/(\d{4}) (.*)/, "$1 a las $2")} hs.`;
 }
 
@@ -48,11 +45,9 @@ export default function ActivityDetailPage() {
 
     const doc = new jsPDF();
 
-    // Encabezado
     doc.setFontSize(18);
     doc.text("Comprobante de Transacción", 20, 20);
 
-    // Datos principales
     doc.setFontSize(12);
     doc.text(`Estado: Aprobada`, 20, 40);
     doc.text(`Fecha: ${formatDated(transaction.dated ?? "")}`, 20, 50);
@@ -72,7 +67,6 @@ export default function ActivityDetailPage() {
     );
     doc.text(`Destino: ${transaction.description || "—"}`, 20, 90);
 
-    // Guardar el PDF
     doc.save(`comprobante_${transaction.id}.pdf`);
   };
 
@@ -85,17 +79,14 @@ export default function ActivityDetailPage() {
           return;
         }
 
-        //  cuenta del backend
         const account = await getAccount();
 
-        // Id de transacción
         const txId = Number(idParam);
         if (!Number.isFinite(txId)) {
           setError("Id inválido");
           return;
         }
 
-        //ransacción con account.id
         const data = await getTransactionById(account.id, txId, token);
         setTransaction(data);
       } catch (err: unknown) {
@@ -124,12 +115,9 @@ export default function ActivityDetailPage() {
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      {/* Caja detalle */}
       <div className="rounded-lg bg-dark p-6 text-white shadow-md">
         <div className="mb-4">
-          {/* Encabezado */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            {/* Título con línea (mobile y desktop) */}
             <div className="border-b-2 border-gray-500 pb-2 sm:border-none sm:pb-0">
               <div className="flex items-center gap-2">
                 <CheckIcon className="h-6 w-6 text-green" />
@@ -137,16 +125,13 @@ export default function ActivityDetailPage() {
               </div>
             </div>
 
-    {/* Fecha */}
-    <p className="pt-2 text-sm text-gray-300 sm:pt-0 sm:text-right sm:ml-4">
-      {formatDated(transaction.dated ?? "")}
-    </p>
-  </div>
+            <p className="pt-2 text-sm text-gray-300 sm:ml-4 sm:pt-0 sm:text-right">
+              {formatDated(transaction.dated ?? "")}
+            </p>
+          </div>
 
-  {/* Línea visible solo en desktop */}
-  <div className="hidden border-b-2 border-gray-500 sm:block"></div>
-</div>
-
+          <div className="hidden border-b-2 border-gray-500 sm:block"></div>
+        </div>
 
         <div className="flex flex-col gap-3">
           <div>
@@ -174,7 +159,6 @@ export default function ActivityDetailPage() {
         </div>
       </div>
 
-      {/* Botones abajo */}
       <div className="flex flex-col gap-4 md:flex-row-reverse">
         <button
           onClick={handleDownloadReceipt}

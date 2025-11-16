@@ -10,16 +10,16 @@ export type CardType = {
   createdAt?: string;
 };
 export type CardBodyType = {
-  number_id: number;        // solo dígitos
+  number_id: number;        
   first_last_name: string;
-  expiration_date: string;  // "YYYY-MM"
-  cod: number;              // CVV
+  expiration_date: string;  
+  cod: number;              
   brand?: string;
 };
 
 export type CardFormData = {
   numberCard: string;
   nameTitular: string;
-  expirationDate: string; // MM/YY
+  expirationDate: string; 
   securityCode: string;
 };

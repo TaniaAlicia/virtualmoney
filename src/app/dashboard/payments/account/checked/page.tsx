@@ -30,7 +30,7 @@ export default function CheckedPage() {
   const [error, setError] = useState("");
 
   const { serviceId } = useSelectService();
-  const { cardId} = useSelectCard();
+  const { cardId } = useSelectCard();
   const { setTransaction } = useTransaction();
 
   useEffect(() => {
@@ -43,8 +43,7 @@ export default function CheckedPage() {
         }
 
         // Cuenta (+ saldo)
-        const account = await getAccount(); // ya lee cookie
-        //console.log("[CheckedPage] account:", account);
+        const account = await getAccount();
         setAccountId(account.id);
         setAccountBalance(readBalance(account));
 
@@ -52,14 +51,12 @@ export default function CheckedPage() {
         const list = await getAllCards(account.id, t);
         setCards(list);
 
-        // Servicio (si no hay, volvemos a la lista)
         if (!serviceId) {
           router.push("/dashboard/payments");
           return;
         }
 
         const s = await getServiceId(String(serviceId), t);
-        // invoice_value puede venir string o number
         const inv =
           typeof s?.invoice_value === "string"
             ? Number(s.invoice_value)
@@ -78,20 +75,7 @@ export default function CheckedPage() {
   }, [serviceId, router]);
 
   const handlePay = async () => {
-    // Logs para depurar
-    /* console.log(
-      "[handlePay] balance:",
-      accountBalance,
-      "amount:",
-      serviceAmount,
-      {
-        accountId,
-        serviceId,
-        cardId,
-      },
-    ); */
-
-    // Guards de datos mínimos
+   
     if (!accountId || !serviceId) {
       setError("Faltan datos para realizar el pago.");
       return;
@@ -127,7 +111,7 @@ export default function CheckedPage() {
 
       // 2️⃣ Crear el payload para registrar la transacción real
       const data = {
-        amount: -Math.abs(numberAmount), // siempre negativo
+        amount: -Math.abs(numberAmount), 
         dated: new Date().toISOString(),
         description: `Pago a ${service.name}`,
         destination: service.name,
@@ -136,7 +120,7 @@ export default function CheckedPage() {
       // 3️⃣ Crear la transacción en el backend
       const transaction = await createTransaction(accountId, data, token);
 
-      // 4️⃣ Guardarla en el contexto local
+      // 4️⃣ Guardar en el contexto local
       setTransaction({
         id: transaction.id ?? 0,
         account_id: accountId,

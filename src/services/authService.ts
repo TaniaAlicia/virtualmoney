@@ -8,10 +8,8 @@ export const login = async (email: string, password: string) => {
 
   if (!token) throw new Error("No se recibió token en el login");
 
-  // Normalizamos: guardamos SIEMPRE el token sin el prefijo
   const rawToken = token.replace(/^bearer\s+/i, "");
 
-  // cookie accesible en toda la app
   Cookies.set("token", rawToken, {
     path: "/",
     sameSite: "lax",
@@ -30,7 +28,6 @@ export const registerUser = async (data: RegisterDataUser) => {
   return response.data;
 };
 
-/** Devuelve { Authorization: "<token>" } o con Bearer si lo pedís */
 export function getAuthHeader(
   explicitToken?: string,
   withBearer = false
@@ -43,7 +40,6 @@ export function getAuthHeader(
   };
 }
 
-/** Si solo querés el token crudo (sin Bearer) */
 export function getAuthToken(): string | null {
   return Cookies.get("token") ?? null;
 }

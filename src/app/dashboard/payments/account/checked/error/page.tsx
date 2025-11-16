@@ -41,7 +41,7 @@ function PayServicesErrorInner() {
 
   return (
     <main className="flex flex-col gap-6">
-      {/* ✅ MobileCrumb para mobile */}
+      
       <MobileCrumb />
 
       <ErrorMessage
@@ -54,7 +54,7 @@ function PayServicesErrorInner() {
   );
 }
 
-// ✅ Wrapping the client logic in Suspense fixes the build error
+
 export default function PayServicesErrorPage() {
   return (
     <Suspense fallback={<p className="text-dark">Cargando…</p>}>

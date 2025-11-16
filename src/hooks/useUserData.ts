@@ -6,15 +6,13 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 type JwtPayload = {
-  username: number; // userId
+  username: number; 
 };
 
 export const useUserData = () => {
   const [userData, setUserData] = useState<RegisterDataUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  //const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const token = Cookies.get("token");
 
   useEffect(() => {

@@ -8,9 +8,8 @@ import { getServiceId } from "@/services/servicesService";
 type ServiceDetail = {
   id: number;
   name: string;
-  date: string; // ISO (backend)
-  invoice_value?: number; // Monto
-  // Si el backend suma más campos en el futuro, se mostrarán abajo
+  date: string;
+  invoice_value?: number;
 };
 
 const currency = (n?: number) =>
@@ -49,18 +48,15 @@ export default function DetailService() {
     };
   }, [serviceId]);
 
-  // Derivados simples para el bloque de detalle
   const title = loading ? "Cargando…" : (service?.name ?? "Servicio");
   const total = loading ? "—" : currency(service?.invoice_value);
   const fechaEmision = useMemo(() => fmtDate(service?.date), [service?.date]);
 
   return (
     <section className="rounded-[10px] bg-dark p-6 shadow-md md:p-8">
-      {/* Header */}
       <div className="mb-4 flex items-start justify-between md:items-center">
         <h2 className="text-xl font-bold text-green md:text-2xl">{title}</h2>
 
-        {/* Botón/link de detalles: toggle accesible */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -73,7 +69,6 @@ export default function DetailService() {
 
       <hr className="border-white/8" />
 
-      {/* Total */}
       <div className="mt-6 flex items-center justify-between">
         <p className="text-lg font-bold text-light md:text-xl">Total a pagar</p>
         <p className="text-2xl font-extrabold text-light md:text-3xl">
@@ -81,7 +76,6 @@ export default function DetailService() {
         </p>
       </div>
 
-      {/* Detalle (desplegable) */}
       <div
         className={`grid transition-all duration-200 ${
           open
@@ -106,15 +100,7 @@ export default function DetailService() {
                 label="Identificador"
                 value={service?.id ? `#${service.id}` : "—"}
               />
-              {/* Espacio para más campos cuando el backend los exponga */}
             </dl>
-
-            {/* Enlace “Cómo se calcula” (opcional) */}
-            {/* <div className="mt-3 text-xs text-light/70">
-              <Link href="#" className="underline decoration-white/30 hover:decoration-white/60">
-                Ver política del servicio
-              </Link>
-            </div> */}
           </div>
         </div>
       </div>
@@ -122,7 +108,6 @@ export default function DetailService() {
   );
 }
 
-/** Item de detalle con estilos consistentes */
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">

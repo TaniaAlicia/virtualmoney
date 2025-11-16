@@ -15,7 +15,7 @@ export const useUpdateUser = (userId: number) => {
     try {
       const token = Cookies.get("token") ?? "";
       const updated = await updateUser(userId, data, token);
-      return updated; // usuario actualizado
+      return updated; 
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);

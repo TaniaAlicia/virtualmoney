@@ -4,8 +4,8 @@ type UseSelectCard = {
   cardId: string | number | null;
   setCardId: (cardId: string | number | null) => void;
 
-  last4: string | null; // ← no opcional
-  setCardLast4: (last4: string | null) => void; // ← no opcional
+  last4: string | null; 
+  setCardLast4: (last4: string | null) => void; 
 
    brand: string | null;                     
   setCardBrand: (brand: string | null) => void; 
@@ -14,13 +14,13 @@ type UseSelectCard = {
 export const useSelectCard = create<UseSelectCard>((set) => ({
   cardId: null,
   setCardId: (cardId) => set({ cardId }),
-  last4: null, // ← inicial
-  setCardLast4: (last4) => set({ last4 }), // ← setter
+  last4: null, 
+  setCardLast4: (last4) => set({ last4 }), 
   brand: null,                              
   setCardBrand: (brand) => set({ brand }),  
 }));
 
-// 👉 Guarda el monto ingresado (cuando se carga dinero)
+// Guarda el monto ingresado (cuando se carga dinero)
 type UseSetAmount = {
   amount: number;
   setAmount: (amount: number) => void;
@@ -31,7 +31,7 @@ export const useSetAmount = create<UseSetAmount>((set) => ({
   setAmount: (amount) => set({ amount }),
 }));
 
-// 👉 Guarda el servicio seleccionado (cuando se paga un servicio)
+// Guarda el servicio seleccionado (cuando se paga un servicio)
 type UseSelectService = {
   serviceId: string;
   setServiceId: (serviceId: string) => void;

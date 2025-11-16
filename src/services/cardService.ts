@@ -5,7 +5,6 @@ import { detectBrandFromNumber } from "@/utils/detectBrandFromNumber";
 
 const API = "https://digitalmoney.digitalhouse.com/api";
 
-// Lo que devuelve el backend (shape conocido + campos opcionales)
 type RawCardFromAPI = {
   id?: number | string;
   account_id?: number;
@@ -19,7 +18,6 @@ type RawCardFromAPI = {
   createdAt?: string;
 };
 
-// normaliza y asegura last4
 function normalize(c: RawCardFromAPI): CardType {
   const last4 =
     (c.last4 ??
@@ -32,7 +30,6 @@ function normalize(c: RawCardFromAPI): CardType {
     c.brand ?? detectBrandFromNumber(c.number_id ?? c.number) ?? undefined;
 
   return {
-    // forzamos tipos a los del front
     id: (c.id ?? "") as number | string,
     account_id: c.account_id,
     number_id:
@@ -46,11 +43,10 @@ function normalize(c: RawCardFromAPI): CardType {
   };
 }
 
-// tomar el token del argumento o de la cookie
 function authHeader(token?: string) {
   const t = token ?? Cookies.get("token") ?? "";
   if (!t) throw new Error("No auth token found");
-  return { Authorization: t }; // SIN 'Bearer'
+  return { Authorization: t };
 }
 
 function errorMessage(e: unknown): string {
@@ -64,7 +60,6 @@ function errorMessage(e: unknown): string {
   return "Error desconocido";
 }
 
-/** Obtener todas las tarjetas de una cuenta */
 export async function getAllCards(
   accountId: number,
   token?: string,
@@ -81,7 +76,6 @@ export async function getAllCards(
   }
 }
 
-/** Obtener una tarjeta por id */
 export async function getCardById(
   accountId: number,
   cardId: number,
@@ -99,7 +93,6 @@ export async function getCardById(
   }
 }
 
-/** Crear nueva tarjeta */
 export async function createCard(
   accountId: number,
   payload: CardBodyType,
@@ -123,7 +116,6 @@ export async function createCard(
   }
 }
 
-/** Eliminar tarjeta */
 export async function deleteCard(
   accountId: number,
   cardId: number,

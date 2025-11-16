@@ -15,7 +15,6 @@ export default function MobileCrumb() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Detecta la ruta más específica (por ejemplo, /dashboard/payments/success)
   const currentCrumb =
     crumbs
       .filter((c) => pathname === c.path || pathname.startsWith(c.path + "/"))
@@ -30,7 +29,6 @@ export default function MobileCrumb() {
       className="flex items-center gap-2 md:hidden cursor-pointer select-none"
       onClick={handleClick}
     >
-      {/* Flecha ← con línea */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-8 w-8 flex-none text-dark dark:text-light"

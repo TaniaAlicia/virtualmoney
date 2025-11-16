@@ -5,17 +5,17 @@ type Row = {
   label: string;
   value: string;
   locked?: boolean;
-  field?: "fullName" | "firstName" | "lastName" | "phone" | "password"; // CHANGED
+  field?: "fullName" | "firstName" | "lastName" | "phone" | "password"; 
   userId?: number;
 };
 
 type Props = {
   rows: Row[];
-  // callback que baja a cada Row
+ 
    onUpdate?: (
     field: "firstName" | "lastName" | "phone" | "password",
     value: string
-  ) => void; // CHANGED
+  ) => void; 
 };
 
 export default function ProfileCard({ rows, onUpdate }: Props) {

@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/services/authService";
 import clsx from "clsx";
 
-
 const items = [
   { href: "/dashboard", label: "Inicio" },
   { href: "/dashboard/activity", label: "Actividad" },
@@ -20,35 +19,31 @@ export default function SidebarDashboard() {
   const router = useRouter();
 
   const isActive = (href: string) => {
-  // Para "Inicio" (ruta base) sólo activo en coincidencia exacta
-  if (href === "/dashboard") return pathname === "/dashboard";
-  // Para el resto, exacto o con subrutas
-  return pathname === href || pathname.startsWith(href + "/");
-};
+    if (href === "/dashboard") return pathname === "/dashboard";
+
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   const handleLogout = () => {
     logout();
     router.push("/");
   };
 
-  const handleLinkClick = () => {
-    
-  };
+  const handleLinkClick = () => {};
 
   return (
-    <aside className="hidden md:block w-[270px] bg-green text-black min-h-screen p-8">
+    <aside className="hidden min-h-screen w-[270px] bg-green p-8 text-black md:block">
       <nav className="flex flex-col gap-3">
         {items.map((it) => (
           <Link
             key={it.href}
             href={it.href}
-            //aria-current={isActive(it.href) ? "page" : undefined}
             onClick={handleLinkClick}
             className={clsx(
               "block text-[15px] leading-6 transition-colors duration-150",
               isActive(it.href)
-                ? "font-bold md:font-extrabold text-black"
-                : "font-normal md:font-semibold text-black/80 hover:text-black hover:font-bold md:hover:font-extrabold"
+                ? "font-bold text-black md:font-extrabold"
+                : "font-normal text-black/80 hover:font-bold hover:text-black md:font-semibold md:hover:font-extrabold",
             )}
           >
             {it.label}
@@ -57,7 +52,7 @@ export default function SidebarDashboard() {
 
         <button
           onClick={handleLogout}
-          className=" text-left text-[15px] font-normal md:font-semibold text-black/50 hover:text-black hover:font-bold md:hover:font-extrabold transition-colors duration-150"
+          className=" text-left text-[15px] font-normal text-black/50 transition-colors duration-150 hover:font-bold hover:text-black md:font-semibold md:hover:font-extrabold"
         >
           Cerrar sesión
         </button>

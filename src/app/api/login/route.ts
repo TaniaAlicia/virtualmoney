@@ -1,5 +1,3 @@
-//endpoints internos para login y enmascarar ocultar los endpoints reales del backend 
-// utilizando el App Router de Next.js (app/api/) como capa intermedia
 import { NextRequest, NextResponse } from 'next/server';
 
 const API_URL = "https://digitalmoney.digitalhouse.com/api";

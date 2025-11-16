@@ -1,4 +1,4 @@
-// app/api/user/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = "https://digitalmoney.digitalhouse.com/api";
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       headers: {
         Authorization: req.headers.get("Authorization") ?? "",
       },
-      // Opcional: evita cache en build/edge
+    
       cache: "no-store",
     });
 

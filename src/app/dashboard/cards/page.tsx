@@ -12,7 +12,7 @@ export default function CardsPage() {
     cards,
     deletingId: deletingCardId,
     removeCard,
-  } = useCards(); // autoLoad = true
+  } = useCards(); 
   const LIMIT = 10;
   const atLimit = (cards?.length ?? 0) >= LIMIT;
 

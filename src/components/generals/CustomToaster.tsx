@@ -9,12 +9,11 @@ export default function CustomToaster() {
       expand
       toastOptions={{
         duration: 1800,
-        // util para border/sombra/redondeo
         className: "rounded-xl border border-dark/20 shadow-md font-medium",
-        // esto pisa el fondo y color del theme por defecto
+        
         style: {
-          background: "#C1FD35", // verde corporativo
-          color: "#201F22",      // dark
+          background: "#C1FD35", 
+          color: "#201F22",      
         },
       }}
     />

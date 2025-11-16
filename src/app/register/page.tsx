@@ -55,7 +55,7 @@ export default function RegisterPage() {
     const firstFieldError = Object.values(fieldErrors)[0];
     setErrorMsg(typeof firstFieldError === "string" ? firstFieldError : "Error en los datos.");
   } else if (backendError) {
-    setErrorMsg(backendError); // muestra cualquier otro mensaje del backend
+    setErrorMsg(backendError);
   } else {
     setErrorMsg("Ocurrió un error. Intentalo más tarde.");
   }

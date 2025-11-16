@@ -16,7 +16,7 @@ export default function LandingPage() {
         xl:min-h-[720px] 
         xl:bg-bgDesktop xl:bg-[center_top_-130px]"
       >
-        {/* Texto principal */}
+       
         <section className="z-20 flex flex-col gap-5 pt-8 w-3/5 py-6 pl-1 pr-8 max-w-[450px] md:w-3/5 md:py-10 md:pr-2 md:pl-3 md:max-w-[1050px] xl:max-w-[550px] xl:pl-14 xl:pt-14 xl:pr-8">
           <h1 className="text-[29px] leading-[30px] text-white md:pr-8 md:text-5xl md:font-normal md:leading-[50px] xl:font-normal">
             {hero.title}
@@ -28,7 +28,7 @@ export default function LandingPage() {
           </h3>
         </section>
 
-        {/* Sección de tarjetas */}
+       
         <section
           className="z-20 mt-[170px] md:mt-[30px] flex flex-col items-center gap-6 md:px-8 
           xl:flex-row xl:items-end xl:justify-center xl:gap-8 xl:px-36
@@ -39,7 +39,7 @@ export default function LandingPage() {
           ))}
         </section>
 
-        {/* Fondo verde decorativo */}
+       
         <div
           className="absolute bottom-0 left-0 z-10 h-[30%] w-full rounded-t-[20px]
           bg-green 

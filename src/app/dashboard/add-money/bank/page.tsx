@@ -42,7 +42,6 @@ const BankPage = () => {
 
   return (
     <section className="flex flex-col gap-6 p-6 md:p-10">
-      {/* Migas de pan (breadcrumb) */}
       <MobileCrumb />
       <CvuAliasCard cvu={account?.cvu ?? ""} alias={account?.alias ?? ""} />
     </section>

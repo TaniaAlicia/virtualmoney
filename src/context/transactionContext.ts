@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import type { DepositType } from "@/types/deposit"; 
 
-// Ahora el contexto puede manejar ambos tipos
 type TransactionStore = {
   transaction: DepositType | null;
   setTransaction: (tx:DepositType) => void;

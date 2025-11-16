@@ -5,8 +5,6 @@ const instance = axios.create({
   baseURL: "https://digitalmoney.digitalhouse.com/api",
 });
 
-
-// Interceptor de respuestas
 instance.interceptors.response.use(
   response => response,
   error => {
